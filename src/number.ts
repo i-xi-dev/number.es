@@ -7,7 +7,6 @@ namespace NumberUtils {
     }
     throw new TypeError("c | min | max");
   }
-
 }
 
 export { NumberUtils };
