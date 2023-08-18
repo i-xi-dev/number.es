@@ -1,12 +1,8 @@
-namespace NumberUtils {
-  export const ZERO = 0;
+export const ZERO = 0;
 
-  export function clamp(c: number, min: number, max: number): number {
-    if (Number.isFinite(c) && Number.isFinite(min) && Number.isFinite(max)) {
-      return Math.max(min, Math.min(max, c));
-    }
-    throw new TypeError("c | min | max");
+export function inRange(test: number, min: number, max: number): boolean {
+  if (Number.isFinite(test)) {
+    return (test >= min) && (test <= max);
   }
+  return false;
 }
-
-export { NumberUtils };

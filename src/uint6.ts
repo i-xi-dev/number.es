@@ -1,3 +1,5 @@
+import { Integer } from "./integer.ts";
+
 /**
  * The type of 6-bit unsigned integer.
  */
@@ -88,7 +90,7 @@ namespace Uint6 {
    * @returns Whether the passed value is an 6-bit unsigned integer.
    */
   export function isUint6(value: unknown): value is Uint6 {
-    if ((typeof value === "number") && Number.isSafeInteger(value)) {
+    if (Integer.isInteger(value)) {
       return (value >= MIN_VALUE) && (value <= MAX_VALUE);
     }
     return false;
