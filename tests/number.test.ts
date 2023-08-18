@@ -1,28 +1,31 @@
-import { assertStrictEquals, assertThrows } from "./deps.ts";
+import { assertStrictEquals } from "./deps.ts";
 import { NumberUtils } from "../mod.ts";
 
-Deno.test("NumberUtils.clamp()", () => {
-  assertStrictEquals(NumberUtils.clamp(0, 0, 0), 0);
-  assertStrictEquals(NumberUtils.clamp(0.5, 0, 0), 0);
-  assertStrictEquals(NumberUtils.clamp(1, 0, 0), 0);
-  assertStrictEquals(NumberUtils.clamp(-0.5, 0, 0), 0);
-  assertStrictEquals(NumberUtils.clamp(-1, 0, 0), 0);
+Deno.test("NumberUtils.ZERO", () => {
+  assertStrictEquals(NumberUtils.ZERO, 0);
+});
 
-  assertStrictEquals(NumberUtils.clamp(0, 1, 2), 1);
-  assertStrictEquals(NumberUtils.clamp(0.5, 1, 2), 1);
-  assertStrictEquals(NumberUtils.clamp(1, 1, 2), 1);
-  assertStrictEquals(NumberUtils.clamp(1.5, 1, 2), 1.5);
-  assertStrictEquals(NumberUtils.clamp(2, 1, 2), 2);
-  assertStrictEquals(NumberUtils.clamp(2.5, 1, 2), 2);
-  assertStrictEquals(NumberUtils.clamp(-0.5, 1, 2), 1);
-  assertStrictEquals(NumberUtils.clamp(-1, 1, 2), 1);
+Deno.test("NumberUtils.inRange()", () => {
+  assertStrictEquals(NumberUtils.inRange(0, 0, 0), true);
+  assertStrictEquals(NumberUtils.inRange(-0, 0, 0), true);
+  assertStrictEquals(NumberUtils.inRange(1, 0, 0), false);
+  assertStrictEquals(NumberUtils.inRange(-1, 0, 0), false);
 
-  assertStrictEquals(NumberUtils.clamp(0, 0.5, 2), 0.5);
-  assertStrictEquals(NumberUtils.clamp(0.5, 0.5, 2), 0.5);
-  assertStrictEquals(NumberUtils.clamp(1, 0.5, 2), 1);
-  assertStrictEquals(NumberUtils.clamp(1.5, 0.5, 2), 1.5);
-  assertStrictEquals(NumberUtils.clamp(2, 0.5, 2), 2);
-  assertStrictEquals(NumberUtils.clamp(2.5, 0.5, 2), 2);
-  assertStrictEquals(NumberUtils.clamp(-0.5, 0.5, 2), 0.5);
-  assertStrictEquals(NumberUtils.clamp(-1, 0.5, 2), 0.5);
+  assertStrictEquals(NumberUtils.inRange(0, 1, -1), false);
+
+  assertStrictEquals(NumberUtils.inRange(9, 10, 20), false);
+  assertStrictEquals(NumberUtils.inRange(9.9, 10, 20), false);
+  assertStrictEquals(NumberUtils.inRange(10, 10, 20), true);
+  assertStrictEquals(NumberUtils.inRange(20, 10, 20), true);
+  assertStrictEquals(NumberUtils.inRange(20.1, 10, 20), false);
+  assertStrictEquals(NumberUtils.inRange(21, 10, 20), false);
+
+  assertStrictEquals(NumberUtils.inRange(-11, -10, 10), false);
+  assertStrictEquals(NumberUtils.inRange(-10.1, -10, 10), false);
+  assertStrictEquals(NumberUtils.inRange(-10, -10, 10), true);
+  assertStrictEquals(NumberUtils.inRange(-9.9, -10, 10), true);
+  assertStrictEquals(NumberUtils.inRange(9.9, -10, 10), true);
+  assertStrictEquals(NumberUtils.inRange(10, -10, 10), true);
+  assertStrictEquals(NumberUtils.inRange(10.1, -10, 10), false);
+  assertStrictEquals(NumberUtils.inRange(11, -10, 10), false);
 });

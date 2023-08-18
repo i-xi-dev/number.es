@@ -21,9 +21,9 @@ namespace Integer {
   export function toString(source: Integer): string {
     if (isInteger(source)) {
       if (source === NumberUtils.ZERO) {
-        if (1 / source === Number.NEGATIVE_INFINITY) {
-          return "-0";
-        }
+        // if (1 / source === Number.NEGATIVE_INFINITY) {
+        //   return "-0";
+        // }
         return "0";
       }
       return source.toString(_RADIX_DECIMAL);
@@ -43,9 +43,13 @@ namespace Integer {
 
   export function fromNumber(source?: number, options?: FromOptions): Integer {
     if ((typeof source === "number") && Number.isFinite(source)) {
-      return (options?.method === "trunc")
+      const int = (options?.method === "trunc")
         ? Math.trunc(source)
         : Math.round(source);
+      if (isInteger(int)) {
+        // -0は0とする
+        return (int === 0) ? 0 : int;
+      }
     }
     return (options && isInteger(options.fallback))
       ? options.fallback
@@ -56,11 +60,11 @@ namespace Integer {
     const int = fromNumber(source, options);
 
     const min = fromNumber(options?.lowerLimit, {
-      fallback: Number.MIN_VALUE,
+      fallback: Number.MIN_SAFE_INTEGER,
       method: "trunc",
     });
     const max = fromNumber(options?.upperLimit, {
-      fallback: Number.MAX_VALUE,
+      fallback: Number.MAX_SAFE_INTEGER,
       method: "trunc",
     });
     return Math.max(min, Math.min(max, int));
