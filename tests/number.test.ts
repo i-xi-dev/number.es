@@ -29,3 +29,21 @@ Deno.test("NumberUtils.inRange()", () => {
   assertStrictEquals(NumberUtils.inRange(10.1, -10, 10), false);
   assertStrictEquals(NumberUtils.inRange(11, -10, 10), false);
 });
+
+Deno.test("NumberUtils.clamp", () => {
+  assertStrictEquals(NumberUtils.clamp(0, 0, 0), 0);
+  assertStrictEquals(NumberUtils.clamp(-0, 0, 0), 0);
+  assertStrictEquals(NumberUtils.clamp(1, 0, 0), 0);
+  assertStrictEquals(NumberUtils.clamp(-1, 0, 0), 0);
+
+  assertStrictEquals(NumberUtils.clamp(0, -10, 10), 0);
+  assertStrictEquals(NumberUtils.clamp(-0, -10, 10), 0);
+  assertStrictEquals(NumberUtils.clamp(-11, -10, 10), -10);
+  assertStrictEquals(NumberUtils.clamp(-10.1, -10, 10), -10);
+  assertStrictEquals(NumberUtils.clamp(-10, -10, 10), -10);
+  assertStrictEquals(NumberUtils.clamp(-9.9, -10, 10), -9.9);
+  assertStrictEquals(NumberUtils.clamp(9.9, -10, 10), 9.9);
+  assertStrictEquals(NumberUtils.clamp(10, -10, 10), 10);
+  assertStrictEquals(NumberUtils.clamp(10.1, -10, 10), 10);
+  assertStrictEquals(NumberUtils.clamp(11, -10, 10), 10);
+});

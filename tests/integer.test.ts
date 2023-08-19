@@ -146,97 +146,97 @@ Deno.test("Integer.fromNumber(number, {}) - fallback:9999", () => {
   assertStrictEquals(Integer.fromNumber(-1.9, opt), -2);
 });
 
-Deno.test("Integer.clamp(number)", () => {
-  assertStrictEquals(Integer.clamp(), 0);
-  assertStrictEquals(Integer.clamp(0), 0);
-  assertStrictEquals(Integer.clamp(-0), 0);
-  assertStrictEquals(Integer.clamp(1), 1);
-  assertStrictEquals(Integer.clamp(-1), -1);
-  assertStrictEquals(Integer.clamp(1.1), 1);
-  assertStrictEquals(Integer.clamp(1.9), 2);
-  assertStrictEquals(Integer.clamp(-1.1), -1);
-  assertStrictEquals(Integer.clamp(-1.9), -2);
-  assertStrictEquals(Integer.clamp("1" as unknown as number), 0);
-  assertStrictEquals(Integer.clamp(2), 2);
-  assertStrictEquals(Integer.clamp(-2), -2);
+Deno.test("Integer.from(number)", () => {
+  assertStrictEquals(Integer.from(), 0);
+  assertStrictEquals(Integer.from(0), 0);
+  assertStrictEquals(Integer.from(-0), 0);
+  assertStrictEquals(Integer.from(1), 1);
+  assertStrictEquals(Integer.from(-1), -1);
+  assertStrictEquals(Integer.from(1.1), 1);
+  assertStrictEquals(Integer.from(1.9), 2);
+  assertStrictEquals(Integer.from(-1.1), -1);
+  assertStrictEquals(Integer.from(-1.9), -2);
+  assertStrictEquals(Integer.from("1" as unknown as number), 0);
+  assertStrictEquals(Integer.from(2), 2);
+  assertStrictEquals(Integer.from(-2), -2);
 });
 
-Deno.test("Integer.clamp(number, {}) - method:round", () => {
+Deno.test("Integer.from(number, {}) - method:round", () => {
   const opt = { method: "round" } as const;
-  assertStrictEquals(Integer.clamp(undefined, opt), 0);
-  assertStrictEquals(Integer.clamp(0, opt), 0);
-  assertStrictEquals(Integer.clamp(-0, opt), 0);
-  assertStrictEquals(Integer.clamp(1, opt), 1);
-  assertStrictEquals(Integer.clamp(-1, opt), -1);
-  assertStrictEquals(Integer.clamp(1.1, opt), 1);
-  assertStrictEquals(Integer.clamp(1.9, opt), 2);
-  assertStrictEquals(Integer.clamp(-1.1, opt), -1);
-  assertStrictEquals(Integer.clamp(-1.9, opt), -2);
-  assertStrictEquals(Integer.clamp("1" as unknown as number, opt), 0);
-  assertStrictEquals(Integer.clamp(2, opt), 2);
-  assertStrictEquals(Integer.clamp(-2, opt), -2);
+  assertStrictEquals(Integer.from(undefined, opt), 0);
+  assertStrictEquals(Integer.from(0, opt), 0);
+  assertStrictEquals(Integer.from(-0, opt), 0);
+  assertStrictEquals(Integer.from(1, opt), 1);
+  assertStrictEquals(Integer.from(-1, opt), -1);
+  assertStrictEquals(Integer.from(1.1, opt), 1);
+  assertStrictEquals(Integer.from(1.9, opt), 2);
+  assertStrictEquals(Integer.from(-1.1, opt), -1);
+  assertStrictEquals(Integer.from(-1.9, opt), -2);
+  assertStrictEquals(Integer.from("1" as unknown as number, opt), 0);
+  assertStrictEquals(Integer.from(2, opt), 2);
+  assertStrictEquals(Integer.from(-2, opt), -2);
 });
 
-Deno.test("Integer.clamp(number, {}) - method:trunc", () => {
+Deno.test("Integer.from(number, {}) - method:trunc", () => {
   const opt = { method: "trunc" } as const;
-  assertStrictEquals(Integer.clamp(undefined, opt), 0);
-  assertStrictEquals(Integer.clamp(0, opt), 0);
-  assertStrictEquals(Integer.clamp(-0, opt), 0);
-  assertStrictEquals(Integer.clamp(1, opt), 1);
-  assertStrictEquals(Integer.clamp(-1, opt), -1);
-  assertStrictEquals(Integer.clamp(1.1, opt), 1);
-  assertStrictEquals(Integer.clamp(1.9, opt), 1);
-  assertStrictEquals(Integer.clamp(-1.1, opt), -1);
-  assertStrictEquals(Integer.clamp(-1.9, opt), -1);
-  assertStrictEquals(Integer.clamp("1" as unknown as number, opt), 0);
-  assertStrictEquals(Integer.clamp(2, opt), 2);
-  assertStrictEquals(Integer.clamp(-2, opt), -2);
+  assertStrictEquals(Integer.from(undefined, opt), 0);
+  assertStrictEquals(Integer.from(0, opt), 0);
+  assertStrictEquals(Integer.from(-0, opt), 0);
+  assertStrictEquals(Integer.from(1, opt), 1);
+  assertStrictEquals(Integer.from(-1, opt), -1);
+  assertStrictEquals(Integer.from(1.1, opt), 1);
+  assertStrictEquals(Integer.from(1.9, opt), 1);
+  assertStrictEquals(Integer.from(-1.1, opt), -1);
+  assertStrictEquals(Integer.from(-1.9, opt), -1);
+  assertStrictEquals(Integer.from("1" as unknown as number, opt), 0);
+  assertStrictEquals(Integer.from(2, opt), 2);
+  assertStrictEquals(Integer.from(-2, opt), -2);
 });
 
-Deno.test("Integer.clamp(number, {}) - fallback:9999", () => {
+Deno.test("Integer.from(number, {}) - fallback:9999", () => {
   const opt = { fallback: 9999 } as const;
-  assertStrictEquals(Integer.clamp(undefined, opt), 9999);
-  assertStrictEquals(Integer.clamp(0, opt), 0);
-  assertStrictEquals(Integer.clamp(-0, opt), 0);
-  assertStrictEquals(Integer.clamp(1, opt), 1);
-  assertStrictEquals(Integer.clamp(-1, opt), -1);
-  assertStrictEquals(Integer.clamp(1.1, opt), 1);
-  assertStrictEquals(Integer.clamp(1.9, opt), 2);
-  assertStrictEquals(Integer.clamp(-1.1, opt), -1);
-  assertStrictEquals(Integer.clamp(-1.9, opt), -2);
-  assertStrictEquals(Integer.clamp("1" as unknown as number, opt), 9999);
-  assertStrictEquals(Integer.clamp(2, opt), 2);
-  assertStrictEquals(Integer.clamp(-2, opt), -2);
+  assertStrictEquals(Integer.from(undefined, opt), 9999);
+  assertStrictEquals(Integer.from(0, opt), 0);
+  assertStrictEquals(Integer.from(-0, opt), 0);
+  assertStrictEquals(Integer.from(1, opt), 1);
+  assertStrictEquals(Integer.from(-1, opt), -1);
+  assertStrictEquals(Integer.from(1.1, opt), 1);
+  assertStrictEquals(Integer.from(1.9, opt), 2);
+  assertStrictEquals(Integer.from(-1.1, opt), -1);
+  assertStrictEquals(Integer.from(-1.9, opt), -2);
+  assertStrictEquals(Integer.from("1" as unknown as number, opt), 9999);
+  assertStrictEquals(Integer.from(2, opt), 2);
+  assertStrictEquals(Integer.from(-2, opt), -2);
 });
 
-Deno.test("Integer.clamp(number, {}) - lowerLimit:1", () => {
+Deno.test("Integer.from(number, {}) - lowerLimit:1", () => {
   const opt = { lowerLimit: 1 } as const;
-  assertStrictEquals(Integer.clamp(undefined, opt), 1);
-  assertStrictEquals(Integer.clamp(0, opt), 1);
-  assertStrictEquals(Integer.clamp(-0, opt), 1);
-  assertStrictEquals(Integer.clamp(1, opt), 1);
-  assertStrictEquals(Integer.clamp(-1, opt), 1);
-  assertStrictEquals(Integer.clamp(1.1, opt), 1);
-  assertStrictEquals(Integer.clamp(1.9, opt), 2);
-  assertStrictEquals(Integer.clamp(-1.1, opt), 1);
-  assertStrictEquals(Integer.clamp(-1.9, opt), 1);
-  assertStrictEquals(Integer.clamp("1" as unknown as number, opt), 1);
-  assertStrictEquals(Integer.clamp(2, opt), 2);
-  assertStrictEquals(Integer.clamp(-2, opt), 1);
+  assertStrictEquals(Integer.from(undefined, opt), 1);
+  assertStrictEquals(Integer.from(0, opt), 1);
+  assertStrictEquals(Integer.from(-0, opt), 1);
+  assertStrictEquals(Integer.from(1, opt), 1);
+  assertStrictEquals(Integer.from(-1, opt), 1);
+  assertStrictEquals(Integer.from(1.1, opt), 1);
+  assertStrictEquals(Integer.from(1.9, opt), 2);
+  assertStrictEquals(Integer.from(-1.1, opt), 1);
+  assertStrictEquals(Integer.from(-1.9, opt), 1);
+  assertStrictEquals(Integer.from("1" as unknown as number, opt), 1);
+  assertStrictEquals(Integer.from(2, opt), 2);
+  assertStrictEquals(Integer.from(-2, opt), 1);
 });
 
-Deno.test("Integer.clamp(number, {}) - upperLimit:1", () => {
+Deno.test("Integer.from(number, {}) - upperLimit:1", () => {
   const opt = { upperLimit: 1 } as const;
-  assertStrictEquals(Integer.clamp(undefined, opt), 0);
-  assertStrictEquals(Integer.clamp(0, opt), 0);
-  assertStrictEquals(Integer.clamp(-0, opt), 0);
-  assertStrictEquals(Integer.clamp(1, opt), 1);
-  assertStrictEquals(Integer.clamp(-1, opt), -1);
-  assertStrictEquals(Integer.clamp(1.1, opt), 1);
-  assertStrictEquals(Integer.clamp(1.9, opt), 1);
-  assertStrictEquals(Integer.clamp(-1.1, opt), -1);
-  assertStrictEquals(Integer.clamp(-1.9, opt), -2);
-  assertStrictEquals(Integer.clamp("1" as unknown as number, opt), 0);
-  assertStrictEquals(Integer.clamp(2, opt), 1);
-  assertStrictEquals(Integer.clamp(-2, opt), -2);
+  assertStrictEquals(Integer.from(undefined, opt), 0);
+  assertStrictEquals(Integer.from(0, opt), 0);
+  assertStrictEquals(Integer.from(-0, opt), 0);
+  assertStrictEquals(Integer.from(1, opt), 1);
+  assertStrictEquals(Integer.from(-1, opt), -1);
+  assertStrictEquals(Integer.from(1.1, opt), 1);
+  assertStrictEquals(Integer.from(1.9, opt), 1);
+  assertStrictEquals(Integer.from(-1.1, opt), -1);
+  assertStrictEquals(Integer.from(-1.9, opt), -2);
+  assertStrictEquals(Integer.from("1" as unknown as number, opt), 0);
+  assertStrictEquals(Integer.from(2, opt), 1);
+  assertStrictEquals(Integer.from(-2, opt), -2);
 });

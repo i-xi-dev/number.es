@@ -56,7 +56,7 @@ namespace Integer {
       : NumberUtils.ZERO;
   }
 
-  export function clamp(source?: number, options?: ClampOptions): Integer {
+  export function from(source?: number, options?: ClampOptions): Integer {
     const int = fromNumber(source, options);
 
     const min = fromNumber(options?.lowerLimit, {
@@ -67,7 +67,7 @@ namespace Integer {
       fallback: Number.MAX_SAFE_INTEGER,
       method: "trunc",
     });
-    return Math.max(min, Math.min(max, int));
+    return NumberUtils.clamp(int, min, max);
   }
 }
 Object.freeze(Integer);

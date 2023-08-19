@@ -18,7 +18,7 @@ namespace PositiveInteger {
       NumberUtils.inRange(test, MIN_VALUE, MAX_VALUE);
   }
 
-  export function clamp(
+  export function from(
     source?: number,
     options?: Integer.ClampOptions,
   ): PositiveInteger {
@@ -32,7 +32,7 @@ namespace PositiveInteger {
       fallback: MAX_VALUE,
       method: "trunc",
     });
-    return Math.max(min, Math.min(max, int));
+    return NumberUtils.clamp(int, min, max);
   }
 }
 

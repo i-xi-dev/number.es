@@ -31,97 +31,97 @@ Deno.test("NonNegativeInteger.isNonNegativeInteger(any)", () => {
   assertStrictEquals(NonNegativeInteger.isNonNegativeInteger(true), false);
 });
 
-Deno.test("NonNegativeInteger.clamp(number)", () => {
-  assertStrictEquals(NonNegativeInteger.clamp(), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(0), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(-0), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(1), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(-1), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(1.1), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(1.9), 2);
-  assertStrictEquals(NonNegativeInteger.clamp(-1.1), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(-1.9), 0);
-  assertStrictEquals(NonNegativeInteger.clamp("1" as unknown as number), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(2), 2);
-  assertStrictEquals(NonNegativeInteger.clamp(-2), 0);
+Deno.test("NonNegativeInteger.from(number)", () => {
+  assertStrictEquals(NonNegativeInteger.from(), 0);
+  assertStrictEquals(NonNegativeInteger.from(0), 0);
+  assertStrictEquals(NonNegativeInteger.from(-0), 0);
+  assertStrictEquals(NonNegativeInteger.from(1), 1);
+  assertStrictEquals(NonNegativeInteger.from(-1), 0);
+  assertStrictEquals(NonNegativeInteger.from(1.1), 1);
+  assertStrictEquals(NonNegativeInteger.from(1.9), 2);
+  assertStrictEquals(NonNegativeInteger.from(-1.1), 0);
+  assertStrictEquals(NonNegativeInteger.from(-1.9), 0);
+  assertStrictEquals(NonNegativeInteger.from("1" as unknown as number), 0);
+  assertStrictEquals(NonNegativeInteger.from(2), 2);
+  assertStrictEquals(NonNegativeInteger.from(-2), 0);
 });
 
-Deno.test("NonNegativeInteger.clamp(number, {}) - method:round", () => {
+Deno.test("NonNegativeInteger.from(number, {}) - method:round", () => {
   const opt = { method: "round" } as const;
-  assertStrictEquals(NonNegativeInteger.clamp(undefined, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(0, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(-0, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(1, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(-1, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(1.1, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(1.9, opt), 2);
-  assertStrictEquals(NonNegativeInteger.clamp(-1.1, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(-1.9, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp("1" as unknown as number, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(2, opt), 2);
-  assertStrictEquals(NonNegativeInteger.clamp(-2, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(undefined, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(0, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(-0, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(1, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(-1, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(1.1, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(1.9, opt), 2);
+  assertStrictEquals(NonNegativeInteger.from(-1.1, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(-1.9, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from("1" as unknown as number, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(2, opt), 2);
+  assertStrictEquals(NonNegativeInteger.from(-2, opt), 0);
 });
 
-Deno.test("NonNegativeInteger.clamp(number, {}) - method:trunc", () => {
+Deno.test("NonNegativeInteger.from(number, {}) - method:trunc", () => {
   const opt = { method: "trunc" } as const;
-  assertStrictEquals(NonNegativeInteger.clamp(undefined, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(0, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(-0, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(1, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(-1, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(1.1, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(1.9, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(-1.1, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(-1.9, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp("1" as unknown as number, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(2, opt), 2);
-  assertStrictEquals(NonNegativeInteger.clamp(-2, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(undefined, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(0, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(-0, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(1, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(-1, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(1.1, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(1.9, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(-1.1, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(-1.9, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from("1" as unknown as number, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(2, opt), 2);
+  assertStrictEquals(NonNegativeInteger.from(-2, opt), 0);
 });
 
-Deno.test("NonNegativeInteger.clamp(number, {}) - fallback:9999", () => {
+Deno.test("NonNegativeInteger.from(number, {}) - fallback:9999", () => {
   const opt = { fallback: 9999 } as const;
-  assertStrictEquals(NonNegativeInteger.clamp(undefined, opt), 9999);
-  assertStrictEquals(NonNegativeInteger.clamp(0, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(-0, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(1, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(-1, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(1.1, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(1.9, opt), 2);
-  assertStrictEquals(NonNegativeInteger.clamp(-1.1, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(-1.9, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp("1" as unknown as number, opt), 9999);
-  assertStrictEquals(NonNegativeInteger.clamp(2, opt), 2);
-  assertStrictEquals(NonNegativeInteger.clamp(-2, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(undefined, opt), 9999);
+  assertStrictEquals(NonNegativeInteger.from(0, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(-0, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(1, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(-1, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(1.1, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(1.9, opt), 2);
+  assertStrictEquals(NonNegativeInteger.from(-1.1, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(-1.9, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from("1" as unknown as number, opt), 9999);
+  assertStrictEquals(NonNegativeInteger.from(2, opt), 2);
+  assertStrictEquals(NonNegativeInteger.from(-2, opt), 0);
 });
 
-Deno.test("NonNegativeInteger.clamp(number, {}) - lowerLimit:1", () => {
+Deno.test("NonNegativeInteger.from(number, {}) - lowerLimit:1", () => {
   const opt = { lowerLimit: 1 } as const;
-  assertStrictEquals(NonNegativeInteger.clamp(undefined, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(0, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(-0, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(1, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(-1, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(1.1, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(1.9, opt), 2);
-  assertStrictEquals(NonNegativeInteger.clamp(-1.1, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(-1.9, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp("1" as unknown as number, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(2, opt), 2);
-  assertStrictEquals(NonNegativeInteger.clamp(-2, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(undefined, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(0, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(-0, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(1, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(-1, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(1.1, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(1.9, opt), 2);
+  assertStrictEquals(NonNegativeInteger.from(-1.1, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(-1.9, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from("1" as unknown as number, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(2, opt), 2);
+  assertStrictEquals(NonNegativeInteger.from(-2, opt), 1);
 });
 
-Deno.test("NonNegativeInteger.clamp(number, {}) - upperLimit:1", () => {
+Deno.test("NonNegativeInteger.from(number, {}) - upperLimit:1", () => {
   const opt = { upperLimit: 1 } as const;
-  assertStrictEquals(NonNegativeInteger.clamp(undefined, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(0, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(-0, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(1, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(-1, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(1.1, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(1.9, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(-1.1, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(-1.9, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp("1" as unknown as number, opt), 0);
-  assertStrictEquals(NonNegativeInteger.clamp(2, opt), 1);
-  assertStrictEquals(NonNegativeInteger.clamp(-2, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(undefined, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(0, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(-0, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(1, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(-1, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(1.1, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(1.9, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(-1.1, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(-1.9, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from("1" as unknown as number, opt), 0);
+  assertStrictEquals(NonNegativeInteger.from(2, opt), 1);
+  assertStrictEquals(NonNegativeInteger.from(-2, opt), 0);
 });
