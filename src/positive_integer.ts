@@ -19,7 +19,7 @@ namespace PositiveInteger {
   }
 
   export function clamp(
-    source: number,
+    source?: number,
     options?: Integer.ClampOptions,
   ): PositiveInteger {
     const int = Integer.fromNumber(source, options);

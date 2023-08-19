@@ -56,7 +56,7 @@ namespace Integer {
       : NumberUtils.ZERO;
   }
 
-  export function clamp(source: number, options?: ClampOptions): Integer {
+  export function clamp(source?: number, options?: ClampOptions): Integer {
     const int = fromNumber(source, options);
 
     const min = fromNumber(options?.lowerLimit, {

@@ -21,7 +21,7 @@ namespace NonNegativeInteger {
   }
 
   export function clamp(
-    source: number,
+    source?: number,
     options?: Integer.ClampOptions,
   ): NonNegativeInteger {
     const int = Integer.fromNumber(source, options);

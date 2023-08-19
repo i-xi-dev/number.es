@@ -1,4 +1,4 @@
-import { assertStrictEquals, assertThrows } from "./deps.ts";
+import { assertStrictEquals } from "./deps.ts";
 import { NonNegativeInteger } from "../mod.ts";
 
 Deno.test("NonNegativeInteger.isNonNegativeInteger(number)", () => {
@@ -32,6 +32,7 @@ Deno.test("NonNegativeInteger.isNonNegativeInteger(any)", () => {
 });
 
 Deno.test("NonNegativeInteger.clamp(number)", () => {
+  assertStrictEquals(NonNegativeInteger.clamp(), 0);
   assertStrictEquals(NonNegativeInteger.clamp(0), 0);
   assertStrictEquals(NonNegativeInteger.clamp(-0), 0);
   assertStrictEquals(NonNegativeInteger.clamp(1), 1);
@@ -47,6 +48,7 @@ Deno.test("NonNegativeInteger.clamp(number)", () => {
 
 Deno.test("NonNegativeInteger.clamp(number, {}) - method:round", () => {
   const opt = { method: "round" } as const;
+  assertStrictEquals(NonNegativeInteger.clamp(undefined, opt), 0);
   assertStrictEquals(NonNegativeInteger.clamp(0, opt), 0);
   assertStrictEquals(NonNegativeInteger.clamp(-0, opt), 0);
   assertStrictEquals(NonNegativeInteger.clamp(1, opt), 1);
@@ -62,6 +64,7 @@ Deno.test("NonNegativeInteger.clamp(number, {}) - method:round", () => {
 
 Deno.test("NonNegativeInteger.clamp(number, {}) - method:trunc", () => {
   const opt = { method: "trunc" } as const;
+  assertStrictEquals(NonNegativeInteger.clamp(undefined, opt), 0);
   assertStrictEquals(NonNegativeInteger.clamp(0, opt), 0);
   assertStrictEquals(NonNegativeInteger.clamp(-0, opt), 0);
   assertStrictEquals(NonNegativeInteger.clamp(1, opt), 1);
@@ -77,6 +80,7 @@ Deno.test("NonNegativeInteger.clamp(number, {}) - method:trunc", () => {
 
 Deno.test("NonNegativeInteger.clamp(number, {}) - fallback:9999", () => {
   const opt = { fallback: 9999 } as const;
+  assertStrictEquals(NonNegativeInteger.clamp(undefined, opt), 9999);
   assertStrictEquals(NonNegativeInteger.clamp(0, opt), 0);
   assertStrictEquals(NonNegativeInteger.clamp(-0, opt), 0);
   assertStrictEquals(NonNegativeInteger.clamp(1, opt), 1);
@@ -92,6 +96,7 @@ Deno.test("NonNegativeInteger.clamp(number, {}) - fallback:9999", () => {
 
 Deno.test("NonNegativeInteger.clamp(number, {}) - lowerLimit:1", () => {
   const opt = { lowerLimit: 1 } as const;
+  assertStrictEquals(NonNegativeInteger.clamp(undefined, opt), 1);
   assertStrictEquals(NonNegativeInteger.clamp(0, opt), 1);
   assertStrictEquals(NonNegativeInteger.clamp(-0, opt), 1);
   assertStrictEquals(NonNegativeInteger.clamp(1, opt), 1);
@@ -107,6 +112,7 @@ Deno.test("NonNegativeInteger.clamp(number, {}) - lowerLimit:1", () => {
 
 Deno.test("NonNegativeInteger.clamp(number, {}) - upperLimit:1", () => {
   const opt = { upperLimit: 1 } as const;
+  assertStrictEquals(NonNegativeInteger.clamp(undefined, opt), 0);
   assertStrictEquals(NonNegativeInteger.clamp(0, opt), 0);
   assertStrictEquals(NonNegativeInteger.clamp(-0, opt), 0);
   assertStrictEquals(NonNegativeInteger.clamp(1, opt), 1);

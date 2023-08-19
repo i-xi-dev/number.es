@@ -288,7 +288,7 @@ namespace Uint8 {
     return false;
   }
 
-  export function clamp(source: number, options?: Integer.ClampOptions): Uint8 {
+  export function clamp(source?: number, options?: Integer.ClampOptions): Uint8 {
     const int = Integer.fromNumber(source, options);
 
     const min = Integer.fromNumber(options?.lowerLimit, {

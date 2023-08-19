@@ -80,6 +80,7 @@ Deno.test("Integer.toString(any)", () => {
 });
 
 Deno.test("Integer.fromNumber(number)", () => {
+  assertStrictEquals(Integer.fromNumber(), 0);
   assertStrictEquals(Integer.fromNumber(0), 0);
   assertStrictEquals(Integer.fromNumber(-0), 0);
   assertStrictEquals(Integer.fromNumber(1), 1);
@@ -96,6 +97,7 @@ Deno.test("Integer.fromNumber(number)", () => {
 
 Deno.test("Integer.fromNumber(number, {}) - method:round", () => {
   const opt = { method: "round" } as const;
+  assertStrictEquals(Integer.fromNumber(undefined, opt), 0);
   assertStrictEquals(Integer.fromNumber(0, opt), 0);
   assertStrictEquals(Integer.fromNumber(-0, opt), 0);
   assertStrictEquals(Integer.fromNumber(1, opt), 1);
@@ -112,6 +114,7 @@ Deno.test("Integer.fromNumber(number, {}) - method:round", () => {
 
 Deno.test("Integer.fromNumber(number, {}) - method:trunc", () => {
   const opt = { method: "trunc" } as const;
+  assertStrictEquals(Integer.fromNumber(undefined, opt), 0);
   assertStrictEquals(Integer.fromNumber(0, opt), 0);
   assertStrictEquals(Integer.fromNumber(-0, opt), 0);
   assertStrictEquals(Integer.fromNumber(1, opt), 1);
@@ -128,6 +131,7 @@ Deno.test("Integer.fromNumber(number, {}) - method:trunc", () => {
 
 Deno.test("Integer.fromNumber(number, {}) - fallback:9999", () => {
   const opt = { fallback: 9999 } as const;
+  assertStrictEquals(Integer.fromNumber(undefined, opt), 9999);
   assertStrictEquals(Integer.fromNumber(0, opt), 0);
   assertStrictEquals(Integer.fromNumber(-0, opt), 0);
   assertStrictEquals(Integer.fromNumber(1, opt), 1);
@@ -143,6 +147,7 @@ Deno.test("Integer.fromNumber(number, {}) - fallback:9999", () => {
 });
 
 Deno.test("Integer.clamp(number)", () => {
+  assertStrictEquals(Integer.clamp(), 0);
   assertStrictEquals(Integer.clamp(0), 0);
   assertStrictEquals(Integer.clamp(-0), 0);
   assertStrictEquals(Integer.clamp(1), 1);
@@ -158,6 +163,7 @@ Deno.test("Integer.clamp(number)", () => {
 
 Deno.test("Integer.clamp(number, {}) - method:round", () => {
   const opt = { method: "round" } as const;
+  assertStrictEquals(Integer.clamp(undefined, opt), 0);
   assertStrictEquals(Integer.clamp(0, opt), 0);
   assertStrictEquals(Integer.clamp(-0, opt), 0);
   assertStrictEquals(Integer.clamp(1, opt), 1);
@@ -173,6 +179,7 @@ Deno.test("Integer.clamp(number, {}) - method:round", () => {
 
 Deno.test("Integer.clamp(number, {}) - method:trunc", () => {
   const opt = { method: "trunc" } as const;
+  assertStrictEquals(Integer.clamp(undefined, opt), 0);
   assertStrictEquals(Integer.clamp(0, opt), 0);
   assertStrictEquals(Integer.clamp(-0, opt), 0);
   assertStrictEquals(Integer.clamp(1, opt), 1);
@@ -188,6 +195,7 @@ Deno.test("Integer.clamp(number, {}) - method:trunc", () => {
 
 Deno.test("Integer.clamp(number, {}) - fallback:9999", () => {
   const opt = { fallback: 9999 } as const;
+  assertStrictEquals(Integer.clamp(undefined, opt), 9999);
   assertStrictEquals(Integer.clamp(0, opt), 0);
   assertStrictEquals(Integer.clamp(-0, opt), 0);
   assertStrictEquals(Integer.clamp(1, opt), 1);
@@ -203,6 +211,7 @@ Deno.test("Integer.clamp(number, {}) - fallback:9999", () => {
 
 Deno.test("Integer.clamp(number, {}) - lowerLimit:1", () => {
   const opt = { lowerLimit: 1 } as const;
+  assertStrictEquals(Integer.clamp(undefined, opt), 1);
   assertStrictEquals(Integer.clamp(0, opt), 1);
   assertStrictEquals(Integer.clamp(-0, opt), 1);
   assertStrictEquals(Integer.clamp(1, opt), 1);
@@ -218,6 +227,7 @@ Deno.test("Integer.clamp(number, {}) - lowerLimit:1", () => {
 
 Deno.test("Integer.clamp(number, {}) - upperLimit:1", () => {
   const opt = { upperLimit: 1 } as const;
+  assertStrictEquals(Integer.clamp(undefined, opt), 0);
   assertStrictEquals(Integer.clamp(0, opt), 0);
   assertStrictEquals(Integer.clamp(-0, opt), 0);
   assertStrictEquals(Integer.clamp(1, opt), 1);
