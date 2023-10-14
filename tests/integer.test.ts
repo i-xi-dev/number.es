@@ -16,8 +16,9 @@ Deno.test("Integer.isInteger(number)", () => {
 
 Deno.test("Integer.fromString(string)", () => {
   assertStrictEquals(Integer.fromString("1"), 1);
+  assertStrictEquals(Integer.fromString("+1"), 1);
   assertStrictEquals(Integer.fromString("0"), 0);
-  assertStrictEquals(Integer.fromString("-0"), -0);
+  assertStrictEquals(Integer.fromString("-0"), 0);
   assertStrictEquals(Integer.fromString("-1"), -1);
 
   assertThrows(

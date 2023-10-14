@@ -4,6 +4,11 @@ type Integer = number;
 
 const _RADIX_DECIMAL = 10;
 
+function _parseInt(s: string): Integer {
+  const i = Number.parseInt(s, _RADIX_DECIMAL);
+  return (i === 0) ? 0 : i;
+}
+
 namespace Integer {
   export function isInteger(test: unknown): test is Integer {
     return (typeof test === "number") && Number.isSafeInteger(test);
@@ -11,9 +16,9 @@ namespace Integer {
 
   export function fromString(source: string): Integer {
     if (
-      (typeof source === "string") && /^-?(?:[0-9]|[1-9][0-9]+)$/.test(source)
+      (typeof source === "string") && /^[\-+]?(?:[0-9]|[1-9][0-9]+)$/.test(source)
     ) {
-      return Number.parseInt(source, _RADIX_DECIMAL);
+      return _parseInt(source);
     }
     throw new TypeError("source");
   }
