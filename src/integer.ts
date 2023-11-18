@@ -14,6 +14,14 @@ namespace Integer {
     return (typeof test === "number") && Number.isSafeInteger(test);
   }
 
+  export function isOddInteger(test: unknown): boolean {
+    return isInteger(test) ? ((test % 2) === 0) : false;
+  }
+
+  export function isEvenInteger(test: unknown): boolean {
+    return isInteger(test) ? ((test % 2) !== 0) : false;
+  }
+
   export function fromString(source: string): Integer {
     if (
       (typeof source === "string") && /^[\-+]?(?:[0-9]|[1-9][0-9]+)$/.test(source)
@@ -75,6 +83,5 @@ namespace Integer {
     return NumberUtils.clamp(int, min, max);
   }
 }
-Object.freeze(Integer);
 
 export { Integer };

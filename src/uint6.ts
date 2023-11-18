@@ -96,6 +96,5 @@ namespace Uint6 {
     return false;
   }
 }
-Object.freeze(Uint6);
 
 export { Uint6 };

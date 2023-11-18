@@ -302,6 +302,5 @@ namespace Uint8 {
     return Math.max(min, Math.min(max, int)) as Uint8;
   }
 }
-Object.freeze(Uint8);
 
 export { Uint8 };
