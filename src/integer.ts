@@ -225,6 +225,17 @@ namespace Integer {
     return cn(rounded);
   }
 
+  export function fromBigInt(source: bigint, options?: FromOptions): Integer {
+    if (typeof source !== "bigint") {
+      throw new TypeError("source");
+    }
+    if ((Number.MIN_SAFE_INTEGER > source) || (Number.MAX_SAFE_INTEGER < source)) {
+      throw new RangeError("source");
+    }
+    // ignore options.roundingMode, options.strict
+    return fromNumber(Number(source), options);
+  }
+
   //export function fromString(source: string, options?: FromOptions): Integer {
 
 
