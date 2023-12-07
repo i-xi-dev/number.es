@@ -76,7 +76,7 @@ Deno.test("NumberUtils.inRange()", () => {
   );
 });
 
-Deno.test("NumberUtils.clamp", () => {
+Deno.test("NumberUtils.clamp()", () => {
   assertStrictEquals(NumberUtils.clamp(0, 0, 0), 0);
   assertStrictEquals(NumberUtils.clamp(-0, 0, 0), 0);
   assertStrictEquals(NumberUtils.clamp(1, 0, 0), 0);
