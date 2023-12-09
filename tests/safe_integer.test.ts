@@ -1121,56 +1121,69 @@ Deno.test("SafeInteger.fromBigInt(number)", () => {
   );
 });
 
+Deno.test("SafeInteger.fromString(string)", () => {
+  assertStrictEquals(SafeInteger.fromString("1"), 1);
+  assertStrictEquals(SafeInteger.fromString("+1"), 1);
+  assertStrictEquals(SafeInteger.fromString("0"), 0);
+  assertStrictEquals(SafeInteger.fromString("-0"), 0);
+  assertStrictEquals(SafeInteger.fromString("-1"), -1);
 
+  assertStrictEquals(SafeInteger.fromString(""), 0);
+  assertStrictEquals(SafeInteger.fromString("1.0"), 1);
+  assertStrictEquals(SafeInteger.fromString("1.9"), 1);
 
+  assertThrows(
+    () => {
+      SafeInteger.fromString("-");
+    },
+    RangeError,
+    "source",
+  );
+});
 
+Deno.test("SafeInteger.fromString(any)", () => {
+  assertThrows(
+    () => {
+      SafeInteger.fromString(1 as unknown as string);
+    },
+    TypeError,
+    "source",
+  );
+});
 
+Deno.test("SafeInteger.fromString(string, {})", () => {
+  const op = { strict: true } as const;
 
+  assertStrictEquals(SafeInteger.fromString("1", op), 1);
+  assertStrictEquals(SafeInteger.fromString("+1", op), 1);
+  assertStrictEquals(SafeInteger.fromString("0", op), 0);
+  assertStrictEquals(SafeInteger.fromString("-0", op), 0);
+  assertStrictEquals(SafeInteger.fromString("-1", op), -1);
 
+  assertThrows(
+    () => {
+      SafeInteger.fromString("", op);
+    },
+    RangeError,
+    "source",
+  );
+  assertStrictEquals(SafeInteger.fromString("1.0", op), 1);
+  assertThrows(
+    () => {
+      SafeInteger.fromString("1.9", op);
+    },
+    RangeError,
+    "source",
+  );
 
-
-
-
-
-// Deno.test("SafeInteger.fromString(string)", () => {
-//   assertStrictEquals(SafeInteger.fromString("1"), 1);
-//   assertStrictEquals(SafeInteger.fromString("+1"), 1);
-//   assertStrictEquals(SafeInteger.fromString("0"), 0);
-//   assertStrictEquals(SafeInteger.fromString("-0"), 0);
-//   assertStrictEquals(SafeInteger.fromString("-1"), -1);
-
-//   assertThrows(
-//     () => {
-//       SafeInteger.fromString("");
-//     },
-//     TypeError,
-//     "s",
-//   );
-//   assertThrows(
-//     () => {
-//       SafeInteger.fromString("-");
-//     },
-//     TypeError,
-//     "s",
-//   );
-//   assertThrows(
-//     () => {
-//       SafeInteger.fromString("1.0");
-//     },
-//     TypeError,
-//     "s",
-//   );
-// });
-
-// Deno.test("SafeInteger.fromString(any)", () => {
-//   assertThrows(
-//     () => {
-//       SafeInteger.fromString(1 as unknown as string);
-//     },
-//     TypeError,
-//     "s",
-//   );
-// });
+  assertThrows(
+    () => {
+      SafeInteger.fromString("-", op);
+    },
+    RangeError,
+    "source",
+  );
+});
 
 Deno.test("SafeInteger.toBigInt(number)", () => {
   assertStrictEquals(SafeInteger.toBigInt(1.0), 1n);

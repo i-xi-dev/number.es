@@ -262,24 +262,34 @@ namespace SafeInteger {
     return fromNumber(Number(source), options);
   }
 
-  //export function fromString(source: string, options?: FromOptions): SafeInteger {
+  export function fromString(
+    source: string,
+    options?: FromOptions,
+  ): SafeInteger {
+    if ((source === undefined) || (source === null)) {
+      return fromNumber(Number.NaN, options);
+    }
 
-  // if ((typeof source === "string") || (source === undefined) || (source === null)) {
-  //   if (source) {
-  //     if (/^[\-+]?(?:[0-9]|[1-9][0-9]+)(?:.[0-9]+)?$/.test(source)) {
-  //       //XXX ".1"(0.1)も受け付けるか？
-  //       return fromNumber(Number.parseFloat(source), options);
-  //     }
-  //   }
+    if (typeof source !== "string") {
+      throw new TypeError("source");
+    }
 
-  //   if (Number.isSafeInteger(options?.fallback) !== true) {
-  //     return 0;
-  //   }
-  // }
-  // return fromNumber(Number.NaN, options);
-  //}
+    if ((source === "") && (options?.strict !== true)) {
+      return fromNumber(Number.NaN, options);
+    } else if (/^[\-+]?(?:[0-9]|[1-9][0-9]+)(?:.[0-9]+)?$/.test(source)) {
+      return fromNumber(Number.parseFloat(source), options); //XXX ".1"(0.1)も受け付けるか？
+    }
+    throw new RangeError("source");
+  }
 
   //XXX export function from()
+
+  export function toBigInt(source: SafeInteger): bigint {
+    if (Number.isSafeInteger(source)) {
+      return BigInt(source);
+    }
+    throw new TypeError("source");
+  }
 
   export function toString(source: SafeInteger): string {
     if (Number.isSafeInteger(source)) {
@@ -290,14 +300,6 @@ namespace SafeInteger {
     }
     throw new TypeError("source");
   }
-
-  export function toBigInt(source: SafeInteger): bigint {
-    if (Number.isSafeInteger(source)) {
-      return BigInt(source);
-    }
-    throw new TypeError("source");
-  }
-
 }
 
 export { SafeInteger };
