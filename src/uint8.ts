@@ -1,4 +1,4 @@
-import { Integer } from "./integer.ts";
+import { SafeInteger } from "./safe_integer.ts";
 
 /**
  * The type of 8-bit unsigned integer.
@@ -282,24 +282,24 @@ namespace Uint8 {
    * @returns Whether the passed value is an 8-bit unsigned integer.
    */
   export function isUint8(value: unknown): value is Uint8 {
-    if (Integer.isInteger(value)) {
-      return (value >= MIN_VALUE) && (value <= MAX_VALUE);
-    }
-    return false;
+    return SafeInteger.isNonNegative(value) && ((value as number) <= MAX_VALUE);
   }
 
-  export function clamp(source?: number, options?: Integer.ClampOptions): Uint8 {
-    const int = Integer.fromNumber(source, options);
+  export type FromOptions = {
+    fallback?: Uint8;
+    roundingMode?: SafeInteger.RoundingMode;
+    strict?: boolean; // doNotTreatFalsyAsZero & acceptsOnlyUint8s
+  };
 
-    const min = Integer.fromNumber(options?.lowerLimit, {
-      fallback: MIN_VALUE,
-      method: "trunc",
-    });
-    const max = Integer.fromNumber(options?.upperLimit, {
-      fallback: MAX_VALUE,
-      method: "trunc",
-    });
-    return Math.max(min, Math.min(max, int)) as Uint8;
+  export function fromNumber(source: number, options?: FromOptions): Uint8 {
+    const fallbackIsUint8 = isUint8(options?.fallback);
+    if ((options?.fallback !== undefined) && (fallbackIsUint8 !== true)) {
+      throw new TypeError("options.fallback");
+    }
+    return SafeInteger.fromNumber(source, Object.assign({
+      lowerLimit: MIN_VALUE,
+      upperLimit: MAX_VALUE, 
+    }, options)) as Uint8;
   }
 }
 
