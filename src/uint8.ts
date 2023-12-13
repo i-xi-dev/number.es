@@ -292,14 +292,35 @@ namespace Uint8 {
   };
 
   export function fromNumber(source: number, options?: FromOptions): Uint8 {
-    const fallbackIsUint8 = isUint8(options?.fallback);
-    if ((options?.fallback !== undefined) && (fallbackIsUint8 !== true)) {
+    if (
+      (options?.fallback !== undefined) && (isUint8(options?.fallback) !== true)
+    ) {
       throw new TypeError("options.fallback");
     }
-    return SafeInteger.fromNumber(source, Object.assign({
-      lowerLimit: MIN_VALUE,
-      upperLimit: MAX_VALUE, 
-    }, options)) as Uint8;
+
+    return SafeInteger.fromNumber(
+      source,
+      Object.assign({
+        lowerLimit: MIN_VALUE,
+        upperLimit: MAX_VALUE,
+      }, options),
+    ) as Uint8;
+  }
+
+  export function fromBigInt(source: bigint, options?: FromOptions): Uint8 {
+    if (
+      (options?.fallback !== undefined) && (isUint8(options?.fallback) !== true)
+    ) {
+      throw new TypeError("options.fallback");
+    }
+
+    return SafeInteger.fromBigInt(
+      source,
+      Object.assign({
+        lowerLimit: MIN_VALUE,
+        upperLimit: MAX_VALUE,
+      }, options),
+    ) as Uint8;
   }
 }
 

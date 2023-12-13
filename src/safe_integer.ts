@@ -178,61 +178,106 @@ namespace SafeInteger {
     strict?: boolean; // doNotTreatFalsyAsZero & acceptsOnlyIntegers
   };
 
+  function _isNullableSafeInteger(
+    test: unknown,
+  ): { isSafeInteger: boolean; isNull: boolean } {
+    return {
+      isSafeInteger: Number.isSafeInteger(test),
+      isNull: (test === undefined) || (test === null),
+    };
+  }
+
+  function _normalizeRange(
+    lowerLimit?: number,
+    upperLimit?: number,
+  ): { lowerLimit: SafeInteger; upperLimit: SafeInteger } {
+    const { isSafeInteger: lowerLimitIsInteger, isNull: lowerLimitIsNull } =
+      _isNullableSafeInteger(lowerLimit);
+    if ((lowerLimitIsNull !== true) && (lowerLimitIsInteger !== true)) {
+      throw new TypeError("lowerLimit");
+    }
+    const { isSafeInteger: upperLimitIsInteger, isNull: upperLimitIsNull } =
+      _isNullableSafeInteger(upperLimit);
+    if ((upperLimitIsNull !== true) && (upperLimitIsInteger !== true)) {
+      throw new TypeError("upperLimit");
+    }
+    const normalizedLowerLimit = lowerLimitIsInteger
+      ? _normalize(lowerLimit as SafeInteger)
+      : Number.MIN_SAFE_INTEGER;
+    const normalizedUpperLimit = upperLimitIsInteger
+      ? _normalize(upperLimit as SafeInteger)
+      : Number.MAX_SAFE_INTEGER;
+    return {
+      lowerLimit: normalizedLowerLimit,
+      upperLimit: normalizedUpperLimit,
+    };
+  }
+
+  /*
+                        | null      |     |     |     |     |       |       |
+                        | undefined | NaN | ""  | +∞  | -∞  | > MAX | < MIN |
+    --------------------|-----------|-----|-----|-----|-----|-------|-------|
+    fromNumber(strict)  | eX        | eX  | N/A | eX  | eX  | eX    | eX    |
+    fromNumber(!strict) | 0         | 0   | N/A | MAX | MIN | MAX   | MIN   |
+    fromBigInt(strict)  | eX        | N/A | N/A | N/A | N/A | eX    | eX    |
+    fromBigInt(!strict) | 0         | N/A | N/A | N/A | N/A | MAX   | MIN   |
+    fromString(strict)  | eX        | N/A | eX  | N/A | N/A | eX    | eX    |
+    fromString(!strict) | 0         | N/A | 0   | N/A | N/A | MAX   | MIN   |
+  */
+
   export function fromNumber(
     source: number,
     options?: FromOptions,
   ): SafeInteger {
-    const lowerLimitIsInteger = Number.isSafeInteger(options?.lowerLimit);
-    if ((options?.lowerLimit !== undefined) && (lowerLimitIsInteger !== true)) {
-      throw new TypeError("options.lowerLimit");
-    }
-    const upperLimitIsInteger = Number.isSafeInteger(options?.upperLimit);
-    if ((options?.upperLimit !== undefined) && (upperLimitIsInteger !== true)) {
-      throw new TypeError("options.upperLimit");
-    }
-    const normalizedLowerLimit = lowerLimitIsInteger
-      ? _normalize(options?.lowerLimit as SafeInteger)
-      : Number.MIN_SAFE_INTEGER;
-    const normalizedUpperLimit = upperLimitIsInteger
-      ? _normalize(options?.upperLimit as SafeInteger)
-      : Number.MAX_SAFE_INTEGER;
-
+    const { lowerLimit, upperLimit } = _normalizeRange(
+      options?.lowerLimit,
+      options?.upperLimit,
+    );
     const cn = (i: SafeInteger): SafeInteger => {
-      return NumberUtils.clamp(
-        _normalize(i),
-        normalizedLowerLimit,
-        normalizedUpperLimit,
-      );
+      return NumberUtils.clamp(_normalize(i), lowerLimit, upperLimit);
     };
 
-    const fallbackIsInteger = Number.isSafeInteger(options?.fallback);
-    if ((options?.fallback !== undefined) && (fallbackIsInteger !== true)) {
+    const { isSafeInteger: fallbackIsInteger, isNull: fallbackIsNull } =
+      _isNullableSafeInteger(options?.fallback);
+    if ((fallbackIsNull !== true) && (fallbackIsInteger !== true)) {
       throw new TypeError("options.fallback");
     }
+
     const normalizedFallback = fallbackIsInteger
       ? cn(options?.fallback as SafeInteger)
-      : null;
+      : 0;
 
-    if (Number.isSafeInteger(source)) {
-      return cn(source);
-    }
-
+    let adjusted = source;
     if (options?.strict === true) {
-      throw new RangeError("source");
+      if (typeof source !== "number") {
+        throw new TypeError("source");
+      }
+      if (Number.isSafeInteger(source) !== true) {
+        throw new RangeError("source");
+      }
     } else {
-      if (!source) {
-        if (normalizedFallback) {
-          return normalizedFallback;
+      if (Number.isFinite(source)) {
+        if (source > Number.MAX_SAFE_INTEGER) {
+          adjusted = Number.MAX_SAFE_INTEGER;
+        } else if (source < Number.MIN_SAFE_INTEGER) {
+          adjusted = Number.MIN_SAFE_INTEGER;
         }
-        return 0;
+      } else {
+        if ((typeof source !== "number") && (source !== null) && (source !== undefined)) {
+          throw new TypeError("source");
+        }
+        else if (source === Number.POSITIVE_INFINITY) {
+          adjusted = Number.MAX_SAFE_INTEGER;
+        } else if (source === Number.NEGATIVE_INFINITY) {
+          adjusted = Number.MIN_SAFE_INTEGER;
+        } else {
+          adjusted = normalizedFallback;
+        }
       }
     }
 
-    if (Number.isFinite(source) !== true) {
-      if (normalizedFallback) {
-        return normalizedFallback;
-      }
-      throw new TypeError("source");
+    if (Number.isSafeInteger(adjusted)) {
+      return cn(adjusted);
     }
 
     let roundingMode = RoundingMode.TRUNCATE;
@@ -242,7 +287,7 @@ namespace SafeInteger {
     ) {
       roundingMode = options.roundingMode;
     }
-    const rounded = round(source, roundingMode);
+    const rounded = round(adjusted, roundingMode);
     return cn(rounded);
   }
 
@@ -250,37 +295,33 @@ namespace SafeInteger {
     source: bigint,
     options?: FromOptions,
   ): SafeInteger {
-    if (typeof source !== "bigint") {
+    if ((typeof source !== "bigint") && (source !== null) && (source !== undefined)) {
       throw new TypeError("source");
     }
-    if (
-      (Number.MIN_SAFE_INTEGER > source) || (Number.MAX_SAFE_INTEGER < source)
-    ) {
-      throw new RangeError("source");
-    }
-    // ignore options.roundingMode, options.strict
+
+    // ignore options.roundingMode
     return fromNumber(Number(source), options);
   }
 
-  export function fromString(
-    source: string,
-    options?: FromOptions,
-  ): SafeInteger {
-    if ((source === undefined) || (source === null)) {
-      return fromNumber(Number.NaN, options);
-    }
+  // export function fromString(
+  //   source: string,
+  //   options?: FromOptions,
+  // ): SafeInteger {
+  //   if ((source === undefined) || (source === null)) {
+  //     return fromNumber(Number.NaN, options);
+  //   }
 
-    if (typeof source !== "string") {
-      throw new TypeError("source");
-    }
+  //   if (typeof source !== "string") {
+  //     throw new TypeError("source");
+  //   }
 
-    if ((source === "") && (options?.strict !== true)) {
-      return fromNumber(Number.NaN, options);
-    } else if (/^[\-+]?(?:[0-9]|[1-9][0-9]+)(?:.[0-9]+)?$/.test(source)) {
-      return fromNumber(Number.parseFloat(source), options); //XXX ".1"(0.1)も受け付けるか？
-    }
-    throw new RangeError("source");
-  }
+  //   if ((source === "") && (options?.strict !== true)) {
+  //     return fromNumber(Number.NaN, options);
+  //   } else if (/^[\-+]?(?:[0-9]|[1-9][0-9]+)(?:.[0-9]+)?$/.test(source)) {
+  //     return fromNumber(Number.parseFloat(source), options); //XXX ".1"(0.1)も受け付けるか？
+  //   }
+  //   throw new RangeError("source");
+  // }
 
   //XXX export function from()
 

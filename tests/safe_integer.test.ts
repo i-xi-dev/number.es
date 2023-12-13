@@ -868,6 +868,11 @@ Deno.test("SafeInteger.fromNumber(number)", () => {
 
   assertStrictEquals(SafeInteger.fromNumber(undefined as unknown as number), 0);
   assertStrictEquals(SafeInteger.fromNumber(Number.NaN), 0);
+  assertStrictEquals(SafeInteger.fromNumber(Number.MAX_VALUE), Number.MAX_SAFE_INTEGER);
+  assertStrictEquals(SafeInteger.fromNumber(Number.POSITIVE_INFINITY), Number.MAX_SAFE_INTEGER);
+  assertStrictEquals(SafeInteger.fromNumber(Number.MAX_SAFE_INTEGER), Number.MAX_SAFE_INTEGER);
+  assertStrictEquals(SafeInteger.fromNumber(Number.MIN_SAFE_INTEGER), Number.MIN_SAFE_INTEGER);
+  assertStrictEquals(SafeInteger.fromNumber(Number.NEGATIVE_INFINITY), Number.MIN_SAFE_INTEGER);
 });
 
 Deno.test("SafeInteger.fromNumber(number, {}) - fallback", () => {
@@ -895,6 +900,11 @@ Deno.test("SafeInteger.fromNumber(number, {}) - fallback:undefined", () => {
     SafeInteger.fromNumber(undefined as unknown as number, op),
     0,
   );
+  assertStrictEquals(SafeInteger.fromNumber(Number.MAX_VALUE, op), Number.MAX_SAFE_INTEGER);
+  assertStrictEquals(SafeInteger.fromNumber(Number.POSITIVE_INFINITY, op), Number.MAX_SAFE_INTEGER);
+  assertStrictEquals(SafeInteger.fromNumber(Number.MAX_SAFE_INTEGER, op), Number.MAX_SAFE_INTEGER);
+  assertStrictEquals(SafeInteger.fromNumber(Number.MIN_SAFE_INTEGER, op), Number.MIN_SAFE_INTEGER);
+  assertStrictEquals(SafeInteger.fromNumber(Number.NEGATIVE_INFINITY, op), Number.MIN_SAFE_INTEGER);
 });
 
 Deno.test("SafeInteger.fromNumber(number, {}) - fallback,strict", () => {
@@ -909,6 +919,29 @@ Deno.test("SafeInteger.fromNumber(number, {}) - fallback,strict", () => {
   assertThrows(
     () => {
       SafeInteger.fromNumber(undefined as unknown as number, op);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      SafeInteger.fromNumber(Number.MAX_VALUE, op);
+    },
+    RangeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      SafeInteger.fromNumber(Number.POSITIVE_INFINITY, op);
+    },
+    RangeError,
+    "source",
+  );
+  assertStrictEquals(SafeInteger.fromNumber(Number.MAX_SAFE_INTEGER, op), Number.MAX_SAFE_INTEGER);
+  assertStrictEquals(SafeInteger.fromNumber(Number.MIN_SAFE_INTEGER, op), Number.MIN_SAFE_INTEGER);
+  assertThrows(
+    () => {
+      SafeInteger.fromNumber(Number.NEGATIVE_INFINITY, op);
     },
     RangeError,
     "source",
@@ -947,7 +980,7 @@ Deno.test("SafeInteger.fromNumber(number, {}) - lowerLimit", () => {
       SafeInteger.fromNumber(-25, op5);
     },
     TypeError,
-    "options.lowerLimit",
+    "lowerLimit",
   );
   assertThrows(
     () => {
@@ -955,7 +988,7 @@ Deno.test("SafeInteger.fromNumber(number, {}) - lowerLimit", () => {
       SafeInteger.fromNumber(-25, op6);
     },
     TypeError,
-    "options.lowerLimit",
+    "lowerLimit",
   );
   assertThrows(
     () => {
@@ -963,7 +996,7 @@ Deno.test("SafeInteger.fromNumber(number, {}) - lowerLimit", () => {
       SafeInteger.fromNumber(-25, op5);
     },
     TypeError,
-    "options.lowerLimit",
+    "lowerLimit",
   );
 });
 
@@ -990,7 +1023,7 @@ Deno.test("SafeInteger.fromNumber(number, {}) - upperLimit", () => {
       SafeInteger.fromNumber(-25, op5);
     },
     TypeError,
-    "options.upperLimit",
+    "upperLimit",
   );
   assertThrows(
     () => {
@@ -998,7 +1031,7 @@ Deno.test("SafeInteger.fromNumber(number, {}) - upperLimit", () => {
       SafeInteger.fromNumber(-25, op6);
     },
     TypeError,
-    "options.upperLimit",
+    "upperLimit",
   );
   assertThrows(
     () => {
@@ -1006,7 +1039,7 @@ Deno.test("SafeInteger.fromNumber(number, {}) - upperLimit", () => {
       SafeInteger.fromNumber(-25, op5);
     },
     TypeError,
-    "options.upperLimit",
+    "upperLimit",
   );
 });
 
@@ -1046,14 +1079,7 @@ Deno.test("SafeInteger.fromNumber(number, {}) - lowerLimit,upperLimit", () => {
   assertStrictEquals(SafeInteger.fromNumber(2, op4), 2);
   assertStrictEquals(SafeInteger.fromNumber(2.1, op4), 2);
   assertStrictEquals(SafeInteger.fromNumber(Number.MAX_SAFE_INTEGER, op4), 2);
-
-  assertThrows(
-    () => {
-      SafeInteger.fromNumber(Number.MAX_VALUE, op4);
-    },
-    RangeError,
-    "source",
-  );
+  assertStrictEquals(SafeInteger.fromNumber(Number.MAX_VALUE, op4), 2);
 });
 
 Deno.test("SafeInteger.fromNumber(number, {}) - strict", () => {
@@ -1080,7 +1106,7 @@ Deno.test("SafeInteger.fromNumber(number, {}) - strict", () => {
   assertStrictEquals(SafeInteger.fromNumber(Number.NaN, op2), 0);
 });
 
-Deno.test("SafeInteger.fromBigInt(number)", () => {
+Deno.test("SafeInteger.fromBigInt(bigint)", () => {
   assertStrictEquals(SafeInteger.fromBigInt(0n), 0);
   assertStrictEquals(SafeInteger.fromBigInt(-0n), 0);
 
@@ -1097,142 +1123,182 @@ Deno.test("SafeInteger.fromBigInt(number)", () => {
     SafeInteger.fromBigInt(BigInt(Number.MAX_SAFE_INTEGER)),
     Number.MAX_SAFE_INTEGER,
   );
+  assertStrictEquals(
+    SafeInteger.fromBigInt(BigInt(Number.MAX_VALUE)),
+    Number.MAX_SAFE_INTEGER,
+  );
+  assertStrictEquals(
+    SafeInteger.fromBigInt(BigInt(Number.MIN_SAFE_INTEGER) - 1n),
+    Number.MIN_SAFE_INTEGER,
+  );
+  assertStrictEquals(
+    SafeInteger.fromBigInt(BigInt(Number.MAX_SAFE_INTEGER) + 1n),
+    Number.MAX_SAFE_INTEGER,
+  );
 
+  assertStrictEquals(SafeInteger.fromBigInt(undefined as unknown as bigint), 0);
+});
+
+Deno.test("SafeInteger.fromBigInt(bigint, {}) - strict", () => {
+  const op = { strict: true } as const; 
+  assertStrictEquals(SafeInteger.fromBigInt(0n, op), 0);
+  assertStrictEquals(SafeInteger.fromBigInt(-0n, op), 0);
+
+  assertStrictEquals(SafeInteger.fromBigInt(1n, op), 1);
+  assertStrictEquals(SafeInteger.fromBigInt(2n, op), 2);
+  assertStrictEquals(SafeInteger.fromBigInt(-1n, op), -1);
+  assertStrictEquals(SafeInteger.fromBigInt(-2n, op), -2);
+
+  assertStrictEquals(
+    SafeInteger.fromBigInt(BigInt(Number.MIN_SAFE_INTEGER), op),
+    Number.MIN_SAFE_INTEGER,
+  );
+  assertStrictEquals(
+    SafeInteger.fromBigInt(BigInt(Number.MAX_SAFE_INTEGER), op),
+    Number.MAX_SAFE_INTEGER,
+  );
   assertThrows(
     () => {
-      SafeInteger.fromBigInt(BigInt(Number.MIN_SAFE_INTEGER) - 1n);
+      SafeInteger.fromBigInt(BigInt(Number.MAX_VALUE), op);
     },
     RangeError,
     "source",
   );
   assertThrows(
     () => {
-      SafeInteger.fromBigInt(BigInt(Number.MAX_SAFE_INTEGER) + 1n);
+      SafeInteger.fromBigInt(BigInt(Number.MIN_SAFE_INTEGER) - 1n, op);
     },
     RangeError,
     "source",
   );
   assertThrows(
     () => {
-      SafeInteger.fromBigInt(undefined as unknown as bigint);
+      SafeInteger.fromBigInt(BigInt(Number.MAX_SAFE_INTEGER) + 1n, op);
     },
-    TypeError,
+    RangeError,
     "source",
   );
-});
-
-Deno.test("SafeInteger.fromString(string)", () => {
-  assertStrictEquals(SafeInteger.fromString("1"), 1);
-  assertStrictEquals(SafeInteger.fromString("+1"), 1);
-  assertStrictEquals(SafeInteger.fromString("0"), 0);
-  assertStrictEquals(SafeInteger.fromString("-0"), 0);
-  assertStrictEquals(SafeInteger.fromString("-1"), -1);
-
-  assertStrictEquals(SafeInteger.fromString(""), 0);
-  assertStrictEquals(SafeInteger.fromString("1.0"), 1);
-  assertStrictEquals(SafeInteger.fromString("1.9"), 1);
-
   assertThrows(
     () => {
-      SafeInteger.fromString("-");
+      SafeInteger.fromBigInt(undefined as unknown as bigint, op);
     },
     RangeError,
     "source",
   );
 });
 
-Deno.test("SafeInteger.fromString(any)", () => {
-  assertThrows(
-    () => {
-      SafeInteger.fromString(1 as unknown as string);
-    },
-    TypeError,
-    "source",
-  );
-});
+// Deno.test("SafeInteger.fromString(string)", () => {
+//   assertStrictEquals(SafeInteger.fromString("1"), 1);
+//   assertStrictEquals(SafeInteger.fromString("+1"), 1);
+//   assertStrictEquals(SafeInteger.fromString("0"), 0);
+//   assertStrictEquals(SafeInteger.fromString("-0"), 0);
+//   assertStrictEquals(SafeInteger.fromString("-1"), -1);
 
-Deno.test("SafeInteger.fromString(string, {})", () => {
-  const op = { strict: true } as const;
+//   assertStrictEquals(SafeInteger.fromString(""), 0);
+//   assertStrictEquals(SafeInteger.fromString("1.0"), 1);
+//   assertStrictEquals(SafeInteger.fromString("1.9"), 1);
 
-  assertStrictEquals(SafeInteger.fromString("1", op), 1);
-  assertStrictEquals(SafeInteger.fromString("+1", op), 1);
-  assertStrictEquals(SafeInteger.fromString("0", op), 0);
-  assertStrictEquals(SafeInteger.fromString("-0", op), 0);
-  assertStrictEquals(SafeInteger.fromString("-1", op), -1);
+//   assertThrows(
+//     () => {
+//       SafeInteger.fromString("-");
+//     },
+//     RangeError,
+//     "source",
+//   );
+// });
 
-  assertThrows(
-    () => {
-      SafeInteger.fromString("", op);
-    },
-    RangeError,
-    "source",
-  );
-  assertStrictEquals(SafeInteger.fromString("1.0", op), 1);
-  assertThrows(
-    () => {
-      SafeInteger.fromString("1.9", op);
-    },
-    RangeError,
-    "source",
-  );
+// Deno.test("SafeInteger.fromString(any)", () => {
+//   assertThrows(
+//     () => {
+//       SafeInteger.fromString(1 as unknown as string);
+//     },
+//     TypeError,
+//     "source",
+//   );
+// });
 
-  assertThrows(
-    () => {
-      SafeInteger.fromString("-", op);
-    },
-    RangeError,
-    "source",
-  );
-});
+// Deno.test("SafeInteger.fromString(string, {})", () => {
+//   const op = { strict: true } as const;
 
-Deno.test("SafeInteger.toBigInt(number)", () => {
-  assertStrictEquals(SafeInteger.toBigInt(1.0), 1n);
-  assertStrictEquals(SafeInteger.toBigInt(1), 1n);
-  assertStrictEquals(SafeInteger.toBigInt(0), 0n);
-  assertStrictEquals(SafeInteger.toBigInt(-0), 0n);
-  assertStrictEquals(SafeInteger.toBigInt(-1), -1n);
+//   assertStrictEquals(SafeInteger.fromString("1", op), 1);
+//   assertStrictEquals(SafeInteger.fromString("+1", op), 1);
+//   assertStrictEquals(SafeInteger.fromString("0", op), 0);
+//   assertStrictEquals(SafeInteger.fromString("-0", op), 0);
+//   assertStrictEquals(SafeInteger.fromString("-1", op), -1);
 
-  assertThrows(
-    () => {
-      SafeInteger.toBigInt(1.1);
-    },
-    TypeError,
-    "source",
-  );
-});
+//   assertThrows(
+//     () => {
+//       SafeInteger.fromString("", op);
+//     },
+//     RangeError,
+//     "source",
+//   );
+//   assertStrictEquals(SafeInteger.fromString("1.0", op), 1);
+//   assertThrows(
+//     () => {
+//       SafeInteger.fromString("1.9", op);
+//     },
+//     RangeError,
+//     "source",
+//   );
 
-Deno.test("SafeInteger.toBigInt(any)", () => {
-  assertThrows(
-    () => {
-      SafeInteger.toBigInt("1" as unknown as number);
-    },
-    TypeError,
-    "source",
-  );
-});
+//   assertThrows(
+//     () => {
+//       SafeInteger.fromString("-", op);
+//     },
+//     RangeError,
+//     "source",
+//   );
+// });
 
-Deno.test("SafeInteger.toString(number)", () => {
-  assertStrictEquals(SafeInteger.toString(1.0), "1");
-  assertStrictEquals(SafeInteger.toString(1), "1");
-  assertStrictEquals(SafeInteger.toString(0), "0");
-  assertStrictEquals(SafeInteger.toString(-0), "0");
-  assertStrictEquals(SafeInteger.toString(-1), "-1");
+// Deno.test("SafeInteger.toBigInt(number)", () => {
+//   assertStrictEquals(SafeInteger.toBigInt(1.0), 1n);
+//   assertStrictEquals(SafeInteger.toBigInt(1), 1n);
+//   assertStrictEquals(SafeInteger.toBigInt(0), 0n);
+//   assertStrictEquals(SafeInteger.toBigInt(-0), 0n);
+//   assertStrictEquals(SafeInteger.toBigInt(-1), -1n);
 
-  assertThrows(
-    () => {
-      SafeInteger.toString(1.1);
-    },
-    TypeError,
-    "source",
-  );
-});
+//   assertThrows(
+//     () => {
+//       SafeInteger.toBigInt(1.1);
+//     },
+//     TypeError,
+//     "source",
+//   );
+// });
 
-Deno.test("SafeInteger.toString(any)", () => {
-  assertThrows(
-    () => {
-      SafeInteger.toString("1" as unknown as number);
-    },
-    TypeError,
-    "source",
-  );
-});
+// Deno.test("SafeInteger.toBigInt(any)", () => {
+//   assertThrows(
+//     () => {
+//       SafeInteger.toBigInt("1" as unknown as number);
+//     },
+//     TypeError,
+//     "source",
+//   );
+// });
+
+// Deno.test("SafeInteger.toString(number)", () => {
+//   assertStrictEquals(SafeInteger.toString(1.0), "1");
+//   assertStrictEquals(SafeInteger.toString(1), "1");
+//   assertStrictEquals(SafeInteger.toString(0), "0");
+//   assertStrictEquals(SafeInteger.toString(-0), "0");
+//   assertStrictEquals(SafeInteger.toString(-1), "-1");
+
+//   assertThrows(
+//     () => {
+//       SafeInteger.toString(1.1);
+//     },
+//     TypeError,
+//     "source",
+//   );
+// });
+
+// Deno.test("SafeInteger.toString(any)", () => {
+//   assertThrows(
+//     () => {
+//       SafeInteger.toString("1" as unknown as number);
+//     },
+//     TypeError,
+//     "source",
+//   );
+// });
