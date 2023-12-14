@@ -226,7 +226,7 @@ namespace SafeInteger {
   */
 
   export function fromNumber(
-    source: number,
+    source?: number,
     options?: FromOptions,
   ): SafeInteger {
     const { lowerLimit, upperLimit } = _normalizeRange(
@@ -249,28 +249,28 @@ namespace SafeInteger {
 
     let adjusted = source;
     if (options?.strict === true) {
-      if (typeof source !== "number") {
+      if (typeof adjusted !== "number") {
         throw new TypeError("source");
       }
-      if (Number.isSafeInteger(source) !== true) {
+      if (Number.isSafeInteger(adjusted) !== true) {
         throw new RangeError("source");
       }
     } else {
-      if (Number.isFinite(source)) {
-        if (source > Number.MAX_SAFE_INTEGER) {
+      if (Number.isFinite(adjusted)) {
+        if ((adjusted as number) > Number.MAX_SAFE_INTEGER) {
           adjusted = Number.MAX_SAFE_INTEGER;
-        } else if (source < Number.MIN_SAFE_INTEGER) {
+        } else if ((adjusted as number) < Number.MIN_SAFE_INTEGER) {
           adjusted = Number.MIN_SAFE_INTEGER;
         }
       } else {
         if (
-          (typeof source !== "number") && (source !== null) &&
-          (source !== undefined)
+          (typeof adjusted !== "number") && (adjusted !== null) &&
+          (adjusted !== undefined)
         ) {
           throw new TypeError("source");
-        } else if (source === Number.POSITIVE_INFINITY) {
+        } else if (adjusted === Number.POSITIVE_INFINITY) {
           adjusted = Number.MAX_SAFE_INTEGER;
-        } else if (source === Number.NEGATIVE_INFINITY) {
+        } else if (adjusted === Number.NEGATIVE_INFINITY) {
           adjusted = Number.MIN_SAFE_INTEGER;
         } else {
           adjusted = normalizedFallback;
@@ -279,7 +279,7 @@ namespace SafeInteger {
     }
 
     if (Number.isSafeInteger(adjusted)) {
-      return cn(adjusted);
+      return cn(adjusted as number);
     }
 
     let roundingMode = RoundingMode.TRUNCATE;
@@ -289,12 +289,12 @@ namespace SafeInteger {
     ) {
       roundingMode = options.roundingMode;
     }
-    const rounded = round(adjusted, roundingMode);
+    const rounded = round(adjusted as number, roundingMode);
     return cn(rounded);
   }
 
   export function fromBigInt(
-    source: bigint,
+    source?: bigint,
     options?: FromOptions,
   ): SafeInteger {
     if (
@@ -309,7 +309,7 @@ namespace SafeInteger {
   }
 
   export function fromString(
-    source: string,
+    source?: string,
     options?: FromOptions,
   ): SafeInteger {
     if (
