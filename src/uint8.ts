@@ -322,6 +322,12 @@ namespace Uint8 {
       }, options),
     ) as Uint8;
   }
+
+  //XXX fromString
+  //XXX toString
+  //XXX toBigInt
+  //XXX parse
+  //XXX format
 }
 
 export { Uint8 };
