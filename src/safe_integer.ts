@@ -214,15 +214,15 @@ namespace SafeInteger {
   }
 
   /*
-                        | null      |     |     |     |     |       |       |
-                        | undefined | NaN | ""  | +∞  | -∞  | > MAX | < MIN |
-    --------------------|-----------|-----|-----|-----|-----|-------|-------|
-    fromNumber(strict)  | eX        | eX  | N/A | eX  | eX  | eX    | eX    |
-    fromNumber(!strict) | 0         | 0   | N/A | MAX | MIN | MAX   | MIN   |
-    fromBigInt(strict)  | eX        | N/A | N/A | N/A | N/A | eX    | eX    |
-    fromBigInt(!strict) | 0         | N/A | N/A | N/A | N/A | MAX   | MIN   |
-    fromString(strict)  | eX        | N/A | eX  | N/A | N/A | eX    | eX    |
-    fromString(!strict) | 0         | N/A | 0   | N/A | N/A | MAX   | MIN   |
+                        | null      |       |       |       |       |       |       |
+                        | undefined | NaN   | ""    | +∞    | -∞    | > MAX | < MIN |
+    --------------------|-----------|-------|-------|-------|-------|-------|-------|
+    fromNumber(strict)  | Error     | Error | N/A   | Error | Error | Error | Error |
+    fromNumber(!strict) | 0         | 0     | N/A   | MAX   | MIN   | MAX   | MIN   |
+    fromBigInt(strict)  | Error     | N/A   | N/A   | N/A   | N/A   | Error | Error |
+    fromBigInt(!strict) | 0         | N/A   | N/A   | N/A   | N/A   | MAX   | MIN   |
+    fromString(strict)  | Error     | N/A   | Error | N/A   | N/A   | Error | Error |
+    fromString(!strict) | 0         | N/A   | 0     | N/A   | N/A   | MAX   | MIN   |
   */
 
   export function fromNumber(
@@ -263,10 +263,12 @@ namespace SafeInteger {
           adjusted = Number.MIN_SAFE_INTEGER;
         }
       } else {
-        if ((typeof source !== "number") && (source !== null) && (source !== undefined)) {
+        if (
+          (typeof source !== "number") && (source !== null) &&
+          (source !== undefined)
+        ) {
           throw new TypeError("source");
-        }
-        else if (source === Number.POSITIVE_INFINITY) {
+        } else if (source === Number.POSITIVE_INFINITY) {
           adjusted = Number.MAX_SAFE_INTEGER;
         } else if (source === Number.NEGATIVE_INFINITY) {
           adjusted = Number.MIN_SAFE_INTEGER;
@@ -295,7 +297,10 @@ namespace SafeInteger {
     source: bigint,
     options?: FromOptions,
   ): SafeInteger {
-    if ((typeof source !== "bigint") && (source !== null) && (source !== undefined)) {
+    if (
+      (typeof source !== "bigint") && (source !== null) &&
+      (source !== undefined)
+    ) {
       throw new TypeError("source");
     }
 
@@ -303,25 +308,44 @@ namespace SafeInteger {
     return fromNumber(Number(source), options);
   }
 
-  // export function fromString(
-  //   source: string,
-  //   options?: FromOptions,
-  // ): SafeInteger {
-  //   if ((source === undefined) || (source === null)) {
-  //     return fromNumber(Number.NaN, options);
-  //   }
+  export function fromString(
+    source: string,
+    options?: FromOptions,
+  ): SafeInteger {
+    if (
+      (typeof source !== "string") && (source !== null) &&
+      (source !== undefined)
+    ) {
+      throw new TypeError("source");
+    }
 
-  //   if (typeof source !== "string") {
-  //     throw new TypeError("source");
-  //   }
+    let adjusted = source;
+    let pattern: RegExp;
 
-  //   if ((source === "") && (options?.strict !== true)) {
-  //     return fromNumber(Number.NaN, options);
-  //   } else if (/^[\-+]?(?:[0-9]|[1-9][0-9]+)(?:.[0-9]+)?$/.test(source)) {
-  //     return fromNumber(Number.parseFloat(source), options); //XXX ".1"(0.1)も受け付けるか？
-  //   }
-  //   throw new RangeError("source");
-  // }
+    if (options?.strict === true) {
+      pattern = /^[\-+]?(?:[0-9]|[1-9][0-9]+)(?:.0+)?$/;
+
+      if ((adjusted === null) || (adjusted === undefined)) {
+        throw new TypeError("source");
+      }
+    } else {
+      pattern = /^[\-+]?(?:[0-9]+)(?:.[0-9]+)?$/; //XXX ".1"を0.1として扱うか？
+
+      if (typeof adjusted === "string") {
+        adjusted = adjusted.trim();
+      }
+      if (
+        (adjusted === "") || (adjusted === null) || (adjusted === undefined)
+      ) {
+        return fromNumber(Number.NaN, options);
+      }
+    }
+
+    if (pattern.test(adjusted)) {
+      return fromNumber(Number.parseFloat(adjusted), options);
+    }
+    throw new RangeError("source");
+  }
 
   //XXX export function from()
 
