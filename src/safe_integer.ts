@@ -1,4 +1,5 @@
-import { clamp, inRange, RoundingMode, ZERO } from "./number.ts";
+import { clamp, inRange, ZERO } from "./number.ts";
+import { RoundingMode } from "./rounding_mode.ts";
 
 // 事実上定義できないのでnumberの別名とする
 type SafeInteger = number;

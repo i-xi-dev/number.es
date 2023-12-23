@@ -1,4 +1,4 @@
-import { RoundingMode } from "./number.ts";
+import { RoundingMode } from "./rounding_mode.ts";
 import { SafeInteger } from "./safe_integer.ts";
 
 /**
