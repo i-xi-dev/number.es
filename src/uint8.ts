@@ -1,3 +1,4 @@
+import { RoundingMode } from "./number.ts";
 import { SafeInteger } from "./safe_integer.ts";
 
 /**
@@ -287,7 +288,7 @@ namespace Uint8 {
 
   export type FromOptions = {
     fallback?: Uint8;
-    roundingMode?: SafeInteger.RoundingMode;
+    roundingMode?: RoundingMode;
     strict?: boolean; // doNotTreatFalsyAsZero & acceptsOnlyUint8s
   };
 
@@ -323,9 +324,16 @@ namespace Uint8 {
     ) as Uint8;
   }
 
+  export function toBigInt(source: Uint8): bigint {
+    if (isUint8(source)) {
+      return BigInt(source);
+    }
+    throw new TypeError("source");
+  }
+
   //XXX fromString
   //XXX toString
-  //XXX toBigInt
+
   //XXX parse
   //XXX format
 }

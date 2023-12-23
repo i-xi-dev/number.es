@@ -1,5 +1,5 @@
 import { assertStrictEquals, assertThrows } from "./deps.ts";
-import { SafeInteger } from "../mod.ts";
+import { RoundingMode, SafeInteger } from "../mod.ts";
 
 Deno.test("SafeInteger.isPositive(number)", () => {
   assertStrictEquals(SafeInteger.isPositive(-1), false);
@@ -169,7 +169,7 @@ Deno.test("SafeInteger.round()", () => {
 });
 
 Deno.test("SafeInteger.round(number, UP)", () => {
-  const op = SafeInteger.RoundingMode.UP;
+  const op = RoundingMode.UP;
 
   assertStrictEquals(SafeInteger.round(0, op), 0);
   assertStrictEquals(SafeInteger.round(-0, op), 0);
@@ -229,7 +229,7 @@ Deno.test("SafeInteger.round(number, UP)", () => {
 });
 
 Deno.test("SafeInteger.round(number, CEILING)", () => {
-  const op = SafeInteger.RoundingMode.CEILING;
+  const op = RoundingMode.CEILING;
 
   assertStrictEquals(SafeInteger.round(0, op), 0);
   assertStrictEquals(SafeInteger.round(-0, op), 0);
@@ -254,7 +254,7 @@ Deno.test("SafeInteger.round(number, CEILING)", () => {
 });
 
 Deno.test("SafeInteger.round(number, DOWN)", () => {
-  const op = SafeInteger.RoundingMode.DOWN;
+  const op = RoundingMode.DOWN;
 
   assertStrictEquals(SafeInteger.round(0, op), 0);
   assertStrictEquals(SafeInteger.round(-0, op), 0);
@@ -314,7 +314,7 @@ Deno.test("SafeInteger.round(number, DOWN)", () => {
 });
 
 Deno.test("SafeInteger.round(number, FLOOR)", () => {
-  const op = SafeInteger.RoundingMode.FLOOR;
+  const op = RoundingMode.FLOOR;
 
   assertStrictEquals(SafeInteger.round(0, op), 0);
   assertStrictEquals(SafeInteger.round(-0, op), 0);
@@ -339,7 +339,7 @@ Deno.test("SafeInteger.round(number, FLOOR)", () => {
 });
 
 Deno.test("SafeInteger.round(number, TOWARD_ZERO)", () => {
-  const op = SafeInteger.RoundingMode.TOWARD_ZERO;
+  const op = RoundingMode.TOWARD_ZERO;
 
   assertStrictEquals(SafeInteger.round(0, op), 0);
   assertStrictEquals(SafeInteger.round(-0, op), 0);
@@ -399,7 +399,7 @@ Deno.test("SafeInteger.round(number, TOWARD_ZERO)", () => {
 });
 
 Deno.test("SafeInteger.round(number, TRUNCATE)", () => {
-  const op = SafeInteger.RoundingMode.TRUNCATE;
+  const op = RoundingMode.TRUNCATE;
 
   assertStrictEquals(SafeInteger.round(0, op), 0);
   assertStrictEquals(SafeInteger.round(-0, op), 0);
@@ -424,7 +424,7 @@ Deno.test("SafeInteger.round(number, TRUNCATE)", () => {
 });
 
 Deno.test("SafeInteger.round(number, AWAY_FROM_ZERO)", () => {
-  const op = SafeInteger.RoundingMode.AWAY_FROM_ZERO;
+  const op = RoundingMode.AWAY_FROM_ZERO;
 
   assertStrictEquals(SafeInteger.round(0, op), 0);
   assertStrictEquals(SafeInteger.round(-0, op), 0);
@@ -484,7 +484,7 @@ Deno.test("SafeInteger.round(number, AWAY_FROM_ZERO)", () => {
 });
 
 Deno.test("SafeInteger.round(number, HALF_UP)", () => {
-  const op = SafeInteger.RoundingMode.HALF_UP;
+  const op = RoundingMode.HALF_UP;
 
   assertStrictEquals(SafeInteger.round(0, op), 0);
   assertStrictEquals(SafeInteger.round(-0, op), 0);
@@ -544,7 +544,7 @@ Deno.test("SafeInteger.round(number, HALF_UP)", () => {
 });
 
 Deno.test("SafeInteger.round(number, HALF_DOWN)", () => {
-  const op = SafeInteger.RoundingMode.HALF_DOWN;
+  const op = RoundingMode.HALF_DOWN;
 
   assertStrictEquals(SafeInteger.round(0, op), 0);
   assertStrictEquals(SafeInteger.round(-0, op), 0);
@@ -604,7 +604,7 @@ Deno.test("SafeInteger.round(number, HALF_DOWN)", () => {
 });
 
 Deno.test("SafeInteger.round(number, HALF_TOWARD_ZERO)", () => {
-  const op = SafeInteger.RoundingMode.HALF_TOWARD_ZERO;
+  const op = RoundingMode.HALF_TOWARD_ZERO;
 
   assertStrictEquals(SafeInteger.round(0, op), 0);
   assertStrictEquals(SafeInteger.round(-0, op), 0);
@@ -663,7 +663,7 @@ Deno.test("SafeInteger.round(number, HALF_TOWARD_ZERO)", () => {
 });
 
 Deno.test("SafeInteger.round(number, HALF_AWAY_FROM_ZERO)", () => {
-  const op = SafeInteger.RoundingMode.HALF_AWAY_FROM_ZERO;
+  const op = RoundingMode.HALF_AWAY_FROM_ZERO;
 
   assertStrictEquals(SafeInteger.round(0, op), 0);
   assertStrictEquals(SafeInteger.round(-0, op), 0);
@@ -723,7 +723,7 @@ Deno.test("SafeInteger.round(number, HALF_AWAY_FROM_ZERO)", () => {
 });
 
 Deno.test("SafeInteger.round(number, ROUND)", () => {
-  const op = SafeInteger.RoundingMode.ROUND;
+  const op = RoundingMode.ROUND;
 
   assertStrictEquals(SafeInteger.round(0, op), 0);
   assertStrictEquals(SafeInteger.round(-0, op), 0);
@@ -748,7 +748,7 @@ Deno.test("SafeInteger.round(number, ROUND)", () => {
 });
 
 Deno.test("SafeInteger.round(number, HALF_TO_EVEN)", () => {
-  const op = SafeInteger.RoundingMode.HALF_TO_EVEN;
+  const op = RoundingMode.HALF_TO_EVEN;
 
   assertStrictEquals(SafeInteger.round(0, op), 0);
   assertStrictEquals(SafeInteger.round(-0, op), 0);

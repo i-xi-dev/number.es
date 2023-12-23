@@ -222,3 +222,35 @@ Deno.test("Uint8.fromBigInt(bigint, {}) - strict", () => {
     "source",
   );
 });
+
+Deno.test("Uint8.toBigInt(number)", () => {
+  assertStrictEquals(Uint8.toBigInt(1.0), 1n);
+  assertStrictEquals(Uint8.toBigInt(1), 1n);
+  assertStrictEquals(Uint8.toBigInt(0), 0n);
+  assertStrictEquals(Uint8.toBigInt(-0), 0n);
+
+  assertThrows(
+    () => {
+      Uint8.toBigInt(-1 as unknown as Uint8);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint8.toBigInt(1.1 as unknown as Uint8);
+    },
+    TypeError,
+    "source",
+  );
+});
+
+Deno.test("SafeInteger.toBigInt(any)", () => {
+  assertThrows(
+    () => {
+      Uint8.toBigInt("1" as unknown as Uint8);
+    },
+    TypeError,
+    "source",
+  );
+});

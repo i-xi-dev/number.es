@@ -1,4 +1,4 @@
-import * as NumberUtils from "./number.ts";
+import { clamp, inRange, RoundingMode, ZERO } from "./number.ts";
 
 // 事実上定義できないのでnumberの別名とする
 type SafeInteger = number;
@@ -7,7 +7,7 @@ const _RADIX_DECIMAL = 10;
 
 function _normalize(n: SafeInteger): SafeInteger {
   // -0は0とする
-  return (n === 0) ? 0 : n;
+  return (n === ZERO) ? ZERO : n;
 }
 
 function _parseInt(s: string): SafeInteger {
@@ -24,7 +24,7 @@ namespace SafeInteger {
    */
   export function isPositive(test: unknown): boolean {
     return Number.isSafeInteger(test) &&
-      NumberUtils.inRange(test as number, 1, Number.MAX_SAFE_INTEGER);
+      inRange(test as number, 1, Number.MAX_SAFE_INTEGER);
   }
 
   /**
@@ -35,54 +35,20 @@ namespace SafeInteger {
    */
   export function isNonNegative(test: unknown): boolean {
     return Number.isSafeInteger(test) &&
-      NumberUtils.inRange(test as number, 0, Number.MAX_SAFE_INTEGER);
+      inRange(test as number, ZERO, Number.MAX_SAFE_INTEGER);
   }
 
   export function isOdd(test: unknown): boolean {
     return Number.isSafeInteger(test)
-      ? (((test as SafeInteger) % 2) !== 0)
+      ? (((test as SafeInteger) % 2) !== ZERO)
       : false;
   }
 
   export function isEven(test: unknown): boolean {
     return Number.isSafeInteger(test)
-      ? (((test as SafeInteger) % 2) === 0)
+      ? (((test as SafeInteger) % 2) === ZERO)
       : false;
   }
-
-  const UP = Symbol("UP"); // TOWARD_POSITIVE_INFINITY
-  const DOWN = Symbol("DOWN"); // TOWARD_NEGATIVE_INFINITY
-  const TOWARD_ZERO = Symbol("TOWARD_ZERO");
-  const HALF_AWAY_FROM_ZERO = Symbol("HALF_AWAY_FROM_ZERO");
-  const HALF_TO_EVEN = Symbol("HALF_TO_EVEN");
-
-  export const RoundingMode = {
-    UP,
-    DOWN,
-    TOWARD_ZERO,
-    AWAY_FROM_ZERO: Symbol("AWAY_FROM_ZERO"),
-    HALF_UP: Symbol("HALF_UP"),
-    HALF_DOWN: Symbol("HALF_DOWN"),
-    HALF_TOWARD_ZERO: Symbol("HALF_TOWARD_ZERO"),
-    HALF_AWAY_FROM_ZERO,
-    HALF_TO_EVEN,
-
-    /** Alias for `UP`. */
-    CEILING: UP,
-
-    /** Alias for `DOWN`. */
-    FLOOR: DOWN,
-
-    /** Alias for `TOWARD_ZERO`. */
-    TRUNCATE: TOWARD_ZERO,
-
-    /** Alias for `HALF_AWAY_FROM_ZERO`. */
-    ROUND: HALF_AWAY_FROM_ZERO, // Math.roundとは違うので注意（Math.roundは.5の場合切り捨て）
-
-    /** Alias for `HALF_TO_EVEN`. */
-    CONVERGENT: HALF_TO_EVEN,
-  } as const;
-  export type RoundingMode = typeof RoundingMode[keyof typeof RoundingMode];
 
   export function round(
     source: number,
@@ -105,7 +71,9 @@ namespace SafeInteger {
 
     if (typeof roundingMode !== "symbol") {
       throw new TypeError("roundingMode");
-    } else if (Object.values(RoundingMode).includes(roundingMode) !== true) {
+    } else if (
+      Object.values(RoundingMode).includes(roundingMode) !== true
+    ) {
       throw new RangeError("roundingMode");
     }
 
@@ -115,7 +83,7 @@ namespace SafeInteger {
 
     const nearestP = _normalize(Math.ceil(source));
     const nearestN = _normalize(Math.floor(source));
-    const isNegative = source < 0;
+    const isNegative = source < ZERO;
     const nearestPH = nearestP - 0.5;
     const nearestNH = nearestN + 0.5;
 
@@ -155,18 +123,18 @@ namespace SafeInteger {
       case RoundingMode.HALF_TO_EVEN:
         if (isNegative) {
           if (source === nearestPH) {
-            return ((integralPart % 2) === 0) ? integralPart : nearestN;
+            return ((integralPart % 2) === ZERO) ? integralPart : nearestN;
           }
           return halfDown();
         }
 
         if (source === nearestNH) {
-          return ((integralPart % 2) === 0) ? integralPart : nearestP;
+          return ((integralPart % 2) === ZERO) ? integralPart : nearestP;
         }
         return halfUp();
 
       default:
-        return 0 as never;
+        return ZERO as never;
     }
   }
 
@@ -234,7 +202,7 @@ namespace SafeInteger {
       options?.upperLimit,
     );
     const cn = (i: SafeInteger): SafeInteger => {
-      return NumberUtils.clamp(_normalize(i), lowerLimit, upperLimit);
+      return clamp(_normalize(i), lowerLimit, upperLimit);
     };
 
     const { isSafeInteger: fallbackIsInteger, isNull: fallbackIsNull } =
@@ -245,7 +213,7 @@ namespace SafeInteger {
 
     const normalizedFallback = fallbackIsInteger
       ? cn(options?.fallback as SafeInteger)
-      : 0;
+      : ZERO;
 
     let adjusted = source;
     if (options?.strict === true) {
@@ -358,7 +326,7 @@ namespace SafeInteger {
 
   export function toString(source: SafeInteger): string {
     if (Number.isSafeInteger(source)) {
-      if (source === NumberUtils.ZERO) {
+      if (source === ZERO) {
         return "0";
       }
       return source.toString(_RADIX_DECIMAL);
