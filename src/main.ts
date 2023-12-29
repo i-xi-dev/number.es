@@ -1,6 +1,16 @@
-import { Range } from "./range.ts";
-
 export const ZERO = 0;
+
+/**
+ * 2, 8, 10, or 16.
+ */
+export const Radix = {
+  BINARY: 2,
+  DECIMAL: 10,
+  HEXADECIMAL: 16,
+  OCTAL: 8,
+} as const;
+
+export type Radix = typeof Radix[keyof typeof Radix];
 
 export function isNumber(test: unknown): test is number {
   return (typeof test === "number");
@@ -49,6 +59,54 @@ export function normalizeNumber(source: number): number {
 
   // -0は0とする
   return (source === ZERO) ? ZERO : source;
+}
+
+export type Range = [min: number, max: number] | [minmax: number];
+
+export namespace Range {
+  export type Resolved = [
+    min: number,
+    max: number,
+  ];
+
+  export function resolve(range: unknown /* (Range | Resolved) */): Resolved {
+    let min = Number.NEGATIVE_INFINITY;
+    let max = Number.POSITIVE_INFINITY;
+    if (Array.isArray(range)) {
+      if (range.length > 0) {
+        if (isNumber(range[0])) {
+          if (Number.isNaN(range[0])) {
+            throw new RangeError("range[0]");
+          }
+
+          // finite or infinity
+          min = range[0];
+        } else {
+          throw new TypeError("range[0]");
+        }
+
+        if (range.length > 1) {
+          if (isNumber(range[1])) {
+            if (Number.isNaN(range[1])) {
+              throw new RangeError("range[1]");
+            }
+
+            // finite or infinity
+            max = range[1];
+          } else {
+            throw new TypeError("range[1]");
+          }
+        } else {
+          max = min;
+        }
+      }
+    }
+
+    return [
+      Math.min(min, max),
+      Math.max(min, max),
+    ];
+  }
 }
 
 export function clampNumber(source: number, range: Range): number {

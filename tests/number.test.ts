@@ -10,11 +10,19 @@ import {
   isOddInteger,
   isPositiveNumber,
   normalizeNumber,
+  Radix,
   ZERO,
 } from "../mod.ts";
 
 Deno.test("ZERO", () => {
   assertStrictEquals(ZERO, 0);
+});
+
+Deno.test("Radix", () => {
+  assertStrictEquals(Radix.BINARY, 2);
+  assertStrictEquals(Radix.OCTAL, 8);
+  assertStrictEquals(Radix.DECIMAL, 10);
+  assertStrictEquals(Radix.HEXADECIMAL, 16);
 });
 
 Deno.test("isNumber()", () => {
@@ -261,19 +269,40 @@ Deno.test("clampNumber()", () => {
   assertStrictEquals(clampNumber(-10.5, [-10.5, 10.5]), -10.5);
   assertStrictEquals(clampNumber(-10.6, [-10.5, 10.5]), -10.5);
 
-  assertStrictEquals(
-    clampNumber(Number.MAX_SAFE_INTEGER, [undefined as unknown as number]),
-    Number.MAX_SAFE_INTEGER,
+  assertThrows(
+    () => {
+      clampNumber(Number.MAX_SAFE_INTEGER, [undefined as unknown as number]);
+    },
+    TypeError,
+    "range[0]",
   );
-  assertStrictEquals(
-    clampNumber(Number.MIN_SAFE_INTEGER, [
-      999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999n as unknown as number,
-    ]),
-    Number.MIN_SAFE_INTEGER,
+  assertThrows(
+    () => {
+      clampNumber(Number.MAX_SAFE_INTEGER, ["0" as unknown as number]);
+    },
+    TypeError,
+    "range[0]",
   );
-  assertStrictEquals(
-    clampNumber(Number.MAX_SAFE_INTEGER, ["0" as unknown as number]),
-    Number.MAX_SAFE_INTEGER,
+  assertThrows(
+    () => {
+      clampNumber(Number.MAX_SAFE_INTEGER, [0, undefined as unknown as number]);
+    },
+    TypeError,
+    "range[1]",
+  );
+  assertThrows(
+    () => {
+      clampNumber(Number.MAX_SAFE_INTEGER, [Number.NaN]);
+    },
+    RangeError,
+    "range[0]",
+  );
+  assertThrows(
+    () => {
+      clampNumber(Number.MAX_SAFE_INTEGER, [0, Number.NaN]);
+    },
+    RangeError,
+    "range[1]",
   );
 
   assertThrows(
@@ -334,19 +363,40 @@ Deno.test("inRange()", () => {
   assertStrictEquals(inRange(-10.5, [-10.5, 10.5]), true);
   assertStrictEquals(inRange(-10.6, [-10.5, 10.5]), false);
 
-  assertStrictEquals(
-    inRange(Number.MAX_SAFE_INTEGER, [undefined as unknown as number]),
-    true,
+  assertThrows(
+    () => {
+      inRange(Number.MAX_SAFE_INTEGER, [undefined as unknown as number]);
+    },
+    TypeError,
+    "range[0]",
   );
-  assertStrictEquals(
-    inRange(Number.MIN_SAFE_INTEGER, [
-      999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999999n as unknown as number,
-    ]),
-    true,
+  assertThrows(
+    () => {
+      inRange(Number.MAX_SAFE_INTEGER, ["0" as unknown as number]);
+    },
+    TypeError,
+    "range[0]",
   );
-  assertStrictEquals(
-    inRange(Number.MAX_SAFE_INTEGER, ["0" as unknown as number]),
-    true,
+  assertThrows(
+    () => {
+      inRange(Number.MAX_SAFE_INTEGER, [0, undefined as unknown as number]);
+    },
+    TypeError,
+    "range[1]",
+  );
+  assertThrows(
+    () => {
+      inRange(Number.MAX_SAFE_INTEGER, [Number.NaN]);
+    },
+    RangeError,
+    "range[0]",
+  );
+  assertThrows(
+    () => {
+      inRange(Number.MAX_SAFE_INTEGER, [0, Number.NaN]);
+    },
+    RangeError,
+    "range[1]",
   );
 
   assertStrictEquals(
