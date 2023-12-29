@@ -1,3 +1,6 @@
+import { inRange, normalizeNumber } from "./main.ts";
+import { Radix } from "./radix.ts";
+import { Range } from "./range.ts";
 import { RoundingMode } from "./rounding_mode.ts";
 import { SafeInteger } from "./safe_integer.ts";
 
@@ -262,6 +265,21 @@ type Uint8 =
   | 0xFE
   | 0xFF;
 
+function _toSafeIntegerFromOptions(
+  options:
+    unknown /* (Uint8.FromOptions | SafeInteger.FromOptions | SafeInteger.FromOptions.Resolved) */ =
+      {},
+): SafeInteger.FromOptions.Resolved {
+  const clampRange = Range.resolve(
+    (options as SafeInteger.FromOptions.Resolved)?.clampRange,
+  );
+  //TODO rangeを0～255に制限
+  return SafeInteger.FromOptions.resolve({
+    ...(options as SafeInteger.FromOptions.Resolved),
+    clampRange,
+  });
+}
+
 /**
  * The 8-bit unsigned integer
  */
@@ -277,51 +295,32 @@ namespace Uint8 {
   export const MAX_VALUE = 0xFF;
 
   /**
-   * Determines whether the passed value is an 8-bit unsigned integer.
+   * Determines whether the passed `test` is an 8-bit unsigned integer.
    *
-   * @param value - The value to be tested
-   * @returns Whether the passed value is an 8-bit unsigned integer.
+   * @param test - The value to be tested
+   * @returns Whether the passed `test` is an 8-bit unsigned integer.
    */
-  export function isUint8(value: unknown): value is Uint8 {
-    return SafeInteger.isNonNegative(value) && ((value as number) <= MAX_VALUE);
+  export function isUint8(test: unknown): test is Uint8 {
+    return Number.isSafeInteger(test) &&
+      inRange(test as number, [MIN_VALUE, MAX_VALUE]);
   }
 
   export type FromOptions = {
+    strict?: boolean; // doNotTreatFalsyAsZero & acceptsOnlyUint8s
     fallback?: Uint8;
     roundingMode?: RoundingMode;
-    strict?: boolean; // doNotTreatFalsyAsZero & acceptsOnlyUint8s
   };
 
   export function fromNumber(source: number, options?: FromOptions): Uint8 {
-    if (
-      (options?.fallback !== undefined) && (isUint8(options?.fallback) !== true)
-    ) {
-      throw new TypeError("options.fallback");
-    }
+    const resolvedOptions = _toSafeIntegerFromOptions(options);
 
-    return SafeInteger.fromNumber(
-      source,
-      Object.assign({
-        lowerLimit: MIN_VALUE,
-        upperLimit: MAX_VALUE,
-      }, options),
-    ) as Uint8;
+    return SafeInteger.fromNumber(source, resolvedOptions) as Uint8;
   }
 
   export function fromBigInt(source: bigint, options?: FromOptions): Uint8 {
-    if (
-      (options?.fallback !== undefined) && (isUint8(options?.fallback) !== true)
-    ) {
-      throw new TypeError("options.fallback");
-    }
+    const resolvedOptions = _toSafeIntegerFromOptions(options);
 
-    return SafeInteger.fromBigInt(
-      source,
-      Object.assign({
-        lowerLimit: MIN_VALUE,
-        upperLimit: MAX_VALUE,
-      }, options),
-    ) as Uint8;
+    return SafeInteger.fromBigInt(source, resolvedOptions) as Uint8;
   }
 
   export function toBigInt(source: Uint8): bigint {
@@ -331,11 +330,18 @@ namespace Uint8 {
     throw new TypeError("source");
   }
 
-  //XXX fromString
-  //XXX toString
+  export function fromString(source: string, options?: FromOptions): Uint8 {
+    const resolvedOptions = _toSafeIntegerFromOptions(options);
 
-  //XXX parse
-  //XXX format
+    return SafeInteger.fromString(source, resolvedOptions) as Uint8;
+  }
+
+  export function toString(source: SafeInteger): string {
+    if (isUint8(source)) {
+      return normalizeNumber(source).toString(Radix.DECIMAL);
+    }
+    throw new TypeError("source");
+  }
 }
 
 export { Uint8 };

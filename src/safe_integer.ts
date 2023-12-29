@@ -1,31 +1,48 @@
-import { clamp, inRange, ZERO } from "./number.ts";
+import {
+  clampNumber,
+  isEvenInteger,
+  isNegativeNumber,
+  isNonNegativeNumber,
+  isNumber,
+  isOddInteger,
+  isPositiveNumber,
+  normalizeNumber,
+  ZERO,
+} from "./main.ts";
+import { Radix } from "./radix.ts";
+import { Range } from "./range.ts";
 import { RoundingMode } from "./rounding_mode.ts";
 
 // 事実上定義できないのでnumberの別名とする
-type SafeInteger = number;
+export type SafeInteger = number;
 
-const _RADIX_DECIMAL = 10;
+function _toSafeIntegerRange(
+  range: unknown, /* (Range | Resolved) */
+): Range.Resolved {
+  const [min, max] = Range.resolve(range as Range);
 
-function _normalize(n: SafeInteger): SafeInteger {
-  // -0は0とする
-  return (n === ZERO) ? ZERO : n;
+  return [
+    (min < Number.MIN_SAFE_INTEGER) ? Number.MIN_SAFE_INTEGER : Math.trunc(min),
+    (max > Number.MAX_SAFE_INTEGER) ? Number.MAX_SAFE_INTEGER : Math.trunc(max),
+  ];
 }
 
-function _parseInt(s: string): SafeInteger {
-  const i = Number.parseInt(s, _RADIX_DECIMAL);
-  return _normalize(i);
+function _resolveRoundingMode(roundingMode?: RoundingMode): RoundingMode {
+  if (Object.values(RoundingMode).includes(roundingMode as RoundingMode)) {
+    return roundingMode as RoundingMode;
+  }
+  return RoundingMode.TRUNCATE;
 }
 
-namespace SafeInteger {
+export namespace SafeInteger {
   /**
    * Determines whether the passed value is a positive safe integer.
    *
    * @param value - The value to be tested
    * @returns Whether the passed value is a positive safe integer.
    */
-  export function isPositive(test: unknown): boolean {
-    return Number.isSafeInteger(test) &&
-      inRange(test as number, 1, Number.MAX_SAFE_INTEGER);
+  export function isPositiveSafeInteger(test: unknown): boolean {
+    return Number.isSafeInteger(test) && isPositiveNumber(test);
   }
 
   /**
@@ -34,31 +51,24 @@ namespace SafeInteger {
    * @param value - The value to be tested
    * @returns Whether the passed value is a non-negative safe integer.
    */
-  export function isNonNegative(test: unknown): boolean {
-    return Number.isSafeInteger(test) &&
-      inRange(test as number, ZERO, Number.MAX_SAFE_INTEGER);
+  export function isNonNegativeSafeInteger(test: unknown): boolean {
+    return Number.isSafeInteger(test) && isNonNegativeNumber(test);
   }
 
-  export function isOdd(test: unknown): boolean {
-    return Number.isSafeInteger(test)
-      ? (((test as SafeInteger) % 2) !== ZERO)
-      : false;
+  export function isOddSafeInteger(test: unknown): boolean {
+    return Number.isSafeInteger(test) && isOddInteger(test);
   }
 
-  export function isEven(test: unknown): boolean {
-    return Number.isSafeInteger(test)
-      ? (((test as SafeInteger) % 2) === ZERO)
-      : false;
+  export function isEvenSafeInteger(test: unknown): boolean {
+    return Number.isSafeInteger(test) && isEvenInteger(test);
   }
 
-  export function round(
+  export function roundToSafeInteger(
     source: number,
     roundingMode: RoundingMode,
   ): SafeInteger {
-    if (typeof source !== "number") {
+    if (Number.isFinite(source) !== true) {
       throw new TypeError("source");
-    } else if (Number.isFinite(source) !== true) {
-      throw new RangeError("source");
     }
 
     //TODO 不足
@@ -68,7 +78,8 @@ namespace SafeInteger {
       throw new RangeError("source");
     }
 
-    const integralPart = _normalize(Math.trunc(source));
+    const integralPart = normalizeNumber(Math.trunc(source));
+    const integralPartIsEven = isEvenInteger(integralPart); // safe-integerであることは明らかなのでisEvenIntegerを使用する
 
     if (typeof roundingMode !== "symbol") {
       throw new TypeError("roundingMode");
@@ -79,12 +90,12 @@ namespace SafeInteger {
     }
 
     if (Number.isInteger(source)) {
-      return _normalize(source);
+      return normalizeNumber(source);
     }
 
-    const nearestP = _normalize(Math.ceil(source));
-    const nearestN = _normalize(Math.floor(source));
-    const isNegative = source < ZERO;
+    const nearestP = normalizeNumber(Math.ceil(source));
+    const nearestN = normalizeNumber(Math.floor(source));
+    const sourceIsNegative = isNegativeNumber(source);
     const nearestPH = nearestP - 0.5;
     const nearestNH = nearestN + 0.5;
 
@@ -107,7 +118,7 @@ namespace SafeInteger {
         return integralPart;
 
       case RoundingMode.AWAY_FROM_ZERO:
-        return isNegative ? nearestN : nearestP;
+        return sourceIsNegative ? nearestN : nearestP;
 
       case RoundingMode.HALF_UP:
         return halfUp();
@@ -116,21 +127,21 @@ namespace SafeInteger {
         return halfDown();
 
       case RoundingMode.HALF_TOWARD_ZERO:
-        return isNegative ? halfUp() : halfDown();
+        return sourceIsNegative ? halfUp() : halfDown();
 
       case RoundingMode.HALF_AWAY_FROM_ZERO:
-        return isNegative ? halfDown() : halfUp();
+        return sourceIsNegative ? halfDown() : halfUp();
 
       case RoundingMode.HALF_TO_EVEN:
-        if (isNegative) {
+        if (sourceIsNegative) {
           if (source === nearestPH) {
-            return ((integralPart % 2) === ZERO) ? integralPart : nearestN;
+            return integralPartIsEven ? integralPart : nearestN;
           }
           return halfDown();
         }
 
         if (source === nearestNH) {
-          return ((integralPart % 2) === ZERO) ? integralPart : nearestP;
+          return integralPartIsEven ? integralPart : nearestP;
         }
         return halfUp();
 
@@ -139,85 +150,72 @@ namespace SafeInteger {
     }
   }
 
-  export type FromOptions = {
-    fallback?: SafeInteger;
-    roundingMode?: RoundingMode;
-    lowerLimit?: SafeInteger;
-    upperLimit?: SafeInteger;
-    strict?: boolean; // doNotTreatFalsyAsZero & acceptsOnlyIntegers
-  };
-
-  function _isNullableSafeInteger(
-    test: unknown,
-  ): { isSafeInteger: boolean; isNull: boolean } {
-    return {
-      isSafeInteger: Number.isSafeInteger(test),
-      isNull: (test === undefined) || (test === null),
-    };
+  export function clampToSafeInteger(
+    source: number,
+    range: Range,
+  ): SafeInteger {
+    return clampNumber(source, _toSafeIntegerRange(range));
   }
 
-  function _normalizeRange(
-    lowerLimit?: number,
-    upperLimit?: number,
-  ): { lowerLimit: SafeInteger; upperLimit: SafeInteger } {
-    const { isSafeInteger: lowerLimitIsInteger, isNull: lowerLimitIsNull } =
-      _isNullableSafeInteger(lowerLimit);
-    if ((lowerLimitIsNull !== true) && (lowerLimitIsInteger !== true)) {
-      throw new TypeError("lowerLimit");
-    }
-    const { isSafeInteger: upperLimitIsInteger, isNull: upperLimitIsNull } =
-      _isNullableSafeInteger(upperLimit);
-    if ((upperLimitIsNull !== true) && (upperLimitIsInteger !== true)) {
-      throw new TypeError("upperLimit");
-    }
-    const normalizedLowerLimit = lowerLimitIsInteger
-      ? _normalize(lowerLimit as SafeInteger)
-      : Number.MIN_SAFE_INTEGER;
-    const normalizedUpperLimit = upperLimitIsInteger
-      ? _normalize(upperLimit as SafeInteger)
-      : Number.MAX_SAFE_INTEGER;
-    return {
-      lowerLimit: normalizedLowerLimit,
-      upperLimit: normalizedUpperLimit,
+  export type FromOptions = {
+    strict?: boolean; // doNotTreatFalsyAsZero & acceptsOnlyIntegers
+    fallback?: SafeInteger;
+    roundingMode?: RoundingMode;
+    clampRange?: Range;
+  };
+
+  export namespace FromOptions {
+    export type Resolved = {
+      strict: boolean;
+      fallback: SafeInteger;
+      roundingMode: RoundingMode;
+      clampRange: Range;
     };
+
+    export function resolve(options: FromOptions | Resolved = {}): Resolved {
+      const strict = (options as Resolved)?.strict === true;
+      let fallback = ZERO;
+      if (isNumber(options?.fallback)) {
+        if (Number.isSafeInteger(options.fallback)) {
+          fallback = options.fallback;
+        } else if ((options.fallback) >= Number.MAX_SAFE_INTEGER) {
+          fallback = Number.MAX_SAFE_INTEGER;
+        } else if ((options.fallback) <= Number.MIN_SAFE_INTEGER) {
+          fallback = Number.MIN_SAFE_INTEGER;
+        }
+      }
+      const roundingMode = _resolveRoundingMode(options?.roundingMode);
+      const clampRange = _toSafeIntegerRange(options?.clampRange);
+
+      return {
+        strict,
+        fallback,
+        roundingMode,
+        clampRange,
+      };
+    }
   }
 
   /*
-                        | null      |       |       |       |       |       |       |
-                        | undefined | NaN   | ""    | +∞    | -∞    | > MAX | < MIN |
-    --------------------|-----------|-------|-------|-------|-------|-------|-------|
-    fromNumber(strict)  | Error     | Error | N/A   | Error | Error | Error | Error |
-    fromNumber(!strict) | 0         | 0     | N/A   | MAX   | MIN   | MAX   | MIN   |
-    fromBigInt(strict)  | Error     | N/A   | N/A   | N/A   | N/A   | Error | Error |
-    fromBigInt(!strict) | 0         | N/A   | N/A   | N/A   | N/A   | MAX   | MIN   |
-    fromString(strict)  | Error     | N/A   | Error | N/A   | N/A   | Error | Error |
-    fromString(!strict) | 0         | N/A   | 0     | N/A   | N/A   | MAX   | MIN   |
+                      | null      |       |       |       |       |       |       |
+                      | undefined | NaN   | ""    | +∞    | -∞    | > MAX | < MIN |
+  --------------------|-----------|-------|-------|-------|-------|-------|-------|
+  fromNumber(strict)  | Error     | Error | N/A   | Error | Error | Error | Error |
+  fromNumber(!strict) | 0         | 0     | N/A   | MAX   | MIN   | MAX   | MIN   |
+  fromBigInt(strict)  | Error     | N/A   | N/A   | N/A   | N/A   | Error | Error |
+  fromBigInt(!strict) | 0         | N/A   | N/A   | N/A   | N/A   | MAX   | MIN   |
+  fromString(strict)  | Error     | N/A   | Error | N/A   | N/A   | Error | Error |
+  fromString(!strict) | 0         | N/A   | 0     | N/A   | N/A   | MAX   | MIN   |
   */
 
   export function fromNumber(
     source?: number,
     options?: FromOptions,
   ): SafeInteger {
-    const { lowerLimit, upperLimit } = _normalizeRange(
-      options?.lowerLimit,
-      options?.upperLimit,
-    );
-    const cn = (i: SafeInteger): SafeInteger => {
-      return clamp(_normalize(i), lowerLimit, upperLimit);
-    };
-
-    const { isSafeInteger: fallbackIsInteger, isNull: fallbackIsNull } =
-      _isNullableSafeInteger(options?.fallback);
-    if ((fallbackIsNull !== true) && (fallbackIsInteger !== true)) {
-      throw new TypeError("options.fallback");
-    }
-
-    const normalizedFallback = fallbackIsInteger
-      ? cn(options?.fallback as SafeInteger)
-      : ZERO;
+    const resolvedOptions = FromOptions.resolve(options);
 
     let adjusted = source;
-    if (options?.strict === true) {
+    if (resolvedOptions.strict === true) {
       if (typeof adjusted !== "number") {
         throw new TypeError("source");
       }
@@ -232,48 +230,40 @@ namespace SafeInteger {
           adjusted = Number.MIN_SAFE_INTEGER;
         }
       } else {
-        if (
-          (typeof adjusted !== "number") && (adjusted !== null) &&
-          (adjusted !== undefined)
-        ) {
+        if (typeof (adjusted ?? Number.NaN) !== "number") {
+          // number,null,undefined のいずれでもない場合
           throw new TypeError("source");
         } else if (adjusted === Number.POSITIVE_INFINITY) {
           adjusted = Number.MAX_SAFE_INTEGER;
         } else if (adjusted === Number.NEGATIVE_INFINITY) {
           adjusted = Number.MIN_SAFE_INTEGER;
         } else {
-          adjusted = normalizedFallback;
+          adjusted = resolvedOptions.fallback;
         }
       }
     }
 
     if (Number.isSafeInteger(adjusted)) {
-      return cn(adjusted as number);
+      return clampNumber(adjusted as number, resolvedOptions.clampRange); // clampRangeはsafe-integerなのでclampToSafeIntegerを使用する
     }
 
-    let roundingMode = RoundingMode.TRUNCATE;
-    if (
-      options?.roundingMode &&
-      Object.values(RoundingMode).includes(options.roundingMode)
-    ) {
-      roundingMode = options.roundingMode;
-    }
-    const rounded = round(adjusted as number, roundingMode);
-    return cn(rounded);
+    const rounded = roundToSafeInteger(
+      adjusted as number,
+      resolvedOptions.roundingMode,
+    );
+    return clampNumber(rounded, resolvedOptions.clampRange); // clampRangeはsafe-integerなのでclampToSafeIntegerを使用する
   }
 
   export function fromBigInt(
     source?: bigint,
     options?: FromOptions,
   ): SafeInteger {
-    if (
-      (typeof source !== "bigint") && (source !== null) &&
-      (source !== undefined)
-    ) {
+    if (typeof (source ?? 0n) !== "bigint") {
+      // bigint,null,undefined のいずれでもない場合
       throw new TypeError("source");
     }
 
-    // ignore options.roundingMode
+    // ignore options.roundingMode, strict, fallback
     return fromNumber(Number(source), options);
   }
 
@@ -281,10 +271,8 @@ namespace SafeInteger {
     source?: string,
     options?: FromOptions,
   ): SafeInteger {
-    if (
-      (typeof source !== "string") && (source !== null) &&
-      (source !== undefined)
-    ) {
+    if (typeof (source ?? "") !== "string") {
+      // string,null,undefined のいずれでもない場合
       throw new TypeError("source");
     }
 
@@ -303,15 +291,14 @@ namespace SafeInteger {
       if (typeof adjusted === "string") {
         adjusted = adjusted.trim();
       }
-      if (
-        (adjusted === "") || (adjusted === null) || (adjusted === undefined)
-      ) {
+      if ((adjusted ?? "") === "") {
+        // stringかつ"",null,undefined のいずれかの場合
         return fromNumber(Number.NaN, options);
       }
     }
 
-    if (pattern.test(adjusted)) {
-      return fromNumber(Number.parseFloat(adjusted), options);
+    if (pattern.test(adjusted as string)) {
+      return fromNumber(Number.parseFloat(adjusted as string), options);
     }
     throw new RangeError("source");
   }
@@ -327,13 +314,8 @@ namespace SafeInteger {
 
   export function toString(source: SafeInteger): string {
     if (Number.isSafeInteger(source)) {
-      if (source === ZERO) {
-        return "0";
-      }
-      return source.toString(_RADIX_DECIMAL);
+      return normalizeNumber(source).toString(Radix.DECIMAL);
     }
     throw new TypeError("source");
   }
 }
-
-export { SafeInteger };

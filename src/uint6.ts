@@ -1,4 +1,4 @@
-import { SafeInteger } from "./safe_integer.ts";
+import { inRange } from "./main.ts";
 
 /**
  * The type of 6-bit unsigned integer.
@@ -84,13 +84,14 @@ namespace Uint6 {
   export const MAX_VALUE = 63;
 
   /**
-   * Determines whether the passed value is an 6-bit unsigned integer.
+   * Determines whether the passed `test` is an 6-bit unsigned integer.
    *
-   * @param value - The value to be tested
-   * @returns Whether the passed value is an 6-bit unsigned integer.
+   * @param test - The value to be tested
+   * @returns Whether the passed `test` is an 6-bit unsigned integer.
    */
-  export function isUint6(value: unknown): value is Uint6 {
-    return SafeInteger.isNonNegative(value) && ((value as number) <= MAX_VALUE);
+  export function isUint6(test: unknown): test is Uint6 {
+    return Number.isSafeInteger(test) &&
+      inRange(test as number, [MIN_VALUE, MAX_VALUE]);
   }
 }
 
