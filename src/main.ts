@@ -66,7 +66,7 @@ export function clampNumber(source: number, range: Range): number {
 
 export function inRange(test: number, range: Range): boolean {
   if ((isNumber(test) !== true) || Number.isNaN(test)) {
-    throw new TypeError("test");
+    return false;
   }
 
   const [min, max] = Range.resolve(range);
