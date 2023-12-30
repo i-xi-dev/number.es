@@ -3,14 +3,15 @@ import {
   isEvenInteger,
   isNegativeNumber,
   isNonNegativeNumber,
+  isNonPositiveNumber,
   isNumber,
   isOddInteger,
   isPositiveNumber,
   normalizeNumber,
+  Radix,
+  Range,
   ZERO,
 } from "./main.ts";
-import { Radix } from "./radix.ts";
-import { Range } from "./range.ts";
 import { RoundingMode } from "./rounding_mode.ts";
 
 // 事実上定義できないのでnumberの別名とする
@@ -22,8 +23,8 @@ function _toSafeIntegerRange(
   const [min, max] = Range.resolve(range as Range);
 
   return [
-    (min < Number.MIN_SAFE_INTEGER) ? Number.MIN_SAFE_INTEGER : Math.trunc(min),
-    (max > Number.MAX_SAFE_INTEGER) ? Number.MAX_SAFE_INTEGER : Math.trunc(max),
+    (min < Number.MIN_SAFE_INTEGER) ? Number.MIN_SAFE_INTEGER : Math.ceil(min),
+    (max > Number.MAX_SAFE_INTEGER) ? Number.MAX_SAFE_INTEGER : Math.floor(max),
   ];
 }
 
@@ -36,23 +37,31 @@ function _resolveRoundingMode(roundingMode?: RoundingMode): RoundingMode {
 
 export namespace SafeInteger {
   /**
-   * Determines whether the passed value is a positive safe integer.
+   * Determines whether the `test` is a positive safe integer.
    *
-   * @param value - The value to be tested
-   * @returns Whether the passed value is a positive safe integer.
+   * @param test - The value to be tested
+   * @returns Whether the `test` is a positive safe integer.
    */
   export function isPositiveSafeInteger(test: unknown): boolean {
     return Number.isSafeInteger(test) && isPositiveNumber(test);
   }
 
   /**
-   * Determines whether the passed value is a non-negative safe integer.
+   * Determines whether the `test` is a non-negative safe integer.
    *
-   * @param value - The value to be tested
-   * @returns Whether the passed value is a non-negative safe integer.
+   * @param test - The value to be tested
+   * @returns Whether the `test` is a non-negative safe integer.
    */
   export function isNonNegativeSafeInteger(test: unknown): boolean {
     return Number.isSafeInteger(test) && isNonNegativeNumber(test);
+  }
+
+  export function isNonPositiveSafeInteger(test: unknown): boolean {
+    return Number.isSafeInteger(test) && isNonPositiveNumber(test);
+  }
+
+  export function isNegativeSafeInteger(test: unknown): boolean {
+    return Number.isSafeInteger(test) && isNegativeNumber(test);
   }
 
   export function isOddSafeInteger(test: unknown): boolean {
@@ -71,10 +80,9 @@ export namespace SafeInteger {
       throw new TypeError("source");
     }
 
-    //TODO 不足
-    if (source >= Number.MAX_SAFE_INTEGER) {
+    if (source > Number.MAX_SAFE_INTEGER) {
       throw new RangeError("source");
-    } else if (source <= Number.MIN_SAFE_INTEGER) {
+    } else if (source < Number.MIN_SAFE_INTEGER) {
       throw new RangeError("source");
     }
 
@@ -150,13 +158,6 @@ export namespace SafeInteger {
     }
   }
 
-  export function clampToSafeInteger(
-    source: number,
-    range: Range,
-  ): SafeInteger {
-    return clampNumber(source, _toSafeIntegerRange(range));
-  }
-
   export type FromOptions = {
     strict?: boolean; // doNotTreatFalsyAsZero & acceptsOnlyIntegers
     fallback?: SafeInteger;
@@ -176,7 +177,7 @@ export namespace SafeInteger {
       const strict = (options as Resolved)?.strict === true;
       let fallback = ZERO;
       if (isNumber(options?.fallback)) {
-        if (Number.isSafeInteger(options.fallback)) {
+        if (Number.isFinite(options.fallback)) {
           fallback = options.fallback;
         } else if ((options.fallback) >= Number.MAX_SAFE_INTEGER) {
           fallback = Number.MAX_SAFE_INTEGER;
