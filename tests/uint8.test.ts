@@ -254,3 +254,56 @@ Deno.test("SafeInteger.toBigInt(any)", () => {
     "source",
   );
 });
+
+Deno.test("Uint8.fromString(string)", () => {
+  assertStrictEquals(Uint8.fromString(undefined as unknown as string), 0);
+  assertStrictEquals(Uint8.fromString("-1"), 0);
+  assertStrictEquals(Uint8.fromString("-0"), 0);
+  assertStrictEquals(Uint8.fromString("0"), 0);
+  assertStrictEquals(Uint8.fromString("63"), 63);
+  assertStrictEquals(Uint8.fromString("64"), 64);
+  assertStrictEquals(Uint8.fromString("255"), 255);
+  assertStrictEquals(Uint8.fromString("256"), 255);
+  assertStrictEquals(Uint8.fromString("0.1"), 0);
+  assertStrictEquals(Uint8.fromString("0.6"), 0);
+
+  assertThrows(
+    () => {
+      Uint8.fromString(Number.NaN as unknown as string);
+    },
+    TypeError,
+    "source",
+  );
+});
+
+Deno.test("Uint8.toString(string)", () => {
+  assertStrictEquals(Uint8.toString(1.0), "1");
+  assertStrictEquals(Uint8.toString(1), "1");
+  assertStrictEquals(Uint8.toString(0), "0");
+  assertStrictEquals(Uint8.toString(-0), "0");
+
+  assertThrows(
+    () => {
+      Uint8.toString(-1 as unknown as Uint8);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint8.toString(1.1 as unknown as Uint8);
+    },
+    TypeError,
+    "source",
+  );
+});
+
+Deno.test("SafeInteger.toString(any)", () => {
+  assertThrows(
+    () => {
+      Uint8.toString(false as unknown as Uint8);
+    },
+    TypeError,
+    "source",
+  );
+});
