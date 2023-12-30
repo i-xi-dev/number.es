@@ -73,7 +73,7 @@ Deno.test("Uint8.fromNumber(number, {}) - fallback", () => {
       });
     },
     TypeError,
-    "options.fallback",
+    "source",
   );
 });
 
@@ -173,7 +173,7 @@ Deno.test("Uint8.fromBigInt(bigint, {}) - fallback", () => {
       });
     },
     TypeError,
-    "options.fallback",
+    "source",
   );
 });
 
