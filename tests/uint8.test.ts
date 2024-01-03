@@ -7,6 +7,8 @@ Deno.test("Uint8.isUint8(number)", () => {
   assertStrictEquals(Uint8.isUint8(0), true);
   assertStrictEquals(Uint8.isUint8(63), true);
   assertStrictEquals(Uint8.isUint8(64), true);
+  assertStrictEquals(Uint8.isUint8(127), true);
+  assertStrictEquals(Uint8.isUint8(128), true);
   assertStrictEquals(Uint8.isUint8(255), true);
   assertStrictEquals(Uint8.isUint8(256), false);
   assertStrictEquals(Uint8.isUint8(65535), false);
