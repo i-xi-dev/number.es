@@ -9,6 +9,10 @@ Deno.test("Uint6.isUint6(number)", () => {
   assertStrictEquals(Uint6.isUint6(64), false);
   assertStrictEquals(Uint6.isUint6(255), false);
   assertStrictEquals(Uint6.isUint6(256), false);
+  assertStrictEquals(Uint6.isUint6(65535), false);
+  assertStrictEquals(Uint6.isUint6(65536), false);
+  assertStrictEquals(Uint6.isUint6(0xFFFFFFFF), false);
+  assertStrictEquals(Uint6.isUint6(0x100000000), false);
   assertStrictEquals(Uint6.isUint6(0.1), false);
 });
 

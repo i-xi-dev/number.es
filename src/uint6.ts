@@ -3,7 +3,7 @@ import { inRange } from "./main.ts";
 /**
  * The type of 6-bit unsigned integer.
  */
-type Uint6 =
+export type Uint6 =
   | 0
   | 1
   | 2
@@ -69,10 +69,7 @@ type Uint6 =
   | 62
   | 63;
 
-/**
- * The 6-bit unsigned integer
- */
-namespace Uint6 {
+export namespace Uint6 {
   /**
    * The minimum value of 6-bit unsigned integer.
    */
@@ -94,5 +91,3 @@ namespace Uint6 {
       inRange(test as number, [MIN_VALUE, MAX_VALUE]);
   }
 }
-
-export { Uint6 };

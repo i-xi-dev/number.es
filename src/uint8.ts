@@ -5,7 +5,7 @@ import { SafeInteger } from "./safe_integer.ts";
 /**
  * The type of 8-bit unsigned integer.
  */
-type Uint8 =
+export type Uint8 =
   | 0x0
   | 0x1
   | 0x2
@@ -280,10 +280,7 @@ function _toSafeIntegerFromOptions(
   });
 }
 
-/**
- * The 8-bit unsigned integer
- */
-namespace Uint8 {
+export namespace Uint8 {
   /**
    * The minimum value of 8-bit unsigned integer.
    */
@@ -343,5 +340,3 @@ namespace Uint8 {
     throw new TypeError("source");
   }
 }
-
-export { Uint8 };
