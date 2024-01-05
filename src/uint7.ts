@@ -134,6 +134,8 @@ export type Uint7 =
   | 0x7F;
 
 export namespace Uint7 {
+  export const SIZE = 7;
+
   /**
    * The minimum value of 7-bit unsigned integer.
    */

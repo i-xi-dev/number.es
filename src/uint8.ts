@@ -280,7 +280,14 @@ function _toSafeIntegerFromOptions(
   });
 }
 
+const _RotateAmounts = [0, 1, 2, 3, 4, 5, 6, 7, 8] as const;
+type _RotateAmount = typeof _RotateAmounts[number];
+
 export namespace Uint8 {
+  export const BYTES = 1;
+
+  export const SIZE = 8;
+
   /**
    * The minimum value of 8-bit unsigned integer.
    */
@@ -338,5 +345,17 @@ export namespace Uint8 {
       return normalizeNumber(source).toString(Radix.DECIMAL);
     }
     throw new TypeError("source");
+  }
+
+  export function rotateLeft(source: Uint8, amount: _RotateAmount): Uint8 {
+    if (Uint8.isUint8(source) !== true) {
+      throw new TypeError("source");
+    }
+    if (_RotateAmounts.includes(amount) !== true) {
+      throw new TypeError("amount");
+    }
+
+    return (((source << amount) | (source >> (SIZE - amount))) &
+      0b11111111) as Uint8;
   }
 }

@@ -70,6 +70,8 @@ export type Uint6 =
   | 0x3F;
 
 export namespace Uint6 {
+  export const SIZE = 6;
+
   /**
    * The minimum value of 6-bit unsigned integer.
    */
