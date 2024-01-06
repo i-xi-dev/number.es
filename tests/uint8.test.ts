@@ -361,11 +361,26 @@ Deno.test("Uint8.rotateLeft(number, number)", () => {
 });
 
 Deno.test("Uint8.saturateFromSafeInteger(number)", () => {
-  assertStrictEquals(Uint8.saturateFromSafeInteger(-1), Uint8ClampedArray.of(-1)[0]);
-  assertStrictEquals(Uint8.saturateFromSafeInteger(-0), Uint8ClampedArray.of(-0)[0]);
-  assertStrictEquals(Uint8.saturateFromSafeInteger(0), Uint8ClampedArray.of(0)[0]);
-  assertStrictEquals(Uint8.saturateFromSafeInteger(255), Uint8ClampedArray.of(255)[0]);
-  assertStrictEquals(Uint8.saturateFromSafeInteger(256), Uint8ClampedArray.of(256)[0]);
+  assertStrictEquals(
+    Uint8.saturateFromSafeInteger(-1),
+    Uint8ClampedArray.of(-1)[0],
+  );
+  assertStrictEquals(
+    Uint8.saturateFromSafeInteger(-0),
+    Uint8ClampedArray.of(-0)[0],
+  );
+  assertStrictEquals(
+    Uint8.saturateFromSafeInteger(0),
+    Uint8ClampedArray.of(0)[0],
+  );
+  assertStrictEquals(
+    Uint8.saturateFromSafeInteger(255),
+    Uint8ClampedArray.of(255)[0],
+  );
+  assertStrictEquals(
+    Uint8.saturateFromSafeInteger(256),
+    Uint8ClampedArray.of(256)[0],
+  );
 
   assertThrows(
     () => {

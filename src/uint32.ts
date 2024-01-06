@@ -103,7 +103,6 @@ export namespace Uint32 {
     if (source === 0) {
       return 0;
     } else if (source > 0) {
-      console.log(`${source} % ${count} => ${source % count}`)
       return (source % count) as Uint32;
     } else {
       return (count + (source % count)) as Uint32;

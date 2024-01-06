@@ -362,12 +362,30 @@ Deno.test("Uint32.truncateFromSafeInteger(number)", () => {
   assertStrictEquals(Uint32.truncateFromSafeInteger(-1), Uint32Array.of(-1)[0]);
   assertStrictEquals(Uint32.truncateFromSafeInteger(-0), Uint32Array.of(-0)[0]);
   assertStrictEquals(Uint32.truncateFromSafeInteger(0), Uint32Array.of(0)[0]);
-  assertStrictEquals(Uint32.truncateFromSafeInteger(255), Uint32Array.of(255)[0]);
-  assertStrictEquals(Uint32.truncateFromSafeInteger(256), Uint32Array.of(256)[0]);
-  assertStrictEquals(Uint32.truncateFromSafeInteger(65535), Uint32Array.of(65535)[0]);
-  assertStrictEquals(Uint32.truncateFromSafeInteger(65536), Uint32Array.of(65536)[0]);
-  assertStrictEquals(Uint32.truncateFromSafeInteger(0xFFFFFFFF), Uint32Array.of(0xFFFFFFFF)[0]);
-  assertStrictEquals(Uint32.truncateFromSafeInteger(0x100000000), Uint32Array.of(0x100000000)[0]);
+  assertStrictEquals(
+    Uint32.truncateFromSafeInteger(255),
+    Uint32Array.of(255)[0],
+  );
+  assertStrictEquals(
+    Uint32.truncateFromSafeInteger(256),
+    Uint32Array.of(256)[0],
+  );
+  assertStrictEquals(
+    Uint32.truncateFromSafeInteger(65535),
+    Uint32Array.of(65535)[0],
+  );
+  assertStrictEquals(
+    Uint32.truncateFromSafeInteger(65536),
+    Uint32Array.of(65536)[0],
+  );
+  assertStrictEquals(
+    Uint32.truncateFromSafeInteger(0xFFFFFFFF),
+    Uint32Array.of(0xFFFFFFFF)[0],
+  );
+  assertStrictEquals(
+    Uint32.truncateFromSafeInteger(0x100000000),
+    Uint32Array.of(0x100000000)[0],
+  );
 
   for (let i = 1; i < Number.MAX_SAFE_INTEGER; i = i * 3) {
     console.log(`${i} -> ${i % 0x100000000}`);
