@@ -69,16 +69,11 @@ export namespace Uint32 {
       return source;
     }
 
-    if (source > 0b111111_11111111_11111111_11111111) {
-      const bs = BigInt(source);
-      return Number(
-        ((bs << BigInt(amount)) | (bs >> BigInt(SIZE - amount))) &
-          0b11111111_11111111_11111111_11111111n,
-      ) as Uint32;
-    } else {
-      return (((source << amount) | (source >> (SIZE - amount))) &
-        0b111111_11111111_11111111_11111111) as Uint32;
-    }
+    const bs = BigInt(source);
+    return Number(
+      ((bs << BigInt(amount)) | (bs >> BigInt(SIZE - amount))) &
+        0b11111111_11111111_11111111_11111111n,
+    ) as Uint32;
   }
 
   export function saturateFromSafeInteger(source: SafeInteger): Uint32 {
