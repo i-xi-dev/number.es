@@ -1,4 +1,5 @@
-import { inRange } from "./main.ts";
+import { inRange, normalizeNumber } from "./main.ts";
+import { SafeInteger } from "./safe_integer.ts";
 
 /**
  * The type of 16-bit unsigned integer.
@@ -50,5 +51,18 @@ export namespace Uint16 {
 
     return (((source << amount) | (source >> (SIZE - amount))) &
       0b11111111_11111111) as Uint16;
+  }
+
+  export function saturateFromSafeInteger(source: SafeInteger): Uint16 {
+    if (Number.isSafeInteger(source) !== true) {
+      throw new TypeError("source");
+    }
+
+    if (source > MAX_VALUE) {
+      return MAX_VALUE;
+    } else if (source < MIN_VALUE) {
+      return MIN_VALUE;
+    }
+    return normalizeNumber(source) as Uint16;
   }
 }

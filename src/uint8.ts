@@ -358,4 +358,17 @@ export namespace Uint8 {
     return (((source << amount) | (source >> (SIZE - amount))) &
       0b11111111) as Uint8;
   }
+
+  export function saturateFromSafeInteger(source: SafeInteger): Uint8 {
+    if (Number.isSafeInteger(source) !== true) {
+      throw new TypeError("source");
+    }
+
+    if (source > MAX_VALUE) {
+      return MAX_VALUE;
+    } else if (source < MIN_VALUE) {
+      return MIN_VALUE;
+    }
+    return normalizeNumber(source) as Uint8;
+  }
 }
