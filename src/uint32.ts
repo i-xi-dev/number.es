@@ -65,12 +65,20 @@ export namespace Uint32 {
       throw new TypeError("amount");
     }
 
-    // numberのbit演算は31ビットまで
-    const bs = BigInt(source);
-    return Number(
-      ((bs << BigInt(amount)) | (bs >> BigInt(SIZE - amount))) &
-        0b11111111_11111111_11111111_11111111n,
-    ) as Uint32;
+    if (amount === 0 || amount === SIZE) {
+      return source;
+    }
+
+    if (source > 0b111111_11111111_11111111_11111111) {
+      const bs = BigInt(source);
+      return Number(
+        ((bs << BigInt(amount)) | (bs >> BigInt(SIZE - amount))) &
+          0b11111111_11111111_11111111_11111111n,
+      ) as Uint32;
+    } else {
+      return (((source << amount) | (source >> (SIZE - amount))) &
+        0b111111_11111111_11111111_11111111) as Uint32;
+    }
   }
 
   export function saturateFromSafeInteger(source: SafeInteger): Uint32 {
@@ -84,5 +92,21 @@ export namespace Uint32 {
       return MIN_VALUE;
     }
     return normalizeNumber(source) as Uint32;
+  }
+
+  export function truncateFromSafeInteger(source: SafeInteger): Uint32 {
+    if (Number.isSafeInteger(source) !== true) {
+      throw new TypeError("source");
+    }
+
+    const count = 0x100000000;
+    if (source === 0) {
+      return 0;
+    } else if (source > 0) {
+      console.log(`${source} % ${count} => ${source % count}`)
+      return (source % count) as Uint32;
+    } else {
+      return (count + (source % count)) as Uint32;
+    }
   }
 }

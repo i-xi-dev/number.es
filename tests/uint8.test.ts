@@ -361,11 +361,11 @@ Deno.test("Uint8.rotateLeft(number, number)", () => {
 });
 
 Deno.test("Uint8.saturateFromSafeInteger(number)", () => {
-  assertStrictEquals(Uint8.saturateFromSafeInteger(-1), 0);
-  assertStrictEquals(Uint8.saturateFromSafeInteger(-0), 0);
-  assertStrictEquals(Uint8.saturateFromSafeInteger(0), 0);
-  assertStrictEquals(Uint8.saturateFromSafeInteger(255), 255);
-  assertStrictEquals(Uint8.saturateFromSafeInteger(256), 255);
+  assertStrictEquals(Uint8.saturateFromSafeInteger(-1), Uint8ClampedArray.of(-1)[0]);
+  assertStrictEquals(Uint8.saturateFromSafeInteger(-0), Uint8ClampedArray.of(-0)[0]);
+  assertStrictEquals(Uint8.saturateFromSafeInteger(0), Uint8ClampedArray.of(0)[0]);
+  assertStrictEquals(Uint8.saturateFromSafeInteger(255), Uint8ClampedArray.of(255)[0]);
+  assertStrictEquals(Uint8.saturateFromSafeInteger(256), Uint8ClampedArray.of(256)[0]);
 
   assertThrows(
     () => {
@@ -384,6 +384,46 @@ Deno.test("Uint8.saturateFromSafeInteger(number)", () => {
   assertThrows(
     () => {
       Uint8.saturateFromSafeInteger(1.5);
+    },
+    TypeError,
+    "source",
+  );
+});
+
+Deno.test("Uint8.truncateFromSafeInteger(number)", () => {
+  assertStrictEquals(Uint8.truncateFromSafeInteger(-1), Uint8Array.of(-1)[0]);
+  assertStrictEquals(Uint8.truncateFromSafeInteger(-0), Uint8Array.of(-0)[0]);
+  assertStrictEquals(Uint8.truncateFromSafeInteger(0), Uint8Array.of(0)[0]);
+  assertStrictEquals(Uint8.truncateFromSafeInteger(255), Uint8Array.of(255)[0]);
+  assertStrictEquals(Uint8.truncateFromSafeInteger(256), Uint8Array.of(256)[0]);
+
+  for (let i = 1; i < Number.MAX_SAFE_INTEGER; i = i * 3) {
+    console.log(`${i} -> ${i % 256}`);
+    assertStrictEquals(Uint8.truncateFromSafeInteger(i), Uint8Array.of(i)[0]);
+  }
+
+  for (let i = -1; i > Number.MIN_SAFE_INTEGER; i = i * 3) {
+    console.log(`${i} -> ${256 + (i % 256)}`);
+    assertStrictEquals(Uint8.truncateFromSafeInteger(i), Uint8Array.of(i)[0]);
+  }
+
+  assertThrows(
+    () => {
+      Uint8.truncateFromSafeInteger("" as unknown as number);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint8.truncateFromSafeInteger(Number.NaN);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint8.truncateFromSafeInteger(1.5);
     },
     TypeError,
     "source",

@@ -49,6 +49,10 @@ export namespace Uint16 {
       throw new TypeError("amount");
     }
 
+    if (amount === 0 || amount === SIZE) {
+      return source;
+    }
+
     return (((source << amount) | (source >> (SIZE - amount))) &
       0b11111111_11111111) as Uint16;
   }
@@ -64,5 +68,20 @@ export namespace Uint16 {
       return MIN_VALUE;
     }
     return normalizeNumber(source) as Uint16;
+  }
+
+  export function truncateFromSafeInteger(source: SafeInteger): Uint16 {
+    if (Number.isSafeInteger(source) !== true) {
+      throw new TypeError("source");
+    }
+
+    const count = 65536;
+    if (source === 0) {
+      return 0;
+    } else if (source > 0) {
+      return (source % count) as Uint16;
+    } else {
+      return (count + (source % count)) as Uint16;
+    }
   }
 }

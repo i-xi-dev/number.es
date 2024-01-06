@@ -227,3 +227,45 @@ Deno.test("Uint16.saturateFromSafeInteger(number)", () => {
     "source",
   );
 });
+
+Deno.test("Uint16.truncateFromSafeInteger(number)", () => {
+  assertStrictEquals(Uint16.truncateFromSafeInteger(-1), Uint16Array.of(-1)[0]);
+  assertStrictEquals(Uint16.truncateFromSafeInteger(-0), Uint16Array.of(-0)[0]);
+  assertStrictEquals(Uint16.truncateFromSafeInteger(0), Uint16Array.of(0)[0]);
+  assertStrictEquals(Uint16.truncateFromSafeInteger(255), Uint16Array.of(255)[0]);
+  assertStrictEquals(Uint16.truncateFromSafeInteger(256), Uint16Array.of(256)[0]);
+  assertStrictEquals(Uint16.truncateFromSafeInteger(65535), Uint16Array.of(65535)[0]);
+  assertStrictEquals(Uint16.truncateFromSafeInteger(65536), Uint16Array.of(65536)[0]);
+
+  for (let i = 1; i < Number.MAX_SAFE_INTEGER; i = i * 3) {
+    console.log(`${i} -> ${i % 65536}`);
+    assertStrictEquals(Uint16.truncateFromSafeInteger(i), Uint16Array.of(i)[0]);
+  }
+
+  for (let i = -1; i > Number.MIN_SAFE_INTEGER; i = i * 3) {
+    console.log(`${i} -> ${65536 + (i % 65536)}`);
+    assertStrictEquals(Uint16.truncateFromSafeInteger(i), Uint16Array.of(i)[0]);
+  }
+
+  assertThrows(
+    () => {
+      Uint16.truncateFromSafeInteger("" as unknown as number);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint16.truncateFromSafeInteger(Number.NaN);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint16.truncateFromSafeInteger(1.5);
+    },
+    TypeError,
+    "source",
+  );
+});

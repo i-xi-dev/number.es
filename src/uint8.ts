@@ -355,10 +355,15 @@ export namespace Uint8 {
       throw new TypeError("amount");
     }
 
+    if (amount === 0 || amount === SIZE) {
+      return source;
+    }
+
     return (((source << amount) | (source >> (SIZE - amount))) &
       0b11111111) as Uint8;
   }
 
+  // Uint8ClampedArrayにオーバーフローorアンダーフローする整数をセットしたのと同じ結果
   export function saturateFromSafeInteger(source: SafeInteger): Uint8 {
     if (Number.isSafeInteger(source) !== true) {
       throw new TypeError("source");
@@ -370,5 +375,21 @@ export namespace Uint8 {
       return MIN_VALUE;
     }
     return normalizeNumber(source) as Uint8;
+  }
+
+  // Uint8Arrayにオーバーフローorアンダーフローする整数をセットしたのと同じ結果
+  export function truncateFromSafeInteger(source: SafeInteger): Uint8 {
+    if (Number.isSafeInteger(source) !== true) {
+      throw new TypeError("source");
+    }
+
+    const count = 256;
+    if (source === 0) {
+      return 0;
+    } else if (source > 0) {
+      return (source % count) as Uint8;
+    } else {
+      return (count + (source % count)) as Uint8;
+    }
   }
 }
