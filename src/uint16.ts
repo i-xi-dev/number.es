@@ -1,5 +1,4 @@
 import { inRange } from "./main.ts";
-import { SafeInteger } from "./safe_integer.ts";
 
 /**
  * The type of 16-bit unsigned integer.
