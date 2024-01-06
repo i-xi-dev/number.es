@@ -169,6 +169,75 @@ Deno.test("Uint16.rotateLeft(number, number)", () => {
   );
 
   assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 0),
+    0b00000000_00000001,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 1),
+    0b00000000_00000010,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 2),
+    0b00000000_00000100,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 3),
+    0b00000000_00001000,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 4),
+    0b00000000_00010000,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 5),
+    0b00000000_00100000,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 6),
+    0b00000000_01000000,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 7),
+    0b00000000_10000000,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 8),
+    0b00000001_00000000,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 9),
+    0b00000010_00000000,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 10),
+    0b00000100_00000000,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 11),
+    0b00001000_00000000,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 12),
+    0b00010000_00000000,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 13),
+    0b00100000_00000000,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 14),
+    0b01000000_00000000,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 15),
+    0b10000000_00000000,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 16),
+    0b00000000_00000001,
+  );
+
+  assertStrictEquals(
     Uint16.rotateLeft(0b11111111_11111111, 1),
     0b11111111_11111111,
   );
