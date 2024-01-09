@@ -1,5 +1,7 @@
 import { assertStrictEquals, assertThrows } from "./deps.ts";
-import {
+import { NumberEx } from "../mod.ts";
+
+const {
   clampNumber,
   inRange,
   isEvenInteger,
@@ -12,7 +14,7 @@ import {
   normalizeNumber,
   Radix,
   ZERO,
-} from "../mod.ts";
+} = NumberEx;
 
 Deno.test("ZERO", () => {
   assertStrictEquals(ZERO, 0);
