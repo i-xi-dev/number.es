@@ -1,5 +1,5 @@
 import { assertStrictEquals, assertThrows } from "./deps.ts";
-import { NumberEx } from "../mod.ts";
+import { NumberEx, Radix } from "../mod.ts";
 
 const {
   clampNumber,
@@ -12,7 +12,6 @@ const {
   isOddInteger,
   isPositiveNumber,
   normalizeNumber,
-  Radix,
   ZERO,
 } = NumberEx;
 

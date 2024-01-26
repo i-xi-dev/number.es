@@ -1,4 +1,4 @@
-import { inRange, normalizeNumber } from "./main.ts";
+import { inRange, normalizeNumber } from "./number.ts";
 import { SafeInteger } from "./safe_integer.ts";
 
 /**
@@ -50,9 +50,9 @@ export namespace Uint32 {
 
   export const MIN_VALUE = 0x0;
 
-  export const MAX_VALUE = 0xFFFFFFFF;
+  export const MAX_VALUE = 0xFFFF_FFFF;
 
-  export function isUint32(test: unknown): test is Uint32 {
+  export function isUint32(test: unknown): boolean {
     return Number.isSafeInteger(test) &&
       inRange(test as number, [MIN_VALUE, MAX_VALUE]);
   }

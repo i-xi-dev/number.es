@@ -8,19 +8,19 @@ import {
   isOddInteger,
   isPositiveNumber,
   normalizeNumber,
-  Radix,
-  Range,
   ZERO,
-} from "./main.ts";
+} from "./number.ts";
+import { NumberRange } from "./number_range.ts";
+import { Radix } from "./radix.ts";
 import { RoundingMode } from "./rounding_mode.ts";
 
 // 事実上定義できないのでnumberの別名とする
 export type SafeInteger = number;
 
 function _toSafeIntegerRange(
-  range: unknown, /* (Range | Resolved) */
-): Range.Resolved {
-  const [min, max] = Range.resolve(range as Range);
+  range: unknown, /* (NumberRange | Resolved) */
+): NumberRange.Resolved {
+  const [min, max] = NumberRange.resolve(range as NumberRange);
 
   return [
     (min < Number.MIN_SAFE_INTEGER) ? Number.MIN_SAFE_INTEGER : Math.ceil(min),
@@ -162,7 +162,7 @@ export namespace SafeInteger {
     strict?: boolean; // doNotTreatFalsyAsZero & acceptsOnlyIntegers
     fallback?: SafeInteger;
     roundingMode?: RoundingMode;
-    clampRange?: Range;
+    clampRange?: NumberRange;
   };
 
   export namespace FromOptions {
@@ -170,7 +170,7 @@ export namespace SafeInteger {
       strict: boolean;
       fallback: SafeInteger;
       roundingMode: RoundingMode;
-      clampRange: Range;
+      clampRange: NumberRange;
     };
 
     export function resolve(options: FromOptions | Resolved = {}): Resolved {

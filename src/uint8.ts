@@ -1,4 +1,6 @@
-import { inRange, normalizeNumber, Radix, Range } from "./main.ts";
+import { inRange, normalizeNumber } from "./number.ts";
+import { NumberRange } from "./number_range.ts";
+import { Radix } from "./radix.ts";
 import { RoundingMode } from "./rounding_mode.ts";
 import { SafeInteger } from "./safe_integer.ts";
 
@@ -268,7 +270,7 @@ function _toSafeIntegerFromOptions(
     unknown /* (Uint8.FromOptions | SafeInteger.FromOptions | SafeInteger.FromOptions.Resolved) */ =
       {},
 ): SafeInteger.FromOptions.Resolved {
-  const clampRange = Range.resolve(
+  const clampRange = NumberRange.resolve(
     (options as SafeInteger.FromOptions.Resolved)?.clampRange,
   );
   clampRange[0] = Math.max(clampRange[0], Uint8.MIN_VALUE);

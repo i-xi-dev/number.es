@@ -1,4 +1,4 @@
-import { inRange, normalizeNumber } from "./main.ts";
+import { inRange, normalizeNumber } from "./number.ts";
 import { SafeInteger } from "./safe_integer.ts";
 
 /**
@@ -36,7 +36,7 @@ export namespace Uint16 {
 
   export const MAX_VALUE = 0xFFFF;
 
-  export function isUint16(test: unknown): test is Uint16 {
+  export function isUint16(test: unknown): boolean {
     return Number.isSafeInteger(test) &&
       inRange(test as number, [MIN_VALUE, MAX_VALUE]);
   }

@@ -1,20 +1,9 @@
+import * as _Utils from "./_utils.ts";
+import { NumberRange } from "./number_range.ts";
+
 export const ZERO = 0;
 
-/**
- * 2, 8, 10, or 16.
- */
-export const Radix = {
-  BINARY: 2,
-  DECIMAL: 10,
-  HEXADECIMAL: 16,
-  OCTAL: 8,
-} as const;
-
-export type Radix = typeof Radix[keyof typeof Radix];
-
-export function isNumber(test: unknown): test is number {
-  return (typeof test === "number");
-}
+export const isNumber = _Utils._isNumber;
 
 /**
  * Determines whether the `test` is a positive number.
@@ -61,60 +50,12 @@ export function normalizeNumber(source: number): number {
   return (source === ZERO) ? ZERO : source;
 }
 
-export type Range = [min: number, max: number] | [minmax: number];
-
-export namespace Range {
-  export type Resolved = [
-    min: number,
-    max: number,
-  ];
-
-  export function resolve(range: unknown /* (Range | Resolved) */): Resolved {
-    let min = Number.NEGATIVE_INFINITY;
-    let max = Number.POSITIVE_INFINITY;
-    if (Array.isArray(range)) {
-      if (range.length > 0) {
-        if (isNumber(range[0])) {
-          if (Number.isNaN(range[0])) {
-            throw new RangeError("range[0]");
-          }
-
-          // finite or infinity
-          min = range[0];
-        } else {
-          throw new TypeError("range[0]");
-        }
-
-        if (range.length > 1) {
-          if (isNumber(range[1])) {
-            if (Number.isNaN(range[1])) {
-              throw new RangeError("range[1]");
-            }
-
-            // finite or infinity
-            max = range[1];
-          } else {
-            throw new TypeError("range[1]");
-          }
-        } else {
-          max = min;
-        }
-      }
-    }
-
-    return [
-      Math.min(min, max),
-      Math.max(min, max),
-    ];
-  }
-}
-
-export function clampNumber(source: number, range: Range): number {
+export function clampNumber(source: number, range: NumberRange): number {
   if ((isNumber(source) !== true) || Number.isNaN(source)) {
     throw new TypeError("source");
   }
 
-  const [min, max] = Range.resolve(range);
+  const [min, max] = NumberRange.resolve(range);
   const clamped = Math.max(
     min,
     Math.min(max, source),
@@ -122,11 +63,11 @@ export function clampNumber(source: number, range: Range): number {
   return normalizeNumber(clamped);
 }
 
-export function inRange(test: number, range: Range): boolean {
+export function inRange(test: number, range: NumberRange): boolean {
   if ((isNumber(test) !== true) || Number.isNaN(test)) {
     return false;
   }
 
-  const [min, max] = Range.resolve(range);
+  const [min, max] = NumberRange.resolve(range);
   return (test >= min) && (test <= max);
 }

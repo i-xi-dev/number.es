@@ -1,4 +1,4 @@
-import { inRange } from "./main.ts";
+import { inRange } from "./number.ts";
 
 /**
  * The type of 7-bit unsigned integer.
