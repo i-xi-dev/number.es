@@ -319,12 +319,12 @@ Deno.test("Uint16.truncateFromSafeInteger(number)", () => {
   );
 
   for (let i = 1; i < Number.MAX_SAFE_INTEGER; i = i * 3) {
-    console.log(`${i} -> ${i % 65536}`);
+    // console.log(`${i} -> ${i % 65536}`);
     assertStrictEquals(Uint16.truncateFromSafeInteger(i), Uint16Array.of(i)[0]);
   }
 
   for (let i = -1; i > Number.MIN_SAFE_INTEGER; i = i * 3) {
-    console.log(`${i} -> ${65536 + (i % 65536)}`);
+    // console.log(`${i} -> ${65536 + (i % 65536)}`);
     assertStrictEquals(Uint16.truncateFromSafeInteger(i), Uint16Array.of(i)[0]);
   }
 

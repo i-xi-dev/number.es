@@ -43,6 +43,8 @@ const _RotateAmounts = [
 ] as const;
 type _RotateAmount = typeof _RotateAmounts[number];
 
+const bufferForBitwise = new Uint32Array(3);
+
 export namespace Uint32 {
   export const BYTES = 4;
 
@@ -102,5 +104,21 @@ export namespace Uint32 {
     } else {
       return (count + (source % count)) as Uint32;
     }
+  }
+
+  export function bitwiseXOr(a: Uint32, b: Uint32): Uint32 {
+    // const ba = BigInt(a);
+    // const bb = BigInt(b);
+    // return Number((ba ^ bb) & 0b11111111_11111111_11111111_11111111n);
+
+    // こちらの方が速い
+    bufferForBitwise[0] = a;
+    bufferForBitwise[1] = b;
+    bufferForBitwise[2] = 0;
+    const v = new Uint16Array(bufferForBitwise.buffer);
+    const [a1, a2, b1, b2] = v;
+    v[4] = a1 ^ b1;
+    v[5] = a2 ^ b2;
+    return bufferForBitwise[2];
   }
 }

@@ -521,12 +521,12 @@ Deno.test("Uint32.truncateFromSafeInteger(number)", () => {
   );
 
   for (let i = 1; i < Number.MAX_SAFE_INTEGER; i = i * 3) {
-    console.log(`${i} -> ${i % 0x100000000}`);
+    // console.log(`${i} -> ${i % 0x100000000}`);
     assertStrictEquals(Uint32.truncateFromSafeInteger(i), Uint32Array.of(i)[0]);
   }
 
   for (let i = -1; i > Number.MIN_SAFE_INTEGER; i = i * 3) {
-    console.log(`${i} -> ${0x100000000 + (i % 0x100000000)}`);
+    // console.log(`${i} -> ${0x100000000 + (i % 0x100000000)}`);
     assertStrictEquals(Uint32.truncateFromSafeInteger(i), Uint32Array.of(i)[0]);
   }
 

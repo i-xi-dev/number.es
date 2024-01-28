@@ -423,12 +423,12 @@ Deno.test("Uint8.truncateFromSafeInteger(number)", () => {
   assertStrictEquals(Uint8.truncateFromSafeInteger(256), Uint8Array.of(256)[0]);
 
   for (let i = 1; i < Number.MAX_SAFE_INTEGER; i = i * 3) {
-    console.log(`${i} -> ${i % 256}`);
+    // console.log(`${i} -> ${i % 256}`);
     assertStrictEquals(Uint8.truncateFromSafeInteger(i), Uint8Array.of(i)[0]);
   }
 
   for (let i = -1; i > Number.MIN_SAFE_INTEGER; i = i * 3) {
-    console.log(`${i} -> ${256 + (i % 256)}`);
+    // console.log(`${i} -> ${256 + (i % 256)}`);
     assertStrictEquals(Uint8.truncateFromSafeInteger(i), Uint8Array.of(i)[0]);
   }
 
