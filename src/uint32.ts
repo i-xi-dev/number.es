@@ -106,6 +106,38 @@ export namespace Uint32 {
     }
   }
 
+  export function bitwiseAnd(a: Uint32, b: Uint32): Uint32 {
+    // const ba = BigInt(a);
+    // const bb = BigInt(b);
+    // return Number((ba & bb) & 0b11111111_11111111_11111111_11111111n);
+
+    // こちらの方が速い
+    bufferForBitwise[0] = a;
+    bufferForBitwise[1] = b;
+    bufferForBitwise[2] = 0;
+    const v = new Uint16Array(bufferForBitwise.buffer);
+    const [a1, a2, b1, b2] = v;
+    v[4] = a1 & b1;
+    v[5] = a2 & b2;
+    return bufferForBitwise[2];
+  }
+
+  export function bitwiseOr(a: Uint32, b: Uint32): Uint32 {
+    // const ba = BigInt(a);
+    // const bb = BigInt(b);
+    // return Number((ba | bb) & 0b11111111_11111111_11111111_11111111n);
+
+    // こちらの方が速い
+    bufferForBitwise[0] = a;
+    bufferForBitwise[1] = b;
+    bufferForBitwise[2] = 0;
+    const v = new Uint16Array(bufferForBitwise.buffer);
+    const [a1, a2, b1, b2] = v;
+    v[4] = a1 | b1;
+    v[5] = a2 | b2;
+    return bufferForBitwise[2];
+  }
+
   export function bitwiseXOr(a: Uint32, b: Uint32): Uint32 {
     // const ba = BigInt(a);
     // const bb = BigInt(b);

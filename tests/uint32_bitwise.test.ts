@@ -9,6 +9,18 @@ crypto.getRandomValues(aArray1);
 const bArray1 = new Uint32Array(count);
 crypto.getRandomValues(bArray1);
 
+function _bitwiseAnd(a: number, b: number): number {
+  const ba = BigInt(a);
+  const bb = BigInt(b);
+  return Number((ba & bb) & 0b11111111_11111111_11111111_11111111n);
+}
+
+function _bitwiseOr(a: number, b: number): number {
+  const ba = BigInt(a);
+  const bb = BigInt(b);
+  return Number((ba | bb) & 0b11111111_11111111_11111111_11111111n);
+}
+
 function _bitwiseXOr(a: number, b: number): number {
   const ba = BigInt(a);
   const bb = BigInt(b);
@@ -18,6 +30,28 @@ function _bitwiseXOr(a: number, b: number): number {
 function _format(i: number): string {
   return i.toString(16).toUpperCase().padStart(8, "0");
 }
+
+Deno.test("Uint32.bitwiseAnd(number, number)", () => {
+  for (let i = 0; i < count; i++) {
+    const a = aArray1[i];
+    const b = bArray1[i];
+    const r1 = Uint32.bitwiseAnd(a, b);
+    const r2 = _bitwiseAnd(a, b);
+    //console.log(`0x${_format(a)} & 0x${_format(b)} -> ${_format(r1)} / ${_format(r2)}`,);
+    assertStrictEquals(r1, r2);
+  }
+});
+
+Deno.test("Uint32.bitwiseOr(number, number)", () => {
+  for (let i = 0; i < count; i++) {
+    const a = aArray1[i];
+    const b = bArray1[i];
+    const r1 = Uint32.bitwiseOr(a, b);
+    const r2 = _bitwiseOr(a, b);
+    //console.log(`0x${_format(a)} | 0x${_format(b)} -> ${_format(r1)} / ${_format(r2)}`,);
+    assertStrictEquals(r1, r2);
+  }
+});
 
 Deno.test("Uint32.bitwiseXOr(number, number)", () => {
   for (let i = 0; i < count; i++) {
