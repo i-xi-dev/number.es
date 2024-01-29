@@ -35,6 +35,8 @@ function _resolveRoundingMode(roundingMode?: RoundingMode): RoundingMode {
   return RoundingMode.TRUNCATE;
 }
 
+const _RESOLVED_MARKER = Symbol();
+
 export namespace SafeInteger {
   /**
    * Determines whether the `test` is a positive safe integer.
@@ -166,14 +168,19 @@ export namespace SafeInteger {
   };
 
   export namespace FromOptions {
-    export type Resolved = {
+    export type Resolved = Readonly<{
+      [_RESOLVED_MARKER]: true;
       strict: boolean;
       fallback: SafeInteger;
       roundingMode: RoundingMode;
       clampRange: NumberRange;
-    };
+    }>;
 
     export function resolve(options: FromOptions | Resolved = {}): Resolved {
+      if (_RESOLVED_MARKER in options) {
+        return options;
+      }
+
       const strict = (options as Resolved)?.strict === true;
       let fallback = ZERO;
       if (isNumber(options?.fallback)) {
@@ -188,12 +195,13 @@ export namespace SafeInteger {
       const roundingMode = _resolveRoundingMode(options?.roundingMode);
       const clampRange = _toSafeIntegerRange(options?.clampRange);
 
-      return {
+      return Object.freeze({
+        [_RESOLVED_MARKER]: true as true,
         strict,
         fallback,
         roundingMode,
         clampRange,
-      };
+      });
     }
   }
 
