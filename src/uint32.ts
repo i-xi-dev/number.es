@@ -106,6 +106,7 @@ export namespace Uint32 {
     }
   }
 
+  // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
   export function bitwiseAnd(a: Uint32, b: Uint32): Uint32 {
     // const ba = BigInt(a);
     // const bb = BigInt(b);
@@ -122,6 +123,7 @@ export namespace Uint32 {
     return bufferForBitwise[2];
   }
 
+  // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
   export function bitwiseOr(a: Uint32, b: Uint32): Uint32 {
     // const ba = BigInt(a);
     // const bb = BigInt(b);

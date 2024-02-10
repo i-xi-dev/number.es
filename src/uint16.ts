@@ -1,5 +1,6 @@
 import { inRange, normalizeNumber } from "./number.ts";
 import { SafeInteger } from "./safe_integer.ts";
+import { Uint8 } from "./uint8.ts";
 
 /**
  * The type of 16-bit unsigned integer.
@@ -83,5 +84,22 @@ export namespace Uint16 {
     } else {
       return (count + (source % count)) as Uint16;
     }
+  }
+
+  export function toBytes(
+    source: Uint16,
+    littleEndian = false,
+  ): [Uint8, Uint8] {
+    if (isUint16(source) !== true) {
+      throw new TypeError("source");
+    }
+
+    const beBytes: [Uint8, Uint8] = [
+      Math.trunc(source / 256) as Uint8,
+      (source % 256) as Uint8,
+    ];
+    return (littleEndian === true)
+      ? (beBytes.reverse() as [Uint8, Uint8])
+      : beBytes;
   }
 }
