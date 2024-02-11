@@ -169,6 +169,18 @@ Deno.test("Uint16.rotateLeft(number, number)", () => {
   );
 
   assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, -17),
+    0b10000000_00000000,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, -16),
+    0b00000000_00000001,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, -1),
+    0b10000000_00000000,
+  );
+  assertStrictEquals(
     Uint16.rotateLeft(0b00000000_00000001, 0),
     0b00000000_00000001,
   );
@@ -236,6 +248,18 @@ Deno.test("Uint16.rotateLeft(number, number)", () => {
     Uint16.rotateLeft(0b00000000_00000001, 16),
     0b00000000_00000001,
   );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 17),
+    0b00000000_00000010,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 32),
+    0b00000000_00000001,
+  );
+  assertStrictEquals(
+    Uint16.rotateLeft(0b00000000_00000001, 33),
+    0b00000000_00000010,
+  );
 
   assertStrictEquals(
     Uint16.rotateLeft(0b11111111_11111111, 1),
@@ -258,7 +282,7 @@ Deno.test("Uint16.rotateLeft(number, number)", () => {
   );
   assertThrows(
     () => {
-      Uint16.rotateLeft(0xFFFF, 17 as 16);
+      Uint16.rotateLeft(0xFFFF, 3.1);
     },
     TypeError,
     "amount",

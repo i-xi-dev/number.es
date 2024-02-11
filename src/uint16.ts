@@ -7,27 +7,6 @@ import { Uint8 } from "./uint8.ts";
  */
 export type Uint16 = number;
 
-const _RotateAmounts = [
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  13,
-  14,
-  15,
-  16,
-] as const;
-type _RotateAmount = typeof _RotateAmounts[number];
-
 export namespace Uint16 {
   export const BYTES = 2;
 
@@ -42,19 +21,24 @@ export namespace Uint16 {
       inRange(test as number, [MIN_VALUE, MAX_VALUE]);
   }
 
-  export function rotateLeft(source: Uint16, amount: _RotateAmount): Uint16 {
+  export function rotateLeft(source: Uint16, amount: SafeInteger): Uint16 {
     if (Uint16.isUint16(source) !== true) {
       throw new TypeError("source");
     }
-    if (_RotateAmounts.includes(amount) !== true) {
+    if (Number.isSafeInteger(amount) !== true) {
       throw new TypeError("amount");
     }
 
-    if (amount === 0 || amount === SIZE) {
+    let normalizedAmount = amount % SIZE;
+    if (normalizedAmount < 0) {
+      normalizedAmount = normalizedAmount + SIZE;
+    }
+    if (normalizedAmount === 0) {
       return source;
     }
 
-    return (((source << amount) | (source >> (SIZE - amount))) &
+    return (((source << normalizedAmount) |
+      (source >> (SIZE - normalizedAmount))) &
       0b11111111_11111111) as Uint16;
   }
 

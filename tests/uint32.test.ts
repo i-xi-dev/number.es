@@ -297,6 +297,18 @@ Deno.test("Uint32.rotateLeft(number, number)", () => {
   );
 
   assertStrictEquals(
+    Uint32.rotateLeft(0b00000000_00000000_00000000_00000001, -33),
+    0b10000000_00000000_00000000_00000000,
+  );
+  assertStrictEquals(
+    Uint32.rotateLeft(0b00000000_00000000_00000000_00000001, -32),
+    0b00000000_00000000_00000000_00000001,
+  );
+  assertStrictEquals(
+    Uint32.rotateLeft(0b00000000_00000000_00000000_00000001, -1),
+    0b10000000_00000000_00000000_00000000,
+  );
+  assertStrictEquals(
     Uint32.rotateLeft(0b00000000_00000000_00000000_00000001, 0),
     0b00000000_00000000_00000000_00000001,
   );
@@ -428,6 +440,18 @@ Deno.test("Uint32.rotateLeft(number, number)", () => {
     Uint32.rotateLeft(0b00000000_00000000_00000000_00000001, 32),
     0b00000000_00000000_00000000_00000001,
   );
+  assertStrictEquals(
+    Uint32.rotateLeft(0b00000000_00000000_00000000_00000001, 33),
+    0b00000000_00000000_00000000_00000010,
+  );
+  assertStrictEquals(
+    Uint32.rotateLeft(0b00000000_00000000_00000000_00000001, 64),
+    0b00000000_00000000_00000000_00000001,
+  );
+  assertStrictEquals(
+    Uint32.rotateLeft(0b00000000_00000000_00000000_00000001, 65),
+    0b00000000_00000000_00000000_00000010,
+  );
 
   assertStrictEquals(
     Uint32.rotateLeft(0b11111111_11111111_11111111_11111111, 1),
@@ -450,7 +474,7 @@ Deno.test("Uint32.rotateLeft(number, number)", () => {
   );
   assertThrows(
     () => {
-      Uint32.rotateLeft(0xFFFFFFFF, 33 as 32);
+      Uint32.rotateLeft(0xFFFFFFFF, 3.1);
     },
     TypeError,
     "amount",

@@ -6,43 +6,6 @@ import { SafeInteger } from "./safe_integer.ts";
  */
 export type Uint32 = number;
 
-const _RotateAmounts = [
-  0,
-  1,
-  2,
-  3,
-  4,
-  5,
-  6,
-  7,
-  8,
-  9,
-  10,
-  11,
-  12,
-  13,
-  14,
-  15,
-  16,
-  17,
-  18,
-  19,
-  20,
-  21,
-  22,
-  23,
-  24,
-  25,
-  26,
-  27,
-  28,
-  29,
-  30,
-  31,
-  32,
-] as const;
-type _RotateAmount = typeof _RotateAmounts[number];
-
 const bufferForBitwise = new Uint32Array(3);
 
 export namespace Uint32 {
@@ -59,21 +22,26 @@ export namespace Uint32 {
       inRange(test as number, [MIN_VALUE, MAX_VALUE]);
   }
 
-  export function rotateLeft(source: Uint32, amount: _RotateAmount): Uint32 {
+  export function rotateLeft(source: Uint32, amount: SafeInteger): Uint32 {
     if (Uint32.isUint32(source) !== true) {
       throw new TypeError("source");
     }
-    if (_RotateAmounts.includes(amount) !== true) {
+    if (Number.isSafeInteger(amount) !== true) {
       throw new TypeError("amount");
     }
 
-    if (amount === 0 || amount === SIZE) {
+    let normalizedAmount = amount % SIZE;
+    if (normalizedAmount < 0) {
+      normalizedAmount = normalizedAmount + SIZE;
+    }
+    if (normalizedAmount === 0) {
       return source;
     }
 
     const bs = BigInt(source);
     return Number(
-      ((bs << BigInt(amount)) | (bs >> BigInt(SIZE - amount))) &
+      ((bs << BigInt(normalizedAmount)) |
+        (bs >> BigInt(SIZE - normalizedAmount))) &
         0b11111111_11111111_11111111_11111111n,
     ) as Uint32;
   }
