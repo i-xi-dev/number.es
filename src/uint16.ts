@@ -79,8 +79,8 @@ export namespace Uint16 {
     }
 
     const beBytes: [Uint8, Uint8] = [
-      Math.trunc(source / 256) as Uint8,
-      (source % 256) as Uint8,
+      Math.trunc(source / 0x100) as Uint8,
+      (source % 0x100) as Uint8,
     ];
     return (littleEndian === true)
       ? (beBytes.reverse() as [Uint8, Uint8])

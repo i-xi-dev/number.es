@@ -335,6 +335,9 @@ Deno.test("Uint8.rotateLeft(number, number)", () => {
   assertStrictEquals(Uint8.rotateLeft(0b01111111, 7), 0b10111111);
   assertStrictEquals(Uint8.rotateLeft(0b01111111, 8), 0b01111111);
 
+  assertStrictEquals(Uint8.rotateLeft(0b00000001, -9), 0b10000000);
+  assertStrictEquals(Uint8.rotateLeft(0b00000001, -8), 0b00000001);
+  assertStrictEquals(Uint8.rotateLeft(0b00000001, -1), 0b10000000);
   assertStrictEquals(Uint8.rotateLeft(0b00000001, 0), 0b00000001);
   assertStrictEquals(Uint8.rotateLeft(0b00000001, 1), 0b00000010);
   assertStrictEquals(Uint8.rotateLeft(0b00000001, 2), 0b00000100);
@@ -344,6 +347,9 @@ Deno.test("Uint8.rotateLeft(number, number)", () => {
   assertStrictEquals(Uint8.rotateLeft(0b00000001, 6), 0b01000000);
   assertStrictEquals(Uint8.rotateLeft(0b00000001, 7), 0b10000000);
   assertStrictEquals(Uint8.rotateLeft(0b00000001, 8), 0b00000001);
+  assertStrictEquals(Uint8.rotateLeft(0b00000001, 9), 0b00000010);
+  assertStrictEquals(Uint8.rotateLeft(0b00000001, 16), 0b00000001);
+  assertStrictEquals(Uint8.rotateLeft(0b00000001, 17), 0b00000010);
 
   assertStrictEquals(Uint8.rotateLeft(0b11111111, 1), 0b11111111);
 
@@ -363,7 +369,7 @@ Deno.test("Uint8.rotateLeft(number, number)", () => {
   );
   assertThrows(
     () => {
-      Uint8.rotateLeft(255, 9 as 8);
+      Uint8.rotateLeft(255, 3.1);
     },
     TypeError,
     "amount",

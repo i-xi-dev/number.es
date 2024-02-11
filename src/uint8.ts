@@ -282,9 +282,6 @@ function _toSafeIntegerFromOptions(
   });
 }
 
-const _RotateAmounts = [0, 1, 2, 3, 4, 5, 6, 7, 8] as const;
-type _RotateAmount = typeof _RotateAmounts[number];
-
 export namespace Uint8 {
   export const BYTES = 1;
 
@@ -349,19 +346,24 @@ export namespace Uint8 {
     throw new TypeError("source");
   }
 
-  export function rotateLeft(source: Uint8, amount: _RotateAmount): Uint8 {
+  export function rotateLeft(source: Uint8, amount: SafeInteger): Uint8 {
     if (Uint8.isUint8(source) !== true) {
       throw new TypeError("source");
     }
-    if (_RotateAmounts.includes(amount) !== true) {
+    if (Number.isSafeInteger(amount) !== true) {
       throw new TypeError("amount");
     }
 
-    if (amount === 0 || amount === SIZE) {
+    let normalizedAmount = amount % SIZE;
+    if (normalizedAmount < 0) {
+      normalizedAmount = normalizedAmount + SIZE;
+    }
+    if (normalizedAmount === 0) {
       return source;
     }
 
-    return (((source << amount) | (source >> (SIZE - amount))) &
+    return (((source << normalizedAmount) |
+      (source >> (SIZE - normalizedAmount))) &
       0b11111111) as Uint8;
   }
 
