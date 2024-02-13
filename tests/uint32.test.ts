@@ -576,3 +576,69 @@ Deno.test("Uint32.truncateFromSafeInteger(number)", () => {
     "source",
   );
 });
+
+Deno.test("Uint32.toBytes(number)", () => {
+  assertStrictEquals(Uint32.toBytes(0).join(","), "0,0,0,0");
+  assertStrictEquals(Uint32.toBytes(1).join(","), "0,0,0,1");
+  assertStrictEquals(Uint32.toBytes(10).join(","), "0,0,0,10");
+  assertStrictEquals(Uint32.toBytes(20).join(","), "0,0,0,20");
+  assertStrictEquals(Uint32.toBytes(50).join(","), "0,0,0,50");
+  assertStrictEquals(Uint32.toBytes(100).join(","), "0,0,0,100");
+  assertStrictEquals(Uint32.toBytes(110).join(","), "0,0,0,110");
+  assertStrictEquals(Uint32.toBytes(127).join(","), "0,0,0,127");
+  assertStrictEquals(Uint32.toBytes(128).join(","), "0,0,0,128");
+  assertStrictEquals(Uint32.toBytes(200).join(","), "0,0,0,200");
+  assertStrictEquals(Uint32.toBytes(0xFF).join(","), "0,0,0,255");
+  assertStrictEquals(Uint32.toBytes(0x100).join(","), "0,0,1,0");
+  assertStrictEquals(Uint32.toBytes(0x1FF).join(","), "0,0,1,255");
+  assertStrictEquals(Uint32.toBytes(0x200).join(","), "0,0,2,0");
+  assertStrictEquals(Uint32.toBytes(0xFFFE).join(","), "0,0,255,254");
+  assertStrictEquals(Uint32.toBytes(0xFFFF).join(","), "0,0,255,255");
+  assertStrictEquals(Uint32.toBytes(0x10000).join(","), "0,1,0,0");
+  assertStrictEquals(Uint32.toBytes(0x10001).join(","), "0,1,0,1");
+  assertStrictEquals(Uint32.toBytes(0x10100).join(","), "0,1,1,0");
+  assertStrictEquals(Uint32.toBytes(0x1FFFF).join(","), "0,1,255,255");
+  assertStrictEquals(Uint32.toBytes(0xFFFFFF).join(","), "0,255,255,255");
+  assertStrictEquals(Uint32.toBytes(0x1000000).join(","), "1,0,0,0");
+  assertStrictEquals(Uint32.toBytes(0xFF000000).join(","), "255,0,0,0");
+  assertStrictEquals(Uint32.toBytes(0xFFFFFFFF).join(","), "255,255,255,255");
+
+  // const bx = new ArrayBuffer(4);
+  // const bxv = new DataView(bx);
+  // const bxv2 = new Uint8Array(bx);
+  // const start = 0x8F000000;
+  // const end = 0x8FFFFFFF;
+  // for (let i = start; i <= end; i++) {
+  //   bxv.setUint32(0, i);
+  //   assertStrictEquals(Uint32.toBytes(i).join(","), [...bxv2].join(","));
+  // }
+
+  assertThrows(
+    () => {
+      Uint32.toBytes(-1);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint32.toBytes(0x100000000);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint32.toBytes(1.5);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint32.toBytes("1" as unknown as number);
+    },
+    TypeError,
+    "source",
+  );
+});
