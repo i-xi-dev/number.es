@@ -10,12 +10,27 @@ export type Uint16 = number;
 export namespace Uint16 {
   export const BYTES = 2;
 
+  /**
+   * The number of bits used to represent a 16-bit unsigned integer.
+   */
   export const SIZE = 16;
 
+  /**
+   * The minimum value of 16-bit unsigned integer.
+   */
   export const MIN_VALUE = 0x0;
 
+  /**
+   * The maximum value of 16-bit unsigned integer.
+   */
   export const MAX_VALUE = 0xFFFF;
 
+  /**
+   * Determines whether the passed `test` is a 16-bit unsigned integer.
+   *
+   * @param test - The value to be tested
+   * @returns Whether the passed `test` is a 16-bit unsigned integer.
+   */
   export function isUint16(test: unknown): boolean {
     return Number.isSafeInteger(test) &&
       inRange(test as number, [MIN_VALUE, MAX_VALUE]);

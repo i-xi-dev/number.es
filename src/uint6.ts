@@ -70,6 +70,9 @@ export type Uint6 =
   | 0x3F;
 
 export namespace Uint6 {
+  /**
+   * The number of bits used to represent a 6-bit unsigned integer.
+   */
   export const SIZE = 6;
 
   /**
@@ -83,10 +86,10 @@ export namespace Uint6 {
   export const MAX_VALUE = 0x3F;
 
   /**
-   * Determines whether the passed `test` is an 6-bit unsigned integer.
+   * Determines whether the passed `test` is a 6-bit unsigned integer.
    *
    * @param test - The value to be tested
-   * @returns Whether the passed `test` is an 6-bit unsigned integer.
+   * @returns Whether the passed `test` is a 6-bit unsigned integer.
    */
   export function isUint6(test: unknown): test is Uint6 {
     return Number.isSafeInteger(test) &&

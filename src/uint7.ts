@@ -72,6 +72,9 @@ export type Uint7 =
   | 0x7F;
 
 export namespace Uint7 {
+  /**
+   * The number of bits used to represent a 7-bit unsigned integer.
+   */
   export const SIZE = 7;
 
   /**
@@ -85,10 +88,10 @@ export namespace Uint7 {
   export const MAX_VALUE = 0x7F;
 
   /**
-   * Determines whether the passed `test` is an 7-bit unsigned integer.
+   * Determines whether the passed `test` is a 7-bit unsigned integer.
    *
    * @param test - The value to be tested
-   * @returns Whether the passed `test` is an 7-bit unsigned integer.
+   * @returns Whether the passed `test` is a 7-bit unsigned integer.
    */
   export function isUint7(test: unknown): test is Uint7 {
     return Number.isSafeInteger(test) &&

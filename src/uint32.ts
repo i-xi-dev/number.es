@@ -14,12 +14,27 @@ const _bufferUint16View = new Uint16Array(_buffer);
 export namespace Uint32 {
   export const BYTES = 4;
 
+  /**
+   * The number of bits used to represent a 32-bit unsigned integer.
+   */
   export const SIZE = 32;
 
+  /**
+   * The minimum value of 32-bit unsigned integer.
+   */
   export const MIN_VALUE = 0x0;
 
+  /**
+   * The maximum value of 32-bit unsigned integer.
+   */
   export const MAX_VALUE = 0xFFFF_FFFF;
 
+  /**
+   * Determines whether the passed `test` is a 32-bit unsigned integer.
+   *
+   * @param test - The value to be tested
+   * @returns Whether the passed `test` is a 32-bit unsigned integer.
+   */
   export function isUint32(test: unknown): boolean {
     return Number.isSafeInteger(test) &&
       inRange(test as number, [MIN_VALUE, MAX_VALUE]);

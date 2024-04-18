@@ -159,6 +159,9 @@ function _toSafeIntegerFromOptions(
 export namespace Uint8 {
   export const BYTES = 1;
 
+  /**
+   * The number of bits used to represent an 8-bit unsigned integer.
+   */
   export const SIZE = 8;
 
   /**
