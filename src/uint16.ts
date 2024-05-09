@@ -8,6 +8,9 @@ import { Uint8 } from "./uint8.ts";
 export type Uint16 = number;
 
 export namespace Uint16 {
+  /**
+   * The number of bytes used to represent a 16-bit unsigned integer.
+   */
   export const BYTES = 2;
 
   /**

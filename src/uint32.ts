@@ -12,6 +12,9 @@ const _bufferUint32View = new Uint32Array(_buffer);
 const _bufferUint16View = new Uint16Array(_buffer);
 
 export namespace Uint32 {
+  /**
+   * The number of bytes used to represent a 32-bit unsigned integer.
+   */
   export const BYTES = 4;
 
   /**

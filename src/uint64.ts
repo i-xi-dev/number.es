@@ -6,10 +6,13 @@ import { inRange } from "./bigint.ts";
 export type BigUint64 = bigint;
 
 export namespace BigUint64 {
+  /**
+   * The number of bytes used to represent a 64-bit unsigned integer.
+   */
   export const BYTES = 8;
 
   /**
-   * The number of bits used to represent an 64-bit unsigned integer.
+   * The number of bits used to represent a 64-bit unsigned integer.
    */
   export const SIZE = 64;
 
