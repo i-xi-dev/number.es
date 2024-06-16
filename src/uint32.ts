@@ -62,8 +62,7 @@ export namespace Uint32 {
     const bs = BigInt(source);
     return Number(
       ((bs << BigInt(normalizedAmount)) |
-        (bs >> BigInt(SIZE - normalizedAmount))) &
-        0b11111111_11111111_11111111_11111111n,
+        (bs >> BigInt(SIZE - normalizedAmount))) & BigInt(MAX_VALUE),
     ) as Uint32;
   }
 
@@ -118,9 +117,11 @@ export namespace Uint32 {
 
   // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
   export function bitwiseAnd(a: Uint32, b: Uint32): Uint32 {
+    //XXX チェックする？
+
     // const ba = BigInt(a);
     // const bb = BigInt(b);
-    // return Number((ba & bb) & 0b11111111_11111111_11111111_11111111n);
+    // return Number((ba & bb) & BigInt(MAX_VALUE));
 
     // こちらの方が速い
     _bufferUint32View[0] = a;
@@ -134,9 +135,11 @@ export namespace Uint32 {
 
   // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
   export function bitwiseOr(a: Uint32, b: Uint32): Uint32 {
+    //XXX チェックする？
+
     // const ba = BigInt(a);
     // const bb = BigInt(b);
-    // return Number((ba | bb) & 0b11111111_11111111_11111111_11111111n);
+    // return Number((ba | bb) & BigInt(MAX_VALUE));
 
     // こちらの方が速い
     _bufferUint32View[0] = a;
@@ -150,9 +153,11 @@ export namespace Uint32 {
 
   // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
   export function bitwiseXOr(a: Uint32, b: Uint32): Uint32 {
+    //XXX チェックする？
+
     // const ba = BigInt(a);
     // const bb = BigInt(b);
-    // return Number((ba ^ bb) & 0b11111111_11111111_11111111_11111111n);
+    // return Number((ba ^ bb) & BigInt(MAX_VALUE));
 
     // こちらの方が速い
     _bufferUint32View[0] = a;

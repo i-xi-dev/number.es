@@ -56,8 +56,7 @@ export namespace Uint16 {
     }
 
     return (((source << normalizedAmount) |
-      (source >> (SIZE - normalizedAmount))) &
-      0b11111111_11111111) as Uint16;
+      (source >> (SIZE - normalizedAmount))) & MAX_VALUE) as Uint16;
   }
 
   export function saturateFromSafeInteger(source: SafeInteger): Uint16 {
@@ -103,5 +102,20 @@ export namespace Uint16 {
     return (littleEndian === true)
       ? (beBytes.reverse() as [Uint8, Uint8])
       : beBytes;
+  }
+
+  export function bitwiseAnd(a: Uint16, b: Uint16): Uint16 {
+    //XXX チェックする？
+    return (a & b) & MAX_VALUE;
+  }
+
+  export function bitwiseOr(a: Uint16, b: Uint16): Uint16 {
+    //XXX チェックする？
+    return (a | b) & MAX_VALUE;
+  }
+
+  export function bitwiseXOr(a: Uint16, b: Uint16): Uint16 {
+    //XXX チェックする？
+    return (a ^ b) & MAX_VALUE;
   }
 }
