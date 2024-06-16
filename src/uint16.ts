@@ -40,9 +40,7 @@ export namespace Uint16 {
   }
 
   export function rotateLeft(source: Uint16, amount: SafeInteger): Uint16 {
-    if (isUint16(source) !== true) {
-      throw new TypeError("source");
-    }
+    _assertUint16(source, "source");
     if (Number.isSafeInteger(amount) !== true) {
       throw new TypeError("amount");
     }
@@ -91,9 +89,7 @@ export namespace Uint16 {
     source: Uint16,
     littleEndian = false,
   ): [Uint8, Uint8] {
-    if (isUint16(source) !== true) {
-      throw new TypeError("source");
-    }
+    _assertUint16(source, "source");
 
     const beBytes: [Uint8, Uint8] = [
       Math.trunc(source / 0x100) as Uint8,
@@ -105,32 +101,29 @@ export namespace Uint16 {
   }
 
   export function bitwiseAnd(a: Uint16, b: Uint16): Uint16 {
-    if (isUint16(a) !== true) {
-      throw new TypeError("a");
-    }
-    if (isUint16(b) !== true) {
-      throw new TypeError("b");
-    }
+    _assertUint16(a, "a");
+    _assertUint16(b, "b");
+
     return (a & b) & MAX_VALUE;
   }
 
   export function bitwiseOr(a: Uint16, b: Uint16): Uint16 {
-    if (isUint16(a) !== true) {
-      throw new TypeError("a");
-    }
-    if (isUint16(b) !== true) {
-      throw new TypeError("b");
-    }
+    _assertUint16(a, "a");
+    _assertUint16(b, "b");
+
     return (a | b) & MAX_VALUE;
   }
 
   export function bitwiseXOr(a: Uint16, b: Uint16): Uint16 {
-    if (isUint16(a) !== true) {
-      throw new TypeError("a");
-    }
-    if (isUint16(b) !== true) {
-      throw new TypeError("b");
-    }
+    _assertUint16(a, "a");
+    _assertUint16(b, "b");
+
     return (a ^ b) & MAX_VALUE;
+  }
+}
+
+function _assertUint16(test: unknown, label: string): void {
+  if (Uint16.isUint16(test) !== true) {
+    throw new TypeError(label);
   }
 }

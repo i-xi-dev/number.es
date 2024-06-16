@@ -44,9 +44,7 @@ export namespace Uint32 {
   }
 
   export function rotateLeft(source: Uint32, amount: SafeInteger): Uint32 {
-    if (isUint32(source) !== true) {
-      throw new TypeError("source");
-    }
+    _assertUint32(source, "source");
     if (Number.isSafeInteger(amount) !== true) {
       throw new TypeError("amount");
     }
@@ -98,9 +96,7 @@ export namespace Uint32 {
     source: Uint32,
     littleEndian = false,
   ): [Uint8, Uint8, Uint8, Uint8] {
-    if (isUint32(source) !== true) {
-      throw new TypeError("source");
-    }
+    _assertUint32(source, "source");
 
     const s2 = (source >= 0x1000000) ? (source % 0x1000000) : source;
     const s3 = (source >= 0x10000) ? (source % 0x10000) : source;
@@ -117,12 +113,8 @@ export namespace Uint32 {
 
   // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
   export function bitwiseAnd(a: Uint32, b: Uint32): Uint32 {
-    if (isUint32(a) !== true) {
-      throw new TypeError("a");
-    }
-    if (isUint32(b) !== true) {
-      throw new TypeError("b");
-    }
+    _assertUint32(a, "a");
+    _assertUint32(b, "b");
 
     // const ba = BigInt(a);
     // const bb = BigInt(b);
@@ -140,12 +132,8 @@ export namespace Uint32 {
 
   // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
   export function bitwiseOr(a: Uint32, b: Uint32): Uint32 {
-    if (isUint32(a) !== true) {
-      throw new TypeError("a");
-    }
-    if (isUint32(b) !== true) {
-      throw new TypeError("b");
-    }
+    _assertUint32(a, "a");
+    _assertUint32(b, "b");
 
     // const ba = BigInt(a);
     // const bb = BigInt(b);
@@ -163,12 +151,8 @@ export namespace Uint32 {
 
   // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
   export function bitwiseXOr(a: Uint32, b: Uint32): Uint32 {
-    if (isUint32(a) !== true) {
-      throw new TypeError("a");
-    }
-    if (isUint32(b) !== true) {
-      throw new TypeError("b");
-    }
+    _assertUint32(a, "a");
+    _assertUint32(b, "b");
 
     // const ba = BigInt(a);
     // const bb = BigInt(b);
@@ -182,5 +166,11 @@ export namespace Uint32 {
     _bufferUint16View[4] = a1 ^ b1;
     _bufferUint16View[5] = a2 ^ b2;
     return _bufferUint32View[2];
+  }
+}
+
+function _assertUint32(test: unknown, label: string): void {
+  if (Uint32.isUint32(test) !== true) {
+    throw new TypeError(label);
   }
 }
