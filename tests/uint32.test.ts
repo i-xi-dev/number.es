@@ -13,6 +13,8 @@ Deno.test("Uint32.isUint32(number)", () => {
   assertStrictEquals(Uint32.isUint32(256), true);
   assertStrictEquals(Uint32.isUint32(65535), true);
   assertStrictEquals(Uint32.isUint32(65536), true);
+  assertStrictEquals(Uint32.isUint32(0xFFFFFF), true);
+  assertStrictEquals(Uint32.isUint32(0x1000000), true);
   assertStrictEquals(Uint32.isUint32(0xFFFFFFFF), true);
   assertStrictEquals(Uint32.isUint32(0x100000000), false);
   assertStrictEquals(Uint32.isUint32(0.1), false);

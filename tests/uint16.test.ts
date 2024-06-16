@@ -13,6 +13,8 @@ Deno.test("Uint16.isUint16(number)", () => {
   assertStrictEquals(Uint16.isUint16(256), true);
   assertStrictEquals(Uint16.isUint16(65535), true);
   assertStrictEquals(Uint16.isUint16(65536), false);
+  assertStrictEquals(Uint16.isUint16(0xFFFFFF), false);
+  assertStrictEquals(Uint16.isUint16(0x1000000), false);
   assertStrictEquals(Uint16.isUint16(0xFFFFFFFF), false);
   assertStrictEquals(Uint16.isUint16(0x100000000), false);
   assertStrictEquals(Uint16.isUint16(0.1), false);
