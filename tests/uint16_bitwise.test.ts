@@ -1,4 +1,4 @@
-import { assertStrictEquals } from "./deps.ts";
+import { assertStrictEquals, assertThrows } from "./deps.ts";
 import { Uint16 } from "../mod.ts";
 
 Deno.test("Uint16.bitwiseAnd(number, number)", () => {
@@ -34,6 +34,21 @@ Deno.test("Uint16.bitwiseAnd(number, number)", () => {
   assertStrictEquals(
     Uint16.bitwiseAnd(0b0000_0000_0000_0001, 0b0000_0000_0000_0001),
     0b0000_0000_0000_0001,
+  );
+
+  assertThrows(
+    () => {
+      Uint16.bitwiseAnd(0x10000, 0);
+    },
+    TypeError,
+    "a",
+  );
+  assertThrows(
+    () => {
+      Uint16.bitwiseAnd(0, 0x10000);
+    },
+    TypeError,
+    "b",
   );
 });
 
@@ -71,6 +86,21 @@ Deno.test("Uint16.bitwiseOr(number, number)", () => {
     Uint16.bitwiseOr(0b0000_0000_0000_0001, 0b0000_0000_0000_0001),
     0b0000_0000_0000_0001,
   );
+
+  assertThrows(
+    () => {
+      Uint16.bitwiseOr(0x10000, 0);
+    },
+    TypeError,
+    "a",
+  );
+  assertThrows(
+    () => {
+      Uint16.bitwiseOr(0, 0x10000);
+    },
+    TypeError,
+    "b",
+  );
 });
 
 Deno.test("Uint16.bitwiseXOr(number, number)", () => {
@@ -106,5 +136,20 @@ Deno.test("Uint16.bitwiseXOr(number, number)", () => {
   assertStrictEquals(
     Uint16.bitwiseXOr(0b0000_0000_0000_0001, 0b0000_0000_0000_0001),
     0b0000_0000_0000_0000,
+  );
+
+  assertThrows(
+    () => {
+      Uint16.bitwiseXOr(0x10000, 0);
+    },
+    TypeError,
+    "a",
+  );
+  assertThrows(
+    () => {
+      Uint16.bitwiseXOr(0, 0x10000);
+    },
+    TypeError,
+    "b",
   );
 });

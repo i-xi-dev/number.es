@@ -1,4 +1,4 @@
-import { assertStrictEquals } from "./deps.ts";
+import { assertStrictEquals, assertThrows } from "./deps.ts";
 import { Uint32 } from "../mod.ts";
 
 const count = 16384;
@@ -90,6 +90,21 @@ Deno.test("Uint32.bitwiseAnd(number, number)", () => {
     0b0000_0000_0000_0000_0000_0000_0000_0001,
   );
 
+  assertThrows(
+    () => {
+      Uint32.bitwiseAnd(0x100000000, 0);
+    },
+    TypeError,
+    "a",
+  );
+  assertThrows(
+    () => {
+      Uint32.bitwiseAnd(0, 0x100000000);
+    },
+    TypeError,
+    "b",
+  );
+
   for (let i = 0; i < count; i++) {
     const a = aArray1[i];
     const b = bArray1[i];
@@ -159,6 +174,21 @@ Deno.test("Uint32.bitwiseOr(number, number)", () => {
     0b0000_0000_0000_0000_0000_0000_0000_0001,
   );
 
+  assertThrows(
+    () => {
+      Uint32.bitwiseOr(0x100000000, 0);
+    },
+    TypeError,
+    "a",
+  );
+  assertThrows(
+    () => {
+      Uint32.bitwiseOr(0, 0x100000000);
+    },
+    TypeError,
+    "b",
+  );
+
   for (let i = 0; i < count; i++) {
     const a = aArray1[i];
     const b = bArray1[i];
@@ -226,6 +256,21 @@ Deno.test("Uint32.bitwiseXOr(number, number)", () => {
       0b0000_0000_0000_0000_0000_0000_0000_0001,
     ),
     0b0000_0000_0000_0000_0000_0000_0000_0000,
+  );
+
+  assertThrows(
+    () => {
+      Uint32.bitwiseXOr(0x100000000, 0);
+    },
+    TypeError,
+    "a",
+  );
+  assertThrows(
+    () => {
+      Uint32.bitwiseXOr(0, 0x100000000);
+    },
+    TypeError,
+    "b",
   );
 
   for (let i = 0; i < count; i++) {

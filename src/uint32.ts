@@ -44,7 +44,7 @@ export namespace Uint32 {
   }
 
   export function rotateLeft(source: Uint32, amount: SafeInteger): Uint32 {
-    if (Uint32.isUint32(source) !== true) {
+    if (isUint32(source) !== true) {
       throw new TypeError("source");
     }
     if (Number.isSafeInteger(amount) !== true) {
@@ -117,7 +117,12 @@ export namespace Uint32 {
 
   // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
   export function bitwiseAnd(a: Uint32, b: Uint32): Uint32 {
-    //XXX チェックする？
+    if (isUint32(a) !== true) {
+      throw new TypeError("a");
+    }
+    if (isUint32(b) !== true) {
+      throw new TypeError("b");
+    }
 
     // const ba = BigInt(a);
     // const bb = BigInt(b);
@@ -135,7 +140,12 @@ export namespace Uint32 {
 
   // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
   export function bitwiseOr(a: Uint32, b: Uint32): Uint32 {
-    //XXX チェックする？
+    if (isUint32(a) !== true) {
+      throw new TypeError("a");
+    }
+    if (isUint32(b) !== true) {
+      throw new TypeError("b");
+    }
 
     // const ba = BigInt(a);
     // const bb = BigInt(b);
@@ -153,7 +163,12 @@ export namespace Uint32 {
 
   // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
   export function bitwiseXOr(a: Uint32, b: Uint32): Uint32 {
-    //XXX チェックする？
+    if (isUint32(a) !== true) {
+      throw new TypeError("a");
+    }
+    if (isUint32(b) !== true) {
+      throw new TypeError("b");
+    }
 
     // const ba = BigInt(a);
     // const bb = BigInt(b);

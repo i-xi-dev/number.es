@@ -40,7 +40,7 @@ export namespace Uint16 {
   }
 
   export function rotateLeft(source: Uint16, amount: SafeInteger): Uint16 {
-    if (Uint16.isUint16(source) !== true) {
+    if (isUint16(source) !== true) {
       throw new TypeError("source");
     }
     if (Number.isSafeInteger(amount) !== true) {
@@ -105,17 +105,32 @@ export namespace Uint16 {
   }
 
   export function bitwiseAnd(a: Uint16, b: Uint16): Uint16 {
-    //XXX チェックする？
+    if (isUint16(a) !== true) {
+      throw new TypeError("a");
+    }
+    if (isUint16(b) !== true) {
+      throw new TypeError("b");
+    }
     return (a & b) & MAX_VALUE;
   }
 
   export function bitwiseOr(a: Uint16, b: Uint16): Uint16 {
-    //XXX チェックする？
+    if (isUint16(a) !== true) {
+      throw new TypeError("a");
+    }
+    if (isUint16(b) !== true) {
+      throw new TypeError("b");
+    }
     return (a | b) & MAX_VALUE;
   }
 
   export function bitwiseXOr(a: Uint16, b: Uint16): Uint16 {
-    //XXX チェックする？
+    if (isUint16(a) !== true) {
+      throw new TypeError("a");
+    }
+    if (isUint16(b) !== true) {
+      throw new TypeError("b");
+    }
     return (a ^ b) & MAX_VALUE;
   }
 }
