@@ -1,5 +1,5 @@
-import { inRange } from "./number.ts";
 import { SafeInteger } from "./safe_integer.ts";
+import * as UintN from "./uint_n.ts";
 
 /**
  * The type of 24-bit unsigned integer.
@@ -8,24 +8,24 @@ export type Uint24 = number;
 
 export namespace Uint24 {
   /**
-   * The number of bytes used to represent a 24-bit unsigned integer.
-   */
-  export const BYTES = 3;
-
-  /**
    * The number of bits used to represent a 24-bit unsigned integer.
    */
   export const SIZE = 24;
 
   /**
+   * The number of bytes used to represent a 24-bit unsigned integer.
+   */
+  export const BYTES = UintN.bytesOf(SIZE);
+
+  /**
    * The minimum value of 24-bit unsigned integer.
    */
-  export const MIN_VALUE = 0x0;
+  export const MIN_VALUE = UintN.MIN_VALUE;
 
   /**
    * The maximum value of 24-bit unsigned integer.
    */
-  export const MAX_VALUE = 0xFFFFFF;
+  export const MAX_VALUE = UintN.maxValueOf(SIZE) as Uint24; // 0xFFFFFF
 
   /**
    * Determines whether the passed `test` is a 24-bit unsigned integer.
@@ -34,8 +34,7 @@ export namespace Uint24 {
    * @returns Whether the passed `test` is a 24-bit unsigned integer.
    */
   export function isUint24(test: unknown): boolean {
-    return Number.isSafeInteger(test) &&
-      inRange(test as number, [MIN_VALUE, MAX_VALUE]);
+    return UintN.isUintN(SIZE, test);
   }
 
   export function rotateLeft(source: Uint24, amount: SafeInteger): Uint24 {

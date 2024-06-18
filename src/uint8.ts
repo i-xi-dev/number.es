@@ -1,9 +1,10 @@
-import { inRange, normalizeNumber } from "./number.ts";
+import { normalizeNumber } from "./number.ts";
 import { NumberRange } from "./number_range.ts";
 import { Radix } from "./radix.ts";
 import { RoundingMode } from "./rounding_mode.ts";
 import { SafeInteger } from "./safe_integer.ts";
 import { Uint7 } from "./uint7.ts";
+import * as UintN from "./uint_n.ts";
 
 /**
  * The type of 8-bit unsigned integer.
@@ -158,24 +159,24 @@ function _toSafeIntegerFromOptions(
 
 export namespace Uint8 {
   /**
-   * The number of bytes used to represent an 8-bit unsigned integer.
-   */
-  export const BYTES = 1;
-
-  /**
    * The number of bits used to represent an 8-bit unsigned integer.
    */
   export const SIZE = 8;
 
   /**
+   * The number of bytes used to represent an 8-bit unsigned integer.
+   */
+  export const BYTES = UintN.bytesOf(SIZE);
+
+  /**
    * The minimum value of 8-bit unsigned integer.
    */
-  export const MIN_VALUE = 0x0;
+  export const MIN_VALUE = UintN.MIN_VALUE;
 
   /**
    * The maximum value of 8-bit unsigned integer.
    */
-  export const MAX_VALUE = 0xFF;
+  export const MAX_VALUE = UintN.maxValueOf(SIZE) as Uint8; // 0xFF
 
   /**
    * Determines whether the passed `test` is an 8-bit unsigned integer.
@@ -184,8 +185,7 @@ export namespace Uint8 {
    * @returns Whether the passed `test` is an 8-bit unsigned integer.
    */
   export function isUint8(test: unknown): test is Uint8 {
-    return Number.isSafeInteger(test) &&
-      inRange(test as number, [MIN_VALUE, MAX_VALUE]);
+    return UintN.isUintN(SIZE, test);
   }
 
   export type FromOptions = {

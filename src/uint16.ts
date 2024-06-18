@@ -1,6 +1,7 @@
-import { inRange, normalizeNumber } from "./number.ts";
+import { normalizeNumber } from "./number.ts";
 import { SafeInteger } from "./safe_integer.ts";
 import { Uint8 } from "./uint8.ts";
+import * as UintN from "./uint_n.ts";
 
 /**
  * The type of 16-bit unsigned integer.
@@ -9,24 +10,24 @@ export type Uint16 = number;
 
 export namespace Uint16 {
   /**
-   * The number of bytes used to represent a 16-bit unsigned integer.
-   */
-  export const BYTES = 2;
-
-  /**
    * The number of bits used to represent a 16-bit unsigned integer.
    */
   export const SIZE = 16;
 
   /**
+   * The number of bytes used to represent a 16-bit unsigned integer.
+   */
+  export const BYTES = UintN.bytesOf(SIZE);
+
+  /**
    * The minimum value of 16-bit unsigned integer.
    */
-  export const MIN_VALUE = 0x0;
+  export const MIN_VALUE = UintN.MIN_VALUE;
 
   /**
    * The maximum value of 16-bit unsigned integer.
    */
-  export const MAX_VALUE = 0xFFFF;
+  export const MAX_VALUE = UintN.maxValueOf(SIZE) as Uint16; // 0xFFFF
 
   /**
    * Determines whether the passed `test` is a 16-bit unsigned integer.
@@ -35,8 +36,7 @@ export namespace Uint16 {
    * @returns Whether the passed `test` is a 16-bit unsigned integer.
    */
   export function isUint16(test: unknown): boolean {
-    return Number.isSafeInteger(test) &&
-      inRange(test as number, [MIN_VALUE, MAX_VALUE]);
+    return UintN.isUintN(SIZE, test);
   }
 
   export function rotateLeft(source: Uint16, amount: SafeInteger): Uint16 {

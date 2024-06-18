@@ -1,6 +1,7 @@
-import { inRange, normalizeNumber } from "./number.ts";
+import { normalizeNumber } from "./number.ts";
 import { SafeInteger } from "./safe_integer.ts";
 import { Uint8 } from "./uint8.ts";
+import * as UintN from "./uint_n.ts";
 
 /**
  * The type of 32-bit unsigned integer.
@@ -13,24 +14,24 @@ const _bufferUint16View = new Uint16Array(_buffer);
 
 export namespace Uint32 {
   /**
-   * The number of bytes used to represent a 32-bit unsigned integer.
-   */
-  export const BYTES = 4;
-
-  /**
    * The number of bits used to represent a 32-bit unsigned integer.
    */
   export const SIZE = 32;
 
   /**
+   * The number of bytes used to represent a 32-bit unsigned integer.
+   */
+  export const BYTES = UintN.bytesOf(SIZE);
+
+  /**
    * The minimum value of 32-bit unsigned integer.
    */
-  export const MIN_VALUE = 0x0;
+  export const MIN_VALUE = UintN.MIN_VALUE;
 
   /**
    * The maximum value of 32-bit unsigned integer.
    */
-  export const MAX_VALUE = 0xFFFF_FFFF;
+  export const MAX_VALUE = UintN.maxValueOf(SIZE) as Uint32; // 0xFFFF_FFFF
 
   /**
    * Determines whether the passed `test` is a 32-bit unsigned integer.
@@ -39,8 +40,7 @@ export namespace Uint32 {
    * @returns Whether the passed `test` is a 32-bit unsigned integer.
    */
   export function isUint32(test: unknown): boolean {
-    return Number.isSafeInteger(test) &&
-      inRange(test as number, [MIN_VALUE, MAX_VALUE]);
+    return UintN.isUintN(SIZE, test);
   }
 
   export function rotateLeft(source: Uint32, amount: SafeInteger): Uint32 {
