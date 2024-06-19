@@ -45,42 +45,11 @@ export namespace Uint32 {
 
   // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
   export function bitwiseAnd(a: Uint32, b: Uint32): Uint32 {
-    _assertUint32(a, "a");
-    _assertUint32(b, "b");
-
-    // const ba = BigInt(a);
-    // const bb = BigInt(b);
-    // return Number((ba & bb) & BigInt(MAX_VALUE));
-
-    // こちらの方が速い
-    _bufferUint32View[0] = a;
-    _bufferUint32View[1] = b;
-    _bufferUint32View[2] = 0;
-    const [a1, a2, b1, b2] = _bufferUint16View; // バイオオーダーは元の順にセットするので、ここでは関係ない
-    _bufferUint16View[4] = a1 & b1;
-    _bufferUint16View[5] = a2 & b2;
-    return _bufferUint32View[2];
+    return UintN.bitwiseAnd(SIZE, a, b, true);
   }
 
   export function rotateLeft(source: Uint32, amount: SafeInteger): Uint32 {
-    _assertUint32(source, "source");
-    if (Number.isSafeInteger(amount) !== true) {
-      throw new TypeError("amount");
-    }
-
-    let normalizedAmount = amount % SIZE;
-    if (normalizedAmount < 0) {
-      normalizedAmount = normalizedAmount + SIZE;
-    }
-    if (normalizedAmount === 0) {
-      return source;
-    }
-
-    const bs = BigInt(source);
-    return Number(
-      ((bs << BigInt(normalizedAmount)) |
-        (bs >> BigInt(SIZE - normalizedAmount))) & BigInt(MAX_VALUE),
-    ) as Uint32;
+    return UintN.rotateLeft(SIZE, source, amount, true);
   }
 
   export function saturateFromSafeInteger(source: SafeInteger): Uint32 {
