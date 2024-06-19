@@ -17,7 +17,7 @@ export namespace Uint16 {
   /**
    * The number of bytes used to represent a 16-bit unsigned integer.
    */
-  export const BYTES = UintN.bytesOf(SIZE);
+  export const BYTES = UintN.bytesOf(SIZE, true);
 
   /**
    * The minimum value of 16-bit unsigned integer.
@@ -27,7 +27,7 @@ export namespace Uint16 {
   /**
    * The maximum value of 16-bit unsigned integer.
    */
-  export const MAX_VALUE = UintN.maxValueOf(SIZE) as Uint16; // 0xFFFF
+  export const MAX_VALUE = UintN.maxValueOf<Uint16>(SIZE, true); // 0xFFFF
 
   /**
    * Determines whether the passed `test` is a 16-bit unsigned integer.
@@ -36,25 +36,11 @@ export namespace Uint16 {
    * @returns Whether the passed `test` is a 16-bit unsigned integer.
    */
   export function isUint16(test: unknown): boolean {
-    return UintN.isUintN(SIZE, test);
+    return UintN.isUintN(SIZE, test, true);
   }
 
   export function rotateLeft(source: Uint16, amount: SafeInteger): Uint16 {
-    _assertUint16(source, "source");
-    if (Number.isSafeInteger(amount) !== true) {
-      throw new TypeError("amount");
-    }
-
-    let normalizedAmount = amount % SIZE;
-    if (normalizedAmount < 0) {
-      normalizedAmount = normalizedAmount + SIZE;
-    }
-    if (normalizedAmount === 0) {
-      return source;
-    }
-
-    return (((source << normalizedAmount) |
-      (source >> (SIZE - normalizedAmount))) & MAX_VALUE) as Uint16;
+    return UintN.rotateLeft(SIZE, source, amount, true);
   }
 
   export function saturateFromSafeInteger(source: SafeInteger): Uint16 {

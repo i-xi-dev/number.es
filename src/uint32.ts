@@ -21,7 +21,7 @@ export namespace Uint32 {
   /**
    * The number of bytes used to represent a 32-bit unsigned integer.
    */
-  export const BYTES = UintN.bytesOf(SIZE);
+  export const BYTES = UintN.bytesOf(SIZE, true);
 
   /**
    * The minimum value of 32-bit unsigned integer.
@@ -31,7 +31,7 @@ export namespace Uint32 {
   /**
    * The maximum value of 32-bit unsigned integer.
    */
-  export const MAX_VALUE = UintN.maxValueOf(SIZE) as Uint32; // 0xFFFF_FFFF
+  export const MAX_VALUE = UintN.maxValueOf<Uint32>(SIZE, true); // 0xFFFF_FFFF
 
   /**
    * Determines whether the passed `test` is a 32-bit unsigned integer.
@@ -40,7 +40,7 @@ export namespace Uint32 {
    * @returns Whether the passed `test` is a 32-bit unsigned integer.
    */
   export function isUint32(test: unknown): boolean {
-    return UintN.isUintN(SIZE, test);
+    return UintN.isUintN(SIZE, test, true);
   }
 
   export function rotateLeft(source: Uint32, amount: SafeInteger): Uint32 {

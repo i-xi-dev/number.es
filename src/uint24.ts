@@ -15,7 +15,7 @@ export namespace Uint24 {
   /**
    * The number of bytes used to represent a 24-bit unsigned integer.
    */
-  export const BYTES = UintN.bytesOf(SIZE);
+  export const BYTES = UintN.bytesOf(SIZE, true);
 
   /**
    * The minimum value of 24-bit unsigned integer.
@@ -25,7 +25,7 @@ export namespace Uint24 {
   /**
    * The maximum value of 24-bit unsigned integer.
    */
-  export const MAX_VALUE = UintN.maxValueOf(SIZE) as Uint24; // 0xFFFFFF
+  export const MAX_VALUE = UintN.maxValueOf<Uint24>(SIZE, true); // 0xFFFFFF
 
   /**
    * Determines whether the passed `test` is a 24-bit unsigned integer.
@@ -34,26 +34,11 @@ export namespace Uint24 {
    * @returns Whether the passed `test` is a 24-bit unsigned integer.
    */
   export function isUint24(test: unknown): boolean {
-    return UintN.isUintN(SIZE, test);
+    return UintN.isUintN(SIZE, test, true);
   }
 
   export function rotateLeft(source: Uint24, amount: SafeInteger): Uint24 {
-    _assertUint24(source, "source");
-
-    if (Number.isSafeInteger(amount) !== true) {
-      throw new TypeError("amount");
-    }
-
-    let normalizedAmount = amount % SIZE;
-    if (normalizedAmount < 0) {
-      normalizedAmount = normalizedAmount + SIZE;
-    }
-    if (normalizedAmount === 0) {
-      return source;
-    }
-
-    return (((source << normalizedAmount) |
-      (source >> (SIZE - normalizedAmount))) & MAX_VALUE) as Uint24;
+    return UintN.rotateLeft(SIZE, source, amount, true);
   }
 
   // saturateFromSafeInteger

@@ -166,7 +166,7 @@ export namespace Uint8 {
   /**
    * The number of bytes used to represent an 8-bit unsigned integer.
    */
-  export const BYTES = UintN.bytesOf(SIZE);
+  export const BYTES = UintN.bytesOf(SIZE, true);
 
   /**
    * The minimum value of 8-bit unsigned integer.
@@ -176,7 +176,7 @@ export namespace Uint8 {
   /**
    * The maximum value of 8-bit unsigned integer.
    */
-  export const MAX_VALUE = UintN.maxValueOf(SIZE) as Uint8; // 0xFF
+  export const MAX_VALUE = UintN.maxValueOf<Uint8>(SIZE, true); // 0xFF
 
   /**
    * Determines whether the passed `test` is an 8-bit unsigned integer.
@@ -185,7 +185,7 @@ export namespace Uint8 {
    * @returns Whether the passed `test` is an 8-bit unsigned integer.
    */
   export function isUint8(test: unknown): test is Uint8 {
-    return UintN.isUintN(SIZE, test);
+    return UintN.isUintN(SIZE, test, true);
   }
 
   export type FromOptions = {
@@ -227,24 +227,7 @@ export namespace Uint8 {
   }
 
   export function rotateLeft(source: Uint8, amount: SafeInteger): Uint8 {
-    if (Uint8.isUint8(source) !== true) {
-      throw new TypeError("source");
-    }
-    if (Number.isSafeInteger(amount) !== true) {
-      throw new TypeError("amount");
-    }
-
-    let normalizedAmount = amount % SIZE;
-    if (normalizedAmount < 0) {
-      normalizedAmount = normalizedAmount + SIZE;
-    }
-    if (normalizedAmount === 0) {
-      return source;
-    }
-
-    return (((source << normalizedAmount) |
-      (source >> (SIZE - normalizedAmount))) &
-      0b11111111) as Uint8;
+    return UintN.rotateLeft(SIZE, source, amount, true);
   }
 
   // Uint8ClampedArrayにオーバーフローorアンダーフローする整数をセットしたのと同じ結果
