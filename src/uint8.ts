@@ -226,6 +226,10 @@ export namespace Uint8 {
     throw new TypeError("source");
   }
 
+  export function bitwiseAnd(a: Uint8, b: Uint8): Uint8 {
+    return UintN.bitwiseAnd(SIZE, a, b, true);
+  }
+
   export function rotateLeft(source: Uint8, amount: SafeInteger): Uint8 {
     return UintN.rotateLeft(SIZE, source, amount, true);
   }

@@ -39,6 +39,10 @@ export namespace Uint16 {
     return UintN.isUintN(SIZE, test, true);
   }
 
+  export function bitwiseAnd(a: Uint16, b: Uint16): Uint16 {
+    return UintN.bitwiseAnd(SIZE, a, b, true);
+  }
+
   export function rotateLeft(source: Uint16, amount: SafeInteger): Uint16 {
     return UintN.rotateLeft(SIZE, source, amount, true);
   }
@@ -84,13 +88,6 @@ export namespace Uint16 {
     return (littleEndian === true)
       ? (beBytes.reverse() as [Uint8, Uint8])
       : beBytes;
-  }
-
-  export function bitwiseAnd(a: Uint16, b: Uint16): Uint16 {
-    _assertUint16(a, "a");
-    _assertUint16(b, "b");
-
-    return (a & b) & MAX_VALUE;
   }
 
   export function bitwiseOr(a: Uint16, b: Uint16): Uint16 {

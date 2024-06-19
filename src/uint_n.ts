@@ -43,6 +43,28 @@ export function isUintN(
     inRange(test as number, [MIN_VALUE, maxValueOf(bits, true)]);
 }
 
+export function bitwiseAnd<T extends SafeInteger>(
+  bits: Bits,
+  a: T,
+  b: T,
+  _bitsTrusted = false,
+): T {
+  if (_bitsTrusted !== true) {
+    if (Bits.includes(bits) !== true) {
+      throw new TypeError("bits");
+    }
+  }
+
+  if (isUintN(bits, a, true) !== true) {
+    throw new TypeError("a");
+  }
+  if (isUintN(bits, b, true) !== true) {
+    throw new TypeError("b");
+  }
+
+  return ((a & b) & maxValueOf(bits, true)) as T;
+}
+
 export function rotateLeft<T extends SafeInteger>(
   bits: Bits,
   source: T,

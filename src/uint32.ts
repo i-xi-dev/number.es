@@ -43,6 +43,25 @@ export namespace Uint32 {
     return UintN.isUintN(SIZE, test, true);
   }
 
+  // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
+  export function bitwiseAnd(a: Uint32, b: Uint32): Uint32 {
+    _assertUint32(a, "a");
+    _assertUint32(b, "b");
+
+    // const ba = BigInt(a);
+    // const bb = BigInt(b);
+    // return Number((ba & bb) & BigInt(MAX_VALUE));
+
+    // こちらの方が速い
+    _bufferUint32View[0] = a;
+    _bufferUint32View[1] = b;
+    _bufferUint32View[2] = 0;
+    const [a1, a2, b1, b2] = _bufferUint16View; // バイオオーダーは元の順にセットするので、ここでは関係ない
+    _bufferUint16View[4] = a1 & b1;
+    _bufferUint16View[5] = a2 & b2;
+    return _bufferUint32View[2];
+  }
+
   export function rotateLeft(source: Uint32, amount: SafeInteger): Uint32 {
     _assertUint32(source, "source");
     if (Number.isSafeInteger(amount) !== true) {
@@ -109,25 +128,6 @@ export namespace Uint32 {
     return (littleEndian === true)
       ? (beBytes.reverse() as [Uint8, Uint8, Uint8, Uint8])
       : beBytes;
-  }
-
-  // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
-  export function bitwiseAnd(a: Uint32, b: Uint32): Uint32 {
-    _assertUint32(a, "a");
-    _assertUint32(b, "b");
-
-    // const ba = BigInt(a);
-    // const bb = BigInt(b);
-    // return Number((ba & bb) & BigInt(MAX_VALUE));
-
-    // こちらの方が速い
-    _bufferUint32View[0] = a;
-    _bufferUint32View[1] = b;
-    _bufferUint32View[2] = 0;
-    const [a1, a2, b1, b2] = _bufferUint16View; // バイオオーダーは元の順にセットするので、ここでは関係ない
-    _bufferUint16View[4] = a1 & b1;
-    _bufferUint16View[5] = a2 & b2;
-    return _bufferUint32View[2];
   }
 
   // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
