@@ -77,6 +77,37 @@ export function bitwiseAnd<T extends SafeInteger>(
   }
 }
 
+export function bitwiseOr<T extends SafeInteger>(
+  bits: Bits,
+  a: T,
+  b: T,
+  _bitsTrusted = false,
+): T {
+  _assertBits(bits, _bitsTrusted);
+
+  if (isUintN(bits, a, true) !== true) {
+    throw new TypeError("a");
+  }
+  if (isUintN(bits, b, true) !== true) {
+    throw new TypeError("b");
+  }
+
+  if (bits === 32) {
+    // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
+
+    // bigintに変換してビット演算するよりこちらの方が速い
+    _bufferUint32View[0] = a;
+    _bufferUint32View[1] = b;
+    _bufferUint32View[2] = 0;
+    const [a1, a2, b1, b2] = _bufferUint16View; // バイオオーダーは元の順にセットするので、ここでは関係ない
+    _bufferUint16View[4] = a1 | b1;
+    _bufferUint16View[5] = a2 | b2;
+    return _bufferUint32View[2] as T;
+  } else {
+    return ((a | b) & maxValueOf(bits, true)) as T;
+  }
+}
+
 export function rotateLeft<T extends SafeInteger>(
   bits: Bits,
   source: T,

@@ -230,6 +230,10 @@ export namespace Uint8 {
     return UintN.bitwiseAnd(SIZE, a, b, true);
   }
 
+  export function bitwiseOr(a: Uint8, b: Uint8): Uint8 {
+    return UintN.bitwiseOr(SIZE, a, b, true);
+  }
+
   export function rotateLeft(source: Uint8, amount: SafeInteger): Uint8 {
     return UintN.rotateLeft(SIZE, source, amount, true);
   }

@@ -41,6 +41,10 @@ export namespace Uint24 {
     return UintN.bitwiseAnd(SIZE, a, b, true);
   }
 
+  export function bitwiseOr(a: Uint24, b: Uint24): Uint24 {
+    return UintN.bitwiseOr(SIZE, a, b, true);
+  }
+
   export function rotateLeft(source: Uint24, amount: SafeInteger): Uint24 {
     return UintN.rotateLeft(SIZE, source, amount, true);
   }
@@ -50,13 +54,6 @@ export namespace Uint24 {
   // truncateFromSafeInteger
 
   // toBytes
-
-  export function bitwiseOr(a: Uint24, b: Uint24): Uint24 {
-    _assertUint24(a, "a");
-    _assertUint24(b, "b");
-
-    return (a | b) & MAX_VALUE;
-  }
 
   export function bitwiseXOr(a: Uint24, b: Uint24): Uint24 {
     _assertUint24(a, "a");
