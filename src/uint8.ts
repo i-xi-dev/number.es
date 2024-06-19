@@ -234,6 +234,10 @@ export namespace Uint8 {
     return UintN.bitwiseOr(SIZE, a, b, true);
   }
 
+  export function bitwiseXOr(a: Uint8, b: Uint8): Uint8 {
+    return UintN.bitwiseXOr(SIZE, a, b, true);
+  }
+
   export function rotateLeft(source: Uint8, amount: SafeInteger): Uint8 {
     return UintN.rotateLeft(SIZE, source, amount, true);
   }
