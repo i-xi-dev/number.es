@@ -1,4 +1,4 @@
-import { inRange } from "./number.ts";
+import { inRange, normalizeNumber } from "./number.ts";
 import { SafeInteger } from "./safe_integer.ts";
 
 const Bits = [6, 7, 8, 16, 24, 32] as const;
@@ -16,6 +16,8 @@ function _assertBits(bits: Bits, _bitsTrusted: boolean): void {
 
 export function bytesOf(bits: Bits, _bitsTrusted = false): SafeInteger {
   _assertBits(bits, _bitsTrusted);
+
+  //TODO 8で割り切れなければエラー
 
   return bits / _BITS_PER_BYTE;
 }
@@ -174,4 +176,24 @@ export function rotateLeft<T extends SafeInteger>(
     return (((source << normalizedAmount) |
       (source >> (bits - normalizedAmount))) & max) as T;
   }
+}
+
+export function saturateFromSafeInteger<T extends SafeInteger>(
+  bits: Bits,
+  source: SafeInteger,
+  _bitsTrusted = false,
+): T {
+  _assertBits(bits, _bitsTrusted);
+
+  if (Number.isSafeInteger(source) !== true) {
+    throw new TypeError("source");
+  }
+
+  const max = maxValueOf(bits, true);
+  if (source > max) {
+    return max as T;
+  } else if (source < MIN_VALUE) {
+    return MIN_VALUE as T;
+  }
+  return normalizeNumber(source) as T;
 }

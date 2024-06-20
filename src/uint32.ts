@@ -1,4 +1,3 @@
-import { normalizeNumber } from "./number.ts";
 import { SafeInteger } from "./safe_integer.ts";
 import { Uint8 } from "./uint8.ts";
 import * as UintN from "./uint_n.ts";
@@ -9,8 +8,6 @@ import * as UintN from "./uint_n.ts";
 export type Uint32 = number;
 
 const _buffer = new ArrayBuffer(96);
-const _bufferUint32View = new Uint32Array(_buffer);
-const _bufferUint16View = new Uint16Array(_buffer);
 
 export namespace Uint32 {
   /**
@@ -60,16 +57,7 @@ export namespace Uint32 {
   }
 
   export function saturateFromSafeInteger(source: SafeInteger): Uint32 {
-    if (Number.isSafeInteger(source) !== true) {
-      throw new TypeError("source");
-    }
-
-    if (source > MAX_VALUE) {
-      return MAX_VALUE;
-    } else if (source < MIN_VALUE) {
-      return MIN_VALUE;
-    }
-    return normalizeNumber(source) as Uint32;
+    return UintN.saturateFromSafeInteger(SIZE, source, true);
   }
 
   export function truncateFromSafeInteger(source: SafeInteger): Uint32 {

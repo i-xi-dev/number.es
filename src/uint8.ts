@@ -204,6 +204,11 @@ export namespace Uint8 {
     return UintN.rotateLeft(SIZE, source, amount, true);
   }
 
+  export function saturateFromSafeInteger(source: SafeInteger): Uint8 {
+    // Uint8ClampedArrayにオーバーフローorアンダーフローする整数をセットしたのと同じ結果
+    return UintN.saturateFromSafeInteger(SIZE, source, true);
+  }
+
   export type FromOptions = {
     strict?: boolean; // doNotTreatFalsyAsZero & acceptsOnlyUint8s
     fallback?: Uint8;
@@ -240,20 +245,6 @@ export namespace Uint8 {
       return normalizeNumber(source).toString(Radix.DECIMAL);
     }
     throw new TypeError("source");
-  }
-
-  // Uint8ClampedArrayにオーバーフローorアンダーフローする整数をセットしたのと同じ結果
-  export function saturateFromSafeInteger(source: SafeInteger): Uint8 {
-    if (Number.isSafeInteger(source) !== true) {
-      throw new TypeError("source");
-    }
-
-    if (source > MAX_VALUE) {
-      return MAX_VALUE;
-    } else if (source < MIN_VALUE) {
-      return MIN_VALUE;
-    }
-    return normalizeNumber(source) as Uint8;
   }
 
   // Uint8Arrayにオーバーフローorアンダーフローする整数をセットしたのと同じ結果

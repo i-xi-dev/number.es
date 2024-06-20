@@ -386,3 +386,33 @@ Deno.test("Uint24.rotateLeft(number, number)", () => {
     "amount",
   );
 });
+
+Deno.test("Uint24.saturateFromSafeInteger(number)", () => {
+  assertStrictEquals(Uint24.saturateFromSafeInteger(-1), 0);
+  assertStrictEquals(Uint24.saturateFromSafeInteger(-0), 0);
+  assertStrictEquals(Uint24.saturateFromSafeInteger(0), 0);
+  assertStrictEquals(Uint24.saturateFromSafeInteger(0xFFFFFF), 0xFFFFFF);
+  assertStrictEquals(Uint24.saturateFromSafeInteger(0x1000000), 0xFFFFFF);
+
+  assertThrows(
+    () => {
+      Uint24.saturateFromSafeInteger("" as unknown as number);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint24.saturateFromSafeInteger(Number.NaN);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint24.saturateFromSafeInteger(1.5);
+    },
+    TypeError,
+    "source",
+  );
+});

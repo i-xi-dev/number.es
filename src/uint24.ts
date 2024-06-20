@@ -53,15 +53,11 @@ export namespace Uint24 {
     return UintN.rotateLeft(SIZE, source, amount, true);
   }
 
-  // saturateFromSafeInteger
+  export function saturateFromSafeInteger(source: SafeInteger): Uint24 {
+    return UintN.saturateFromSafeInteger(SIZE, source, true);
+  }
 
   // truncateFromSafeInteger
 
   // toBytes
-}
-
-function _assertUint24(test: unknown, label: string): void {
-  if (Uint24.isUint24(test) !== true) {
-    throw new TypeError(label);
-  }
 }

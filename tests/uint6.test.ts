@@ -1,4 +1,4 @@
-import { assertStrictEquals } from "./deps.ts";
+import { assertStrictEquals, assertThrows } from "./deps.ts";
 import { Uint6 } from "../mod.ts";
 
 Deno.test("Uint6.isUint6(number)", () => {
@@ -27,4 +27,34 @@ Deno.test("Uint6.isUint6(any)", () => {
   assertStrictEquals(Uint6.isUint6([0]), false);
   assertStrictEquals(Uint6.isUint6(undefined), false);
   assertStrictEquals(Uint6.isUint6(null), false);
+});
+
+Deno.test("Uint6.saturateFromSafeInteger(number)", () => {
+  assertStrictEquals(Uint6.saturateFromSafeInteger(-1), 0);
+  assertStrictEquals(Uint6.saturateFromSafeInteger(-0), 0);
+  assertStrictEquals(Uint6.saturateFromSafeInteger(0), 0);
+  assertStrictEquals(Uint6.saturateFromSafeInteger(0x3F), 0x3F);
+  assertStrictEquals(Uint6.saturateFromSafeInteger(0x40), 0x3F);
+
+  assertThrows(
+    () => {
+      Uint6.saturateFromSafeInteger("" as unknown as number);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint6.saturateFromSafeInteger(Number.NaN);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint6.saturateFromSafeInteger(1.5);
+    },
+    TypeError,
+    "source",
+  );
 });

@@ -56,16 +56,7 @@ export namespace Uint16 {
   }
 
   export function saturateFromSafeInteger(source: SafeInteger): Uint16 {
-    if (Number.isSafeInteger(source) !== true) {
-      throw new TypeError("source");
-    }
-
-    if (source > MAX_VALUE) {
-      return MAX_VALUE;
-    } else if (source < MIN_VALUE) {
-      return MIN_VALUE;
-    }
-    return normalizeNumber(source) as Uint16;
+    return UintN.saturateFromSafeInteger(SIZE, source, true);
   }
 
   export function truncateFromSafeInteger(source: SafeInteger): Uint16 {

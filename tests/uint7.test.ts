@@ -1,4 +1,4 @@
-import { assertStrictEquals } from "./deps.ts";
+import { assertStrictEquals, assertThrows } from "./deps.ts";
 import { Uint7 } from "../mod.ts";
 
 Deno.test("Uint7.isUint7(number)", () => {
@@ -27,4 +27,34 @@ Deno.test("Uint7.isUint7(any)", () => {
   assertStrictEquals(Uint7.isUint7([0]), false);
   assertStrictEquals(Uint7.isUint7(undefined), false);
   assertStrictEquals(Uint7.isUint7(null), false);
+});
+
+Deno.test("Uint7.saturateFromSafeInteger(number)", () => {
+  assertStrictEquals(Uint7.saturateFromSafeInteger(-1), 0);
+  assertStrictEquals(Uint7.saturateFromSafeInteger(-0), 0);
+  assertStrictEquals(Uint7.saturateFromSafeInteger(0), 0);
+  assertStrictEquals(Uint7.saturateFromSafeInteger(0x7F), 0x7F);
+  assertStrictEquals(Uint7.saturateFromSafeInteger(0x80), 0x7F);
+
+  assertThrows(
+    () => {
+      Uint7.saturateFromSafeInteger("" as unknown as number);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint7.saturateFromSafeInteger(Number.NaN);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint7.saturateFromSafeInteger(1.5);
+    },
+    TypeError,
+    "source",
+  );
 });

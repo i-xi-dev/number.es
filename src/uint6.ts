@@ -112,4 +112,8 @@ export namespace Uint6 {
   export function rotateLeft(source: Uint6, amount: SafeInteger): Uint6 {
     return UintN.rotateLeft(SIZE, source, amount, true);
   }
+
+  export function saturateFromSafeInteger(source: SafeInteger): Uint6 {
+    return UintN.saturateFromSafeInteger(SIZE, source, true);
+  }
 }
