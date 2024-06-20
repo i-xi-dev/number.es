@@ -1,5 +1,4 @@
-import { inRange } from "./bigint.ts";
-import * as UintN from "./uint_n.ts";
+import * as BigUintN from "./big_uint_n.ts";
 
 /**
  * The type of 64-bit unsigned integer.
@@ -15,17 +14,17 @@ export namespace BigUint64 {
   /**
    * The number of bytes used to represent a 64-bit unsigned integer.
    */
-  export const BYTES = UintN.bytesOf(SIZE, true);
+  export const BYTES = BigUintN.bytesOf(SIZE, true);
 
   /**
    * The minimum value of 64-bit unsigned integer.
    */
-  export const MIN_VALUE = 0x0n;
+  export const MIN_VALUE = BigUintN.MIN_VALUE;
 
   /**
    * The maximum value of 64-bit unsigned integer.
    */
-  export const MAX_VALUE = 0xFFFF_FFFF_FFFF_FFFFn;
+  export const MAX_VALUE = BigUintN.maxValueOf(SIZE, true); // 0xFFFF_FFFF_FFFF_FFFFn
 
   /**
    * Determines whether the passed `test` is a 64-bit unsigned integer.
@@ -34,6 +33,18 @@ export namespace BigUint64 {
    * @returns Whether the passed `test` is a 64-bit unsigned integer.
    */
   export function isBigUint64(test: unknown): boolean {
-    return (typeof test === "bigint") && inRange(test, [MIN_VALUE, MAX_VALUE]);
+    return BigUintN.isBigUintN(SIZE, test, true);
+  }
+
+  export function bitwiseAnd(a: BigUint64, b: BigUint64): BigUint64 {
+    return BigUintN.bitwiseAnd(SIZE, a, b, true);
+  }
+
+  export function bitwiseOr(a: BigUint64, b: BigUint64): BigUint64 {
+    return BigUintN.bitwiseOr(SIZE, a, b, true);
+  }
+
+  export function bitwiseXOr(a: BigUint64, b: BigUint64): BigUint64 {
+    return BigUintN.bitwiseXOr(SIZE, a, b, true);
   }
 }

@@ -1,10 +1,10 @@
 import { inRange, normalizeNumber } from "./number.ts";
 import { SafeInteger } from "./safe_integer.ts";
 
-const Bits = [6, 7, 8, 16, 24, 32, 64] as const;
+const Bits = [6, 7, 8, 16, 24, 32] as const;
 type Bits = typeof Bits[number];
 
-const _BITS_PER_BYTE = 8;
+export const BITS_PER_BYTE = 8;
 
 function _assertBits(bits: Bits, _bitsTrusted: boolean): void {
   if (_bitsTrusted !== true) {
@@ -17,11 +17,11 @@ function _assertBits(bits: Bits, _bitsTrusted: boolean): void {
 export function bytesOf(bits: Bits, _bitsTrusted = false): SafeInteger {
   _assertBits(bits, _bitsTrusted);
 
-  if ((bits % _BITS_PER_BYTE) !== 0) {
+  if ((bits % BITS_PER_BYTE) !== 0) {
     throw new RangeError("bits");
   }
 
-  return bits / _BITS_PER_BYTE;
+  return bits / BITS_PER_BYTE;
 }
 
 export const MIN_VALUE = 0;
