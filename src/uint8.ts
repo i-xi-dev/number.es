@@ -209,6 +209,11 @@ export namespace Uint8 {
     return UintN.saturateFromSafeInteger(SIZE, source, true);
   }
 
+  export function truncateFromSafeInteger(source: SafeInteger): Uint8 {
+    // Uint8Arrayにオーバーフローorアンダーフローする整数をセットしたのと同じ結果
+    return UintN.truncateFromSafeInteger(SIZE, source, true);
+  }
+
   export type FromOptions = {
     strict?: boolean; // doNotTreatFalsyAsZero & acceptsOnlyUint8s
     fallback?: Uint8;
@@ -245,21 +250,5 @@ export namespace Uint8 {
       return normalizeNumber(source).toString(Radix.DECIMAL);
     }
     throw new TypeError("source");
-  }
-
-  // Uint8Arrayにオーバーフローorアンダーフローする整数をセットしたのと同じ結果
-  export function truncateFromSafeInteger(source: SafeInteger): Uint8 {
-    if (Number.isSafeInteger(source) !== true) {
-      throw new TypeError("source");
-    }
-
-    const count = 256;
-    if (source === 0) {
-      return 0;
-    } else if (source > 0) {
-      return (source % count) as Uint8;
-    } else {
-      return (count + (source % count)) as Uint8;
-    }
   }
 }

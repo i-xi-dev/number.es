@@ -197,3 +197,24 @@ export function saturateFromSafeInteger<T extends SafeInteger>(
   }
   return normalizeNumber(source) as T;
 }
+
+export function truncateFromSafeInteger<T extends SafeInteger>(
+  bits: Bits,
+  source: SafeInteger,
+  _bitsTrusted = false,
+): T {
+  _assertBits(bits, _bitsTrusted);
+
+  if (Number.isSafeInteger(source) !== true) {
+    throw new TypeError("source");
+  }
+
+  const count = maxValueOf(bits, true) + 1;
+  if (source === 0) {
+    return 0 as T;
+  } else if (source > 0) {
+    return (source % count) as T;
+  } else {
+    return (count + (source % count)) as T;
+  }
+}

@@ -61,18 +61,7 @@ export namespace Uint32 {
   }
 
   export function truncateFromSafeInteger(source: SafeInteger): Uint32 {
-    if (Number.isSafeInteger(source) !== true) {
-      throw new TypeError("source");
-    }
-
-    const count = 0x100000000;
-    if (source === 0) {
-      return 0;
-    } else if (source > 0) {
-      return (source % count) as Uint32;
-    } else {
-      return (count + (source % count)) as Uint32;
-    }
+    return UintN.truncateFromSafeInteger(SIZE, source, true);
   }
 
   export function toBytes(

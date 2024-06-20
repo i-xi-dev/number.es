@@ -416,3 +416,43 @@ Deno.test("Uint24.saturateFromSafeInteger(number)", () => {
     "source",
   );
 });
+
+Deno.test("Uint24.truncateFromSafeInteger(number)", () => {
+  assertStrictEquals(Uint24.truncateFromSafeInteger(-1), 0xFFFFFF);
+  assertStrictEquals(Uint24.truncateFromSafeInteger(-0), 0);
+  assertStrictEquals(Uint24.truncateFromSafeInteger(0), 0);
+  assertStrictEquals(Uint24.truncateFromSafeInteger(0xFFFFFF), 0xFFFFFF);
+  assertStrictEquals(Uint24.truncateFromSafeInteger(0x1000000), 0);
+
+  // for (let i = 1; i < Number.MAX_SAFE_INTEGER; i = i * 3) {
+  //   // console.log(`${i} -> ${i % 256}`);
+  //   assertStrictEquals(Uint24.truncateFromSafeInteger(i), Uint8Array.of(i)[0]);
+  // }
+
+  // for (let i = -1; i > Number.MIN_SAFE_INTEGER; i = i * 3) {
+  //   // console.log(`${i} -> ${256 + (i % 256)}`);
+  //   assertStrictEquals(Uint24.truncateFromSafeInteger(i), Uint8Array.of(i)[0]);
+  // }
+
+  assertThrows(
+    () => {
+      Uint24.truncateFromSafeInteger("" as unknown as number);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint24.truncateFromSafeInteger(Number.NaN);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint24.truncateFromSafeInteger(1.5);
+    },
+    TypeError,
+    "source",
+  );
+});

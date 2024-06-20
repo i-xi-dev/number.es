@@ -60,18 +60,7 @@ export namespace Uint16 {
   }
 
   export function truncateFromSafeInteger(source: SafeInteger): Uint16 {
-    if (Number.isSafeInteger(source) !== true) {
-      throw new TypeError("source");
-    }
-
-    const count = 65536;
-    if (source === 0) {
-      return 0;
-    } else if (source > 0) {
-      return (source % count) as Uint16;
-    } else {
-      return (count + (source % count)) as Uint16;
-    }
+    return UintN.truncateFromSafeInteger(SIZE, source, true);
   }
 
   export function toBytes(

@@ -118,4 +118,8 @@ export namespace Uint7 {
   export function saturateFromSafeInteger(source: SafeInteger): Uint7 {
     return UintN.saturateFromSafeInteger(SIZE, source, true);
   }
+
+  export function truncateFromSafeInteger(source: SafeInteger): Uint7 {
+    return UintN.truncateFromSafeInteger(SIZE, source, true);
+  }
 }

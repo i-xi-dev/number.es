@@ -58,3 +58,43 @@ Deno.test("Uint6.saturateFromSafeInteger(number)", () => {
     "source",
   );
 });
+
+Deno.test("Uint6.truncateFromSafeInteger(number)", () => {
+  assertStrictEquals(Uint6.truncateFromSafeInteger(-1), 0x3F);
+  assertStrictEquals(Uint6.truncateFromSafeInteger(-0), 0);
+  assertStrictEquals(Uint6.truncateFromSafeInteger(0), 0);
+  assertStrictEquals(Uint6.truncateFromSafeInteger(0x3F), 0x3F);
+  assertStrictEquals(Uint6.truncateFromSafeInteger(0x40), 0);
+
+  // for (let i = 1; i < Number.MAX_SAFE_INTEGER; i = i * 3) {
+  //   // console.log(`${i} -> ${i % 256}`);
+  //   assertStrictEquals(Uint6.truncateFromSafeInteger(i), Uint8Array.of(i)[0]);
+  // }
+
+  // for (let i = -1; i > Number.MIN_SAFE_INTEGER; i = i * 3) {
+  //   // console.log(`${i} -> ${256 + (i % 256)}`);
+  //   assertStrictEquals(Uint6.truncateFromSafeInteger(i), Uint8Array.of(i)[0]);
+  // }
+
+  assertThrows(
+    () => {
+      Uint6.truncateFromSafeInteger("" as unknown as number);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint6.truncateFromSafeInteger(Number.NaN);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint6.truncateFromSafeInteger(1.5);
+    },
+    TypeError,
+    "source",
+  );
+});

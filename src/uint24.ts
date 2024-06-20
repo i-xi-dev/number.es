@@ -57,7 +57,9 @@ export namespace Uint24 {
     return UintN.saturateFromSafeInteger(SIZE, source, true);
   }
 
-  // truncateFromSafeInteger
+  export function truncateFromSafeInteger(source: SafeInteger): Uint24 {
+    return UintN.truncateFromSafeInteger(SIZE, source, true);
+  }
 
   // toBytes
 }
