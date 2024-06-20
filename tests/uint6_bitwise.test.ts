@@ -81,3 +81,60 @@ Deno.test("Uint6.bitwiseXOr(number, number)", () => {
     "b",
   );
 });
+
+Deno.test("Uint6.rotateLeft(number, number)", () => {
+  assertStrictEquals(Uint6.rotateLeft(0b100000, 0), 0b100000);
+  assertStrictEquals(Uint6.rotateLeft(0b100000, 1), 0b000001);
+  assertStrictEquals(Uint6.rotateLeft(0b100000, 2), 0b000010);
+  assertStrictEquals(Uint6.rotateLeft(0b100000, 3), 0b000100);
+  assertStrictEquals(Uint6.rotateLeft(0b100000, 4), 0b001000);
+  assertStrictEquals(Uint6.rotateLeft(0b100000, 5), 0b010000);
+  assertStrictEquals(Uint6.rotateLeft(0b100000, 6), 0b100000);
+
+  assertStrictEquals(Uint6.rotateLeft(0b011111, 0), 0b011111);
+  assertStrictEquals(Uint6.rotateLeft(0b011111, 1), 0b111110);
+  assertStrictEquals(Uint6.rotateLeft(0b011111, 2), 0b111101);
+  assertStrictEquals(Uint6.rotateLeft(0b011111, 3), 0b111011);
+  assertStrictEquals(Uint6.rotateLeft(0b011111, 4), 0b110111);
+  assertStrictEquals(Uint6.rotateLeft(0b011111, 5), 0b101111);
+  assertStrictEquals(Uint6.rotateLeft(0b011111, 6), 0b011111);
+
+  assertStrictEquals(Uint6.rotateLeft(0b000001, -1), 0b100000);
+  assertStrictEquals(Uint6.rotateLeft(0b000001, 0), 0b000001);
+  assertStrictEquals(Uint6.rotateLeft(0b000001, 1), 0b000010);
+  assertStrictEquals(Uint6.rotateLeft(0b000001, 2), 0b000100);
+  assertStrictEquals(Uint6.rotateLeft(0b000001, 3), 0b001000);
+  assertStrictEquals(Uint6.rotateLeft(0b000001, 4), 0b010000);
+  assertStrictEquals(Uint6.rotateLeft(0b000001, 5), 0b100000);
+  assertStrictEquals(Uint6.rotateLeft(0b000001, 6), 0b000001);
+  assertStrictEquals(Uint6.rotateLeft(0b000001, 7), 0b000010);
+
+  assertStrictEquals(Uint6.rotateLeft(0b111111, 1), 0b111111);
+
+  assertStrictEquals(Uint6.rotateLeft(0, -1), 0);
+  assertStrictEquals(Uint6.rotateLeft(0, 0), 0);
+  assertStrictEquals(Uint6.rotateLeft(0, 1), 0);
+  assertStrictEquals(Uint6.rotateLeft(0, 101), 0);
+
+  assertThrows(
+    () => {
+      Uint6.rotateLeft(0x40 as Uint6, 1);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint6.rotateLeft(-1 as Uint6, 1);
+    },
+    TypeError,
+    "source",
+  );
+  assertThrows(
+    () => {
+      Uint6.rotateLeft(0x3F, 3.1);
+    },
+    TypeError,
+    "amount",
+  );
+});

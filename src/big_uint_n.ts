@@ -101,3 +101,32 @@ export function bitwiseXOr<T extends bigint>(
   const aXOrB = (a as bigint) ^ (b as bigint); //XXX 何故かtypescriptにbigintでなくnumberだと言われる
   return (aXOrB & maxValueOf(bits, true)) as T;
 }
+
+export function rotateLeft<T extends bigint>(
+  bits: Bits,
+  source: T,
+  amount: SafeInteger,
+  _bitsTrusted = false,
+): T {
+  _assertBits(bits, _bitsTrusted);
+
+  if (isBigUintN(bits, source, true) !== true) {
+    throw new TypeError("source");
+  }
+  if (Number.isSafeInteger(amount) !== true) {
+    throw new TypeError("amount");
+  }
+
+  let normalizedAmount = amount % bits;
+  if (normalizedAmount < 0) {
+    normalizedAmount = normalizedAmount + bits;
+  }
+  if (normalizedAmount === 0) {
+    return source;
+  }
+
+  const bigAmount = BigInt(normalizedAmount);
+  const max = maxValueOf(bits, true);
+  return (((source << bigAmount) |
+    (source >> (BigInt(bits) - bigAmount))) & max) as T;
+}

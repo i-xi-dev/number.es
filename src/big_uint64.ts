@@ -1,3 +1,4 @@
+import { SafeInteger } from "./safe_integer.ts";
 import * as BigUintN from "./big_uint_n.ts";
 
 /**
@@ -46,5 +47,12 @@ export namespace BigUint64 {
 
   export function bitwiseXOr(a: BigUint64, b: BigUint64): BigUint64 {
     return BigUintN.bitwiseXOr(SIZE, a, b, true);
+  }
+
+  export function rotateLeft(
+    source: BigUint64,
+    amount: SafeInteger,
+  ): BigUint64 {
+    return BigUintN.rotateLeft(SIZE, source, amount, true);
   }
 }
