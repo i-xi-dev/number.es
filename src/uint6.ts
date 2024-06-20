@@ -1,4 +1,6 @@
 import { inRange } from "./number.ts";
+import { SafeInteger } from "./safe_integer.ts";
+import * as UintN from "./uint_n.ts";
 
 /**
  * The type of 6-bit unsigned integer.
@@ -78,12 +80,12 @@ export namespace Uint6 {
   /**
    * The minimum value of 6-bit unsigned integer.
    */
-  export const MIN_VALUE = 0x0;
+  export const MIN_VALUE = UintN.MIN_VALUE;
 
   /**
    * The maximum value of 6-bit unsigned integer.
    */
-  export const MAX_VALUE = 0x3F;
+  export const MAX_VALUE = UintN.maxValueOf<Uint6>(SIZE, true); // 0x3F;
 
   /**
    * Determines whether the passed `test` is a 6-bit unsigned integer.
@@ -92,7 +94,22 @@ export namespace Uint6 {
    * @returns Whether the passed `test` is a 6-bit unsigned integer.
    */
   export function isUint6(test: unknown): test is Uint6 {
-    return Number.isSafeInteger(test) &&
-      inRange(test as number, [MIN_VALUE, MAX_VALUE]);
+    return UintN.isUintN(SIZE, test, true);
+  }
+
+  export function bitwiseAnd(a: Uint6, b: Uint6): Uint6 {
+    return UintN.bitwiseAnd(SIZE, a, b, true);
+  }
+
+  export function bitwiseOr(a: Uint6, b: Uint6): Uint6 {
+    return UintN.bitwiseOr(SIZE, a, b, true);
+  }
+
+  export function bitwiseXOr(a: Uint6, b: Uint6): Uint6 {
+    return UintN.bitwiseXOr(SIZE, a, b, true);
+  }
+
+  export function rotateLeft(source: Uint6, amount: SafeInteger): Uint6 {
+    return UintN.rotateLeft(SIZE, source, amount, true);
   }
 }

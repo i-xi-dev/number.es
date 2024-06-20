@@ -1,5 +1,7 @@
 import { inRange } from "./number.ts";
+import { SafeInteger } from "./safe_integer.ts";
 import { Uint6 } from "./uint6.ts";
+import * as UintN from "./uint_n.ts";
 
 /**
  * The type of 7-bit unsigned integer.
@@ -80,12 +82,12 @@ export namespace Uint7 {
   /**
    * The minimum value of 7-bit unsigned integer.
    */
-  export const MIN_VALUE = 0x0;
+  export const MIN_VALUE = UintN.MIN_VALUE;
 
   /**
    * The maximum value of 7-bit unsigned integer.
    */
-  export const MAX_VALUE = 0x7F;
+  export const MAX_VALUE = UintN.maxValueOf<Uint7>(SIZE, true); // 0x7F;
 
   /**
    * Determines whether the passed `test` is a 7-bit unsigned integer.
@@ -94,7 +96,22 @@ export namespace Uint7 {
    * @returns Whether the passed `test` is a 7-bit unsigned integer.
    */
   export function isUint7(test: unknown): test is Uint7 {
-    return Number.isSafeInteger(test) &&
-      inRange(test as number, [MIN_VALUE, MAX_VALUE]);
+    return UintN.isUintN(SIZE, test, true);
+  }
+
+  export function bitwiseAnd(a: Uint7, b: Uint7): Uint7 {
+    return UintN.bitwiseAnd(SIZE, a, b, true);
+  }
+
+  export function bitwiseOr(a: Uint7, b: Uint7): Uint7 {
+    return UintN.bitwiseOr(SIZE, a, b, true);
+  }
+
+  export function bitwiseXOr(a: Uint7, b: Uint7): Uint7 {
+    return UintN.bitwiseXOr(SIZE, a, b, true);
+  }
+
+  export function rotateLeft(source: Uint7, amount: SafeInteger): Uint7 {
+    return UintN.rotateLeft(SIZE, source, amount, true);
   }
 }

@@ -188,6 +188,22 @@ export namespace Uint8 {
     return UintN.isUintN(SIZE, test, true);
   }
 
+  export function bitwiseAnd(a: Uint8, b: Uint8): Uint8 {
+    return UintN.bitwiseAnd(SIZE, a, b, true);
+  }
+
+  export function bitwiseOr(a: Uint8, b: Uint8): Uint8 {
+    return UintN.bitwiseOr(SIZE, a, b, true);
+  }
+
+  export function bitwiseXOr(a: Uint8, b: Uint8): Uint8 {
+    return UintN.bitwiseXOr(SIZE, a, b, true);
+  }
+
+  export function rotateLeft(source: Uint8, amount: SafeInteger): Uint8 {
+    return UintN.rotateLeft(SIZE, source, amount, true);
+  }
+
   export type FromOptions = {
     strict?: boolean; // doNotTreatFalsyAsZero & acceptsOnlyUint8s
     fallback?: Uint8;
@@ -224,22 +240,6 @@ export namespace Uint8 {
       return normalizeNumber(source).toString(Radix.DECIMAL);
     }
     throw new TypeError("source");
-  }
-
-  export function bitwiseAnd(a: Uint8, b: Uint8): Uint8 {
-    return UintN.bitwiseAnd(SIZE, a, b, true);
-  }
-
-  export function bitwiseOr(a: Uint8, b: Uint8): Uint8 {
-    return UintN.bitwiseOr(SIZE, a, b, true);
-  }
-
-  export function bitwiseXOr(a: Uint8, b: Uint8): Uint8 {
-    return UintN.bitwiseXOr(SIZE, a, b, true);
-  }
-
-  export function rotateLeft(source: Uint8, amount: SafeInteger): Uint8 {
-    return UintN.rotateLeft(SIZE, source, amount, true);
   }
 
   // Uint8ClampedArrayにオーバーフローorアンダーフローする整数をセットしたのと同じ結果

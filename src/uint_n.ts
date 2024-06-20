@@ -1,7 +1,7 @@
 import { inRange } from "./number.ts";
 import { SafeInteger } from "./safe_integer.ts";
 
-const Bits = [8, 16, 24, 32] as const;
+const Bits = [6, 7, 8, 16, 24, 32] as const;
 type Bits = typeof Bits[number];
 
 const _BITS_PER_BYTE = 8;
