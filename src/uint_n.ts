@@ -1,7 +1,7 @@
 import { inRange, normalizeNumber } from "./number.ts";
 import { SafeInteger } from "./safe_integer.ts";
 
-const Bits = [6, 7, 8, 16, 24, 32] as const;
+const Bits = [6, 7, 8, 16, 24, 32, 64] as const;
 type Bits = typeof Bits[number];
 
 const _BITS_PER_BYTE = 8;
@@ -17,7 +17,9 @@ function _assertBits(bits: Bits, _bitsTrusted: boolean): void {
 export function bytesOf(bits: Bits, _bitsTrusted = false): SafeInteger {
   _assertBits(bits, _bitsTrusted);
 
-  //TODO 8で割り切れなければエラー
+  if ((bits % _BITS_PER_BYTE) !== 0) {
+    throw new RangeError("bits");
+  }
 
   return bits / _BITS_PER_BYTE;
 }
@@ -30,7 +32,7 @@ export function maxValueOf<T extends SafeInteger>(
 ): T {
   _assertBits(bits, _bitsTrusted);
 
-  return (256 ** bytesOf(bits, true) - 1) as T;
+  return ((2 ** bits) - 1) as T;
 }
 
 export function isUintN(

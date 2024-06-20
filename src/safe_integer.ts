@@ -41,7 +41,7 @@ export namespace SafeInteger {
   /**
    * Determines whether the `test` is a positive safe integer.
    *
-   * @param test - The value to be tested
+   * @param test - The value to be tested.
    * @returns Whether the `test` is a positive safe integer.
    */
   export function isPositiveSafeInteger(test: unknown): boolean {
@@ -51,13 +51,19 @@ export namespace SafeInteger {
   /**
    * Determines whether the `test` is a non-negative safe integer.
    *
-   * @param test - The value to be tested
+   * @param test - The value to be tested.
    * @returns Whether the `test` is a non-negative safe integer.
    */
   export function isNonNegativeSafeInteger(test: unknown): boolean {
     return Number.isSafeInteger(test) && isNonNegativeNumber(test);
   }
 
+  /**
+   * Determines whether the `test` is a non-positive safe integer.
+   *
+   * @param test - The value to be tested.
+   * @returns Whether the `test` is a non-positive safe integer.
+   */
   export function isNonPositiveSafeInteger(test: unknown): boolean {
     return Number.isSafeInteger(test) && isNonPositiveNumber(test);
   }
