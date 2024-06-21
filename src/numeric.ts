@@ -33,3 +33,13 @@ export function isNonNegative<T extends number>(test: T): boolean {
 export function isNonPositive<T extends number>(test: T): boolean {
   return _isNumber(test) && (test <= ZERO);
 }
+
+/**
+ * Determines whether the `test` is a negative number.
+ *
+ * @param test - The value to be tested
+ * @returns Whether the `test` is a negative number. (negative finite or negative infinity)
+ */
+export function isNegative<T extends number>(test: T): boolean {
+  return _isNumber(test) && (test < ZERO);
+}

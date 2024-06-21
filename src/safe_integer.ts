@@ -1,12 +1,17 @@
 import {
   clampNumber,
   isEvenInteger,
-  isNegativeNumber,
   isNumber,
   isOddInteger,
   normalizeNumber,
 } from "./number.ts";
-import { isNonNegative, isNonPositive, isPositive, ZERO } from "./numeric.ts";
+import {
+  isNegative,
+  isNonNegative,
+  isNonPositive,
+  isPositive,
+  ZERO,
+} from "./numeric.ts";
 import { NumberRange } from "./number_range.ts";
 import { Radix } from "./radix.ts";
 import { RoundingMode } from "./rounding_mode.ts";
@@ -66,7 +71,7 @@ export namespace SafeInteger {
   }
 
   export function isNegativeSafeInteger(test: unknown): boolean {
-    return Number.isSafeInteger(test) && isNegativeNumber(test);
+    return Number.isSafeInteger(test) && isNegative(test as number);
   }
 
   export function isOddSafeInteger(test: unknown): boolean {
@@ -108,7 +113,7 @@ export namespace SafeInteger {
 
     const nearestP = normalizeNumber(Math.ceil(source));
     const nearestN = normalizeNumber(Math.floor(source));
-    const sourceIsNegative = isNegativeNumber(source);
+    const sourceIsNegative = isNegative(source);
     const nearestPH = nearestP - 0.5;
     const nearestNH = nearestN + 0.5;
 

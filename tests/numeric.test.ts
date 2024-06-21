@@ -1,72 +1,100 @@
 import { assertStrictEquals } from "./deps.ts";
-import { isNonNegative, isNonPositive, isPositive, ZERO } from "../mod.ts";
+import { Numeric } from "../mod.ts";
 
-Deno.test("ZERO", () => {
-  assertStrictEquals(ZERO, 0);
+Deno.test("Numeric.ZERO", () => {
+  assertStrictEquals(Numeric.ZERO, 0);
 });
 
-Deno.test("isPositive()", () => {
-  assertStrictEquals(isPositive(0), false);
-  assertStrictEquals(isPositive(-0), false);
-  assertStrictEquals(isPositive(1), true);
-  assertStrictEquals(isPositive(-1), false);
+Deno.test("Numeric.isPositive()", () => {
+  assertStrictEquals(Numeric.isPositive(0), false);
+  assertStrictEquals(Numeric.isPositive(-0), false);
+  assertStrictEquals(Numeric.isPositive(1), true);
+  assertStrictEquals(Numeric.isPositive(-1), false);
 
-  assertStrictEquals(isPositive(-10.1), false);
-  assertStrictEquals(isPositive(-9.9), false);
-  assertStrictEquals(isPositive(9.9), true);
-  assertStrictEquals(isPositive(10.1), true);
+  assertStrictEquals(Numeric.isPositive(-10.1), false);
+  assertStrictEquals(Numeric.isPositive(-9.9), false);
+  assertStrictEquals(Numeric.isPositive(9.9), true);
+  assertStrictEquals(Numeric.isPositive(10.1), true);
 
-  assertStrictEquals(isPositive(Number.NaN), false);
-  assertStrictEquals(isPositive(Number.POSITIVE_INFINITY), true);
-  assertStrictEquals(isPositive(Number.NEGATIVE_INFINITY), false);
+  assertStrictEquals(Numeric.isPositive(Number.NaN), false);
+  assertStrictEquals(Numeric.isPositive(Number.POSITIVE_INFINITY), true);
+  assertStrictEquals(Numeric.isPositive(Number.NEGATIVE_INFINITY), false);
 
-  assertStrictEquals(isPositive(undefined as unknown as number), false);
-  assertStrictEquals(isPositive(null as unknown as number), false);
-  assertStrictEquals(isPositive(0n as unknown as number), false);
-  assertStrictEquals(isPositive("" as unknown as number), false);
-  assertStrictEquals(isPositive("0" as unknown as number), false);
+  assertStrictEquals(Numeric.isPositive(undefined as unknown as number), false);
+  assertStrictEquals(Numeric.isPositive(null as unknown as number), false);
+  assertStrictEquals(Numeric.isPositive(0n as unknown as number), false);
+  assertStrictEquals(Numeric.isPositive("" as unknown as number), false);
+  assertStrictEquals(Numeric.isPositive("0" as unknown as number), false);
 });
 
-Deno.test("isNonNegative()", () => {
-  assertStrictEquals(isNonNegative(0), true);
-  assertStrictEquals(isNonNegative(-0), true);
-  assertStrictEquals(isNonNegative(1), true);
-  assertStrictEquals(isNonNegative(-1), false);
+Deno.test("Numeric.isNonNegative()", () => {
+  assertStrictEquals(Numeric.isNonNegative(0), true);
+  assertStrictEquals(Numeric.isNonNegative(-0), true);
+  assertStrictEquals(Numeric.isNonNegative(1), true);
+  assertStrictEquals(Numeric.isNonNegative(-1), false);
 
-  assertStrictEquals(isNonNegative(-10.1), false);
-  assertStrictEquals(isNonNegative(-9.9), false);
-  assertStrictEquals(isNonNegative(9.9), true);
-  assertStrictEquals(isNonNegative(10.1), true);
+  assertStrictEquals(Numeric.isNonNegative(-10.1), false);
+  assertStrictEquals(Numeric.isNonNegative(-9.9), false);
+  assertStrictEquals(Numeric.isNonNegative(9.9), true);
+  assertStrictEquals(Numeric.isNonNegative(10.1), true);
 
-  assertStrictEquals(isNonNegative(Number.NaN), false);
-  assertStrictEquals(isNonNegative(Number.POSITIVE_INFINITY), true);
-  assertStrictEquals(isNonNegative(Number.NEGATIVE_INFINITY), false);
+  assertStrictEquals(Numeric.isNonNegative(Number.NaN), false);
+  assertStrictEquals(Numeric.isNonNegative(Number.POSITIVE_INFINITY), true);
+  assertStrictEquals(Numeric.isNonNegative(Number.NEGATIVE_INFINITY), false);
 
-  assertStrictEquals(isNonNegative(undefined as unknown as number), false);
-  assertStrictEquals(isNonNegative(null as unknown as number), false);
-  assertStrictEquals(isNonNegative(0n as unknown as number), false);
-  assertStrictEquals(isNonNegative("" as unknown as number), false);
-  assertStrictEquals(isNonNegative("0" as unknown as number), false);
+  assertStrictEquals(
+    Numeric.isNonNegative(undefined as unknown as number),
+    false,
+  );
+  assertStrictEquals(Numeric.isNonNegative(null as unknown as number), false);
+  assertStrictEquals(Numeric.isNonNegative(0n as unknown as number), false);
+  assertStrictEquals(Numeric.isNonNegative("" as unknown as number), false);
+  assertStrictEquals(Numeric.isNonNegative("0" as unknown as number), false);
 });
 
-Deno.test("isNonPositive()", () => {
-  assertStrictEquals(isNonPositive(0), true);
-  assertStrictEquals(isNonPositive(-0), true);
-  assertStrictEquals(isNonPositive(1), false);
-  assertStrictEquals(isNonPositive(-1), true);
+Deno.test("Numeric.isNonPositive()", () => {
+  assertStrictEquals(Numeric.isNonPositive(0), true);
+  assertStrictEquals(Numeric.isNonPositive(-0), true);
+  assertStrictEquals(Numeric.isNonPositive(1), false);
+  assertStrictEquals(Numeric.isNonPositive(-1), true);
 
-  assertStrictEquals(isNonPositive(-10.1), true);
-  assertStrictEquals(isNonPositive(-9.9), true);
-  assertStrictEquals(isNonPositive(9.9), false);
-  assertStrictEquals(isNonPositive(10.1), false);
+  assertStrictEquals(Numeric.isNonPositive(-10.1), true);
+  assertStrictEquals(Numeric.isNonPositive(-9.9), true);
+  assertStrictEquals(Numeric.isNonPositive(9.9), false);
+  assertStrictEquals(Numeric.isNonPositive(10.1), false);
 
-  assertStrictEquals(isNonPositive(Number.NaN), false);
-  assertStrictEquals(isNonPositive(Number.POSITIVE_INFINITY), false);
-  assertStrictEquals(isNonPositive(Number.NEGATIVE_INFINITY), true);
+  assertStrictEquals(Numeric.isNonPositive(Number.NaN), false);
+  assertStrictEquals(Numeric.isNonPositive(Number.POSITIVE_INFINITY), false);
+  assertStrictEquals(Numeric.isNonPositive(Number.NEGATIVE_INFINITY), true);
 
-  assertStrictEquals(isNonPositive(undefined as unknown as number), false);
-  assertStrictEquals(isNonPositive(null as unknown as number), false);
-  assertStrictEquals(isNonPositive(0n as unknown as number), false);
-  assertStrictEquals(isNonPositive("" as unknown as number), false);
-  assertStrictEquals(isNonPositive("0" as unknown as number), false);
+  assertStrictEquals(
+    Numeric.isNonPositive(undefined as unknown as number),
+    false,
+  );
+  assertStrictEquals(Numeric.isNonPositive(null as unknown as number), false);
+  assertStrictEquals(Numeric.isNonPositive(0n as unknown as number), false);
+  assertStrictEquals(Numeric.isNonPositive("" as unknown as number), false);
+  assertStrictEquals(Numeric.isNonPositive("0" as unknown as number), false);
+});
+
+Deno.test("Numeric.isNegative()", () => {
+  assertStrictEquals(Numeric.isNegative(0), false);
+  assertStrictEquals(Numeric.isNegative(-0), false);
+  assertStrictEquals(Numeric.isNegative(1), false);
+  assertStrictEquals(Numeric.isNegative(-1), true);
+
+  assertStrictEquals(Numeric.isNegative(-10.1), true);
+  assertStrictEquals(Numeric.isNegative(-9.9), true);
+  assertStrictEquals(Numeric.isNegative(9.9), false);
+  assertStrictEquals(Numeric.isNegative(10.1), false);
+
+  assertStrictEquals(Numeric.isNegative(Number.NaN), false);
+  assertStrictEquals(Numeric.isNegative(Number.POSITIVE_INFINITY), false);
+  assertStrictEquals(Numeric.isNegative(Number.NEGATIVE_INFINITY), true);
+
+  assertStrictEquals(Numeric.isNegative(undefined as unknown as number), false);
+  assertStrictEquals(Numeric.isNegative(null as unknown as number), false);
+  assertStrictEquals(Numeric.isNegative(0n as unknown as number), false);
+  assertStrictEquals(Numeric.isNegative("" as unknown as number), false);
+  assertStrictEquals(Numeric.isNegative("0" as unknown as number), false);
 });

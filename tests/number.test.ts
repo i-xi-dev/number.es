@@ -5,7 +5,6 @@ const {
   clampNumber,
   inRange,
   isEvenInteger,
-  isNegativeNumber,
   isNumber,
   isOddInteger,
   normalizeNumber,
@@ -38,28 +37,6 @@ Deno.test("isNumber()", () => {
   assertStrictEquals(isNumber(0n), false);
   assertStrictEquals(isNumber(""), false);
   assertStrictEquals(isNumber("0"), false);
-});
-
-Deno.test("isNegativeNumber()", () => {
-  assertStrictEquals(isNegativeNumber(0), false);
-  assertStrictEquals(isNegativeNumber(-0), false);
-  assertStrictEquals(isNegativeNumber(1), false);
-  assertStrictEquals(isNegativeNumber(-1), true);
-
-  assertStrictEquals(isNegativeNumber(-10.1), true);
-  assertStrictEquals(isNegativeNumber(-9.9), true);
-  assertStrictEquals(isNegativeNumber(9.9), false);
-  assertStrictEquals(isNegativeNumber(10.1), false);
-
-  assertStrictEquals(isNegativeNumber(Number.NaN), false);
-  assertStrictEquals(isNegativeNumber(Number.POSITIVE_INFINITY), false);
-  assertStrictEquals(isNegativeNumber(Number.NEGATIVE_INFINITY), true);
-
-  assertStrictEquals(isNegativeNumber(undefined), false);
-  assertStrictEquals(isNegativeNumber(null), false);
-  assertStrictEquals(isNegativeNumber(0n), false);
-  assertStrictEquals(isNegativeNumber(""), false);
-  assertStrictEquals(isNegativeNumber("0"), false);
 });
 
 Deno.test("isOddInteger()", () => {

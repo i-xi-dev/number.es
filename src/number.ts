@@ -4,10 +4,6 @@ import { ZERO } from "./numeric.ts";
 
 export const isNumber = _Utils._isNumber;
 
-export function isNegativeNumber(test: unknown): boolean {
-  return isNumber(test) && ((test as number) < ZERO);
-}
-
 export function isOddInteger(test: unknown): boolean {
   return Number.isInteger(test) ? (((test as number) % 2) !== ZERO) : false;
 }
@@ -16,6 +12,7 @@ export function isEvenInteger(test: unknown): boolean {
   return Number.isInteger(test) ? (((test as number) % 2) === ZERO) : false;
 }
 
+//normalizeFinite
 export function normalizeNumber(source: number): number {
   if (isNumber(source) !== true) {
     throw new TypeError("source");
