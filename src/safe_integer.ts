@@ -2,14 +2,12 @@ import {
   clampNumber,
   isEvenInteger,
   isNegativeNumber,
-  isNonNegativeNumber,
   isNonPositiveNumber,
   isNumber,
   isOddInteger,
-  isPositiveNumber,
   normalizeNumber,
-  ZERO,
 } from "./number.ts";
+import { isNonNegative, isPositive, ZERO } from "./numeric.ts";
 import { NumberRange } from "./number_range.ts";
 import { Radix } from "./radix.ts";
 import { RoundingMode } from "./rounding_mode.ts";
@@ -45,7 +43,7 @@ export namespace SafeInteger {
    * @returns Whether the `test` is a positive safe integer.
    */
   export function isPositiveSafeInteger(test: unknown): boolean {
-    return Number.isSafeInteger(test) && isPositiveNumber(test);
+    return Number.isSafeInteger(test) && isPositive(test as number);
   }
 
   /**
@@ -55,7 +53,7 @@ export namespace SafeInteger {
    * @returns Whether the `test` is a non-negative safe integer.
    */
   export function isNonNegativeSafeInteger(test: unknown): boolean {
-    return Number.isSafeInteger(test) && isNonNegativeNumber(test);
+    return Number.isSafeInteger(test) && isNonNegative(test as number);
   }
 
   /**

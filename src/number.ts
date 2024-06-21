@@ -1,29 +1,8 @@
 import * as _Utils from "./_utils.ts";
 import { NumberRange } from "./number_range.ts";
-
-export const ZERO = 0;
+import { ZERO } from "./numeric.ts";
 
 export const isNumber = _Utils._isNumber;
-
-/**
- * Determines whether the `test` is a positive number.
- *
- * @param test - The value to be tested
- * @returns Whether the `test` is a positive number. (positive finite or positive infinity)
- */
-export function isPositiveNumber(test: unknown): boolean {
-  return isNumber(test) && ((test as number) > ZERO);
-}
-
-/**
- * Determines whether the `test` is a non-negative number.
- *
- * @param test - The value to be tested
- * @returns Whether the `test` is a non-negative number. (non-negative finite or positive infinity)
- */
-export function isNonNegativeNumber(test: unknown): boolean {
-  return isNumber(test) && ((test as number) >= ZERO);
-}
 
 export function isNonPositiveNumber(test: unknown): boolean {
   return isNumber(test) && ((test as number) <= ZERO);
