@@ -6,7 +6,6 @@ const {
   inRange,
   isEvenInteger,
   isNegativeNumber,
-  isNonPositiveNumber,
   isNumber,
   isOddInteger,
   normalizeNumber,
@@ -39,28 +38,6 @@ Deno.test("isNumber()", () => {
   assertStrictEquals(isNumber(0n), false);
   assertStrictEquals(isNumber(""), false);
   assertStrictEquals(isNumber("0"), false);
-});
-
-Deno.test("isNonPositiveNumber()", () => {
-  assertStrictEquals(isNonPositiveNumber(0), true);
-  assertStrictEquals(isNonPositiveNumber(-0), true);
-  assertStrictEquals(isNonPositiveNumber(1), false);
-  assertStrictEquals(isNonPositiveNumber(-1), true);
-
-  assertStrictEquals(isNonPositiveNumber(-10.1), true);
-  assertStrictEquals(isNonPositiveNumber(-9.9), true);
-  assertStrictEquals(isNonPositiveNumber(9.9), false);
-  assertStrictEquals(isNonPositiveNumber(10.1), false);
-
-  assertStrictEquals(isNonPositiveNumber(Number.NaN), false);
-  assertStrictEquals(isNonPositiveNumber(Number.POSITIVE_INFINITY), false);
-  assertStrictEquals(isNonPositiveNumber(Number.NEGATIVE_INFINITY), true);
-
-  assertStrictEquals(isNonPositiveNumber(undefined), false);
-  assertStrictEquals(isNonPositiveNumber(null), false);
-  assertStrictEquals(isNonPositiveNumber(0n), false);
-  assertStrictEquals(isNonPositiveNumber(""), false);
-  assertStrictEquals(isNonPositiveNumber("0"), false);
 });
 
 Deno.test("isNegativeNumber()", () => {

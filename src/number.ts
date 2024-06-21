@@ -4,10 +4,6 @@ import { ZERO } from "./numeric.ts";
 
 export const isNumber = _Utils._isNumber;
 
-export function isNonPositiveNumber(test: unknown): boolean {
-  return isNumber(test) && ((test as number) <= ZERO);
-}
-
 export function isNegativeNumber(test: unknown): boolean {
   return isNumber(test) && ((test as number) < ZERO);
 }
