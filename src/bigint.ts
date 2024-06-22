@@ -4,22 +4,6 @@ import { isBigInt } from "./numeric.ts";
 
 export const ZERO = 0n;
 
-export function isPositiveBigInt(test: unknown): boolean {
-  return isBigInt(test) && (test > ZERO);
-}
-
-export function isNonNegativeBigInt(test: unknown): boolean {
-  return isBigInt(test) && (test >= ZERO);
-}
-
-export function isNonPositiveBigInt(test: unknown): boolean {
-  return isBigInt(test) && (test <= ZERO);
-}
-
-export function isNegativeBigInt(test: unknown): boolean {
-  return isBigInt(test) && (test < ZERO);
-}
-
 export function isOddBigInt(test: unknown): boolean {
   return isBigInt(test) ? ((test % 2n) !== ZERO) : false;
 }

@@ -5,100 +5,12 @@ const {
   clampBigInt,
   inRange,
   isEvenBigInt,
-  isNegativeBigInt,
-  isNonNegativeBigInt,
-  isNonPositiveBigInt,
   isOddBigInt,
-  isPositiveBigInt,
   ZERO,
 } = BigIntEx;
 
 Deno.test("ZERO", () => {
   assertStrictEquals(ZERO, 0n);
-});
-
-Deno.test("isPositiveBigInt()", () => {
-  assertStrictEquals(isPositiveBigInt(0n), false);
-  assertStrictEquals(isPositiveBigInt(-0n), false);
-  assertStrictEquals(isPositiveBigInt(1n), true);
-  assertStrictEquals(isPositiveBigInt(-1n), false);
-
-  assertStrictEquals(isPositiveBigInt(-10.1), false);
-  assertStrictEquals(isPositiveBigInt(-9.9), false);
-  assertStrictEquals(isPositiveBigInt(9.9), false);
-  assertStrictEquals(isPositiveBigInt(10.1), false);
-
-  assertStrictEquals(isPositiveBigInt(Number.NaN), false);
-  assertStrictEquals(isPositiveBigInt(Number.POSITIVE_INFINITY), false);
-  assertStrictEquals(isPositiveBigInt(Number.NEGATIVE_INFINITY), false);
-
-  assertStrictEquals(isPositiveBigInt(undefined), false);
-  assertStrictEquals(isPositiveBigInt(null), false);
-  assertStrictEquals(isPositiveBigInt(""), false);
-  assertStrictEquals(isPositiveBigInt("0"), false);
-});
-
-Deno.test("isNonNegativeBigInt()", () => {
-  assertStrictEquals(isNonNegativeBigInt(0n), true);
-  assertStrictEquals(isNonNegativeBigInt(-0n), true);
-  assertStrictEquals(isNonNegativeBigInt(1n), true);
-  assertStrictEquals(isNonNegativeBigInt(-1n), false);
-
-  assertStrictEquals(isNonNegativeBigInt(-10.1), false);
-  assertStrictEquals(isNonNegativeBigInt(-9.9), false);
-  assertStrictEquals(isNonNegativeBigInt(9.9), false);
-  assertStrictEquals(isNonNegativeBigInt(10.1), false);
-
-  assertStrictEquals(isNonNegativeBigInt(Number.NaN), false);
-  assertStrictEquals(isNonNegativeBigInt(Number.POSITIVE_INFINITY), false);
-  assertStrictEquals(isNonNegativeBigInt(Number.NEGATIVE_INFINITY), false);
-
-  assertStrictEquals(isNonNegativeBigInt(undefined), false);
-  assertStrictEquals(isNonNegativeBigInt(null), false);
-  assertStrictEquals(isNonNegativeBigInt(""), false);
-  assertStrictEquals(isNonNegativeBigInt("0"), false);
-});
-
-Deno.test("isNonPositiveBigInt()", () => {
-  assertStrictEquals(isNonPositiveBigInt(0n), true);
-  assertStrictEquals(isNonPositiveBigInt(-0n), true);
-  assertStrictEquals(isNonPositiveBigInt(1n), false);
-  assertStrictEquals(isNonPositiveBigInt(-1n), true);
-
-  assertStrictEquals(isNonPositiveBigInt(-10.1), false);
-  assertStrictEquals(isNonPositiveBigInt(-9.9), false);
-  assertStrictEquals(isNonPositiveBigInt(9.9), false);
-  assertStrictEquals(isNonPositiveBigInt(10.1), false);
-
-  assertStrictEquals(isNonPositiveBigInt(Number.NaN), false);
-  assertStrictEquals(isNonPositiveBigInt(Number.POSITIVE_INFINITY), false);
-  assertStrictEquals(isNonPositiveBigInt(Number.NEGATIVE_INFINITY), false);
-
-  assertStrictEquals(isNonPositiveBigInt(undefined), false);
-  assertStrictEquals(isNonPositiveBigInt(null), false);
-  assertStrictEquals(isNonPositiveBigInt(""), false);
-  assertStrictEquals(isNonPositiveBigInt("0"), false);
-});
-
-Deno.test("isNegativeBigInt()", () => {
-  assertStrictEquals(isNegativeBigInt(0n), false);
-  assertStrictEquals(isNegativeBigInt(-0n), false);
-  assertStrictEquals(isNegativeBigInt(1n), false);
-  assertStrictEquals(isNegativeBigInt(-1n), true);
-
-  assertStrictEquals(isNegativeBigInt(-10.1), false);
-  assertStrictEquals(isNegativeBigInt(-9.9), false);
-  assertStrictEquals(isNegativeBigInt(9.9), false);
-  assertStrictEquals(isNegativeBigInt(10.1), false);
-
-  assertStrictEquals(isNegativeBigInt(Number.NaN), false);
-  assertStrictEquals(isNegativeBigInt(Number.POSITIVE_INFINITY), false);
-  assertStrictEquals(isNegativeBigInt(Number.NEGATIVE_INFINITY), false);
-
-  assertStrictEquals(isNegativeBigInt(undefined), false);
-  assertStrictEquals(isNegativeBigInt(null), false);
-  assertStrictEquals(isNegativeBigInt(""), false);
-  assertStrictEquals(isNegativeBigInt("0"), false);
 });
 
 Deno.test("isOddBigInt()", () => {

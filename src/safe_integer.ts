@@ -1,9 +1,5 @@
 import {
   isNegativeNumber,
-  isNonNegativeNumber,
-  isNonPositiveNumber,
-  isNumber,
-  isPositiveNumber,
   normalizeNumber,
   ZERO,
 } from "./numeric.ts";
@@ -15,46 +11,6 @@ import { RoundingMode } from "./rounding_mode.ts";
 export type SafeInteger = number;
 
 export namespace SafeInteger {
-  /**
-   * Determines whether the `test` is a positive safe integer.
-   *
-   * @param test - The value to be tested.
-   * @returns Whether the `test` is a positive safe integer.
-   */
-  export function isPositiveSafeInteger(test: unknown): boolean {
-    return Number.isSafeInteger(test) && isPositiveNumber(test as number);
-  }
-
-  /**
-   * Determines whether the `test` is a non-negative safe integer.
-   *
-   * @param test - The value to be tested.
-   * @returns Whether the `test` is a non-negative safe integer.
-   */
-  export function isNonNegativeSafeInteger(test: unknown): boolean {
-    return Number.isSafeInteger(test) && isNonNegativeNumber(test as number);
-  }
-
-  /**
-   * Determines whether the `test` is a non-positive safe integer.
-   *
-   * @param test - The value to be tested.
-   * @returns Whether the `test` is a non-positive safe integer.
-   */
-  export function isNonPositiveSafeInteger(test: unknown): boolean {
-    return Number.isSafeInteger(test) && isNonPositiveNumber(test as number);
-  }
-
-  /**
-   * Determines whether the `test` is a negative safe integer.
-   *
-   * @param test - The value to be tested.
-   * @returns Whether the `test` is a negative safe integer.
-   */
-  export function isNegativeSafeInteger(test: unknown): boolean {
-    return Number.isSafeInteger(test) && isNegativeNumber(test as number);
-  }
-
   export function isOddSafeInteger(test: unknown): boolean {
     return Number.isSafeInteger(test) && (((test as number) % 2) !== ZERO);
   }
