@@ -1,4 +1,5 @@
-import { inRange, normalizeNumber } from "./number.ts";
+import { inRange } from "./number.ts";
+import { normalizeNumber } from "./numeric.ts";
 import { SafeInteger } from "./safe_integer.ts";
 
 const Bits = [6, 7, 8, 16, 24, 32] as const;

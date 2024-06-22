@@ -1,6 +1,6 @@
 import * as _Utils from "./_utils.ts";
 import { NumberRange } from "./number_range.ts";
-import { ZERO } from "./numeric.ts";
+import { normalizeNumber, ZERO } from "./numeric.ts";
 
 export const isNumber = _Utils._isNumber;
 
@@ -10,16 +10,6 @@ export function isOddInteger(test: unknown): boolean {
 
 export function isEvenInteger(test: unknown): boolean {
   return Number.isInteger(test) ? (((test as number) % 2) === ZERO) : false;
-}
-
-//normalizeFinite
-export function normalizeNumber(source: number): number {
-  if (isNumber(source) !== true) {
-    throw new TypeError("source");
-  }
-
-  // -0は0とする
-  return (source === ZERO) ? ZERO : source;
 }
 
 export function clampNumber(source: number, range: NumberRange): number {

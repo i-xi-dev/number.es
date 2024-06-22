@@ -10,7 +10,7 @@ function _isNumber(test: unknown): test is number {
  * @param test - The value to be tested
  * @returns Whether the `test` is a positive number. (positive finite or positive infinity)
  */
-export function isPositive<T extends number>(test: T): boolean {
+export function isPositiveNumber<T extends number>(test: T): boolean {
   return _isNumber(test) && (test > ZERO);
 }
 
@@ -20,7 +20,7 @@ export function isPositive<T extends number>(test: T): boolean {
  * @param test - The value to be tested
  * @returns Whether the `test` is a non-negative number. (non-negative finite or positive infinity)
  */
-export function isNonNegative<T extends number>(test: T): boolean {
+export function isNonNegativeNumber<T extends number>(test: T): boolean {
   return _isNumber(test) && (test >= ZERO);
 }
 
@@ -30,7 +30,7 @@ export function isNonNegative<T extends number>(test: T): boolean {
  * @param test - The value to be tested
  * @returns Whether the `test` is a non-positive number. (non-positive finite or negative infinity)
  */
-export function isNonPositive<T extends number>(test: T): boolean {
+export function isNonPositiveNumber<T extends number>(test: T): boolean {
   return _isNumber(test) && (test <= ZERO);
 }
 
@@ -40,6 +40,18 @@ export function isNonPositive<T extends number>(test: T): boolean {
  * @param test - The value to be tested
  * @returns Whether the `test` is a negative number. (negative finite or negative infinity)
  */
-export function isNegative<T extends number>(test: T): boolean {
+export function isNegativeNumber<T extends number>(test: T): boolean {
   return _isNumber(test) && (test < ZERO);
+}
+
+export function normalizeNumber<T extends number>(source: T): T {
+  if (_isNumber(source) !== true) {
+    throw new TypeError("source");
+  }
+  if (Number.isFinite(source) !== true) {
+    return source;
+  }
+
+  // -0は0とする
+  return (source === ZERO) ? ZERO as T : source;
 }

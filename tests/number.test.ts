@@ -7,7 +7,6 @@ const {
   isEvenInteger,
   isNumber,
   isOddInteger,
-  normalizeNumber,
 } = NumberEx;
 
 Deno.test("Radix", () => {
@@ -89,64 +88,6 @@ Deno.test("isEvenInteger()", () => {
   assertStrictEquals(isEvenInteger(0n), false);
   assertStrictEquals(isEvenInteger(""), false);
   assertStrictEquals(isEvenInteger("0"), false);
-});
-
-Deno.test("normalizeNumber()", () => {
-  assertStrictEquals(normalizeNumber(0), 0);
-  assertStrictEquals(normalizeNumber(-0), 0);
-  assertStrictEquals(normalizeNumber(1), 1);
-  assertStrictEquals(normalizeNumber(-1), -1);
-
-  assertStrictEquals(normalizeNumber(-10.1), -10.1);
-  assertStrictEquals(normalizeNumber(-9.9), -9.9);
-  assertStrictEquals(normalizeNumber(9.9), 9.9);
-  assertStrictEquals(normalizeNumber(10.1), 10.1);
-
-  assertStrictEquals(normalizeNumber(Number.NaN), Number.NaN);
-  assertStrictEquals(
-    normalizeNumber(Number.POSITIVE_INFINITY),
-    Number.POSITIVE_INFINITY,
-  );
-  assertStrictEquals(
-    normalizeNumber(Number.NEGATIVE_INFINITY),
-    Number.NEGATIVE_INFINITY,
-  );
-
-  assertThrows(
-    () => {
-      normalizeNumber(undefined as unknown as number);
-    },
-    TypeError,
-    "source",
-  );
-  assertThrows(
-    () => {
-      normalizeNumber(null as unknown as number);
-    },
-    TypeError,
-    "source",
-  );
-  assertThrows(
-    () => {
-      normalizeNumber(0n as unknown as number);
-    },
-    TypeError,
-    "source",
-  );
-  assertThrows(
-    () => {
-      normalizeNumber("" as unknown as number);
-    },
-    TypeError,
-    "source",
-  );
-  assertThrows(
-    () => {
-      normalizeNumber("0" as unknown as number);
-    },
-    TypeError,
-    "source",
-  );
 });
 
 Deno.test("clampNumber()", () => {

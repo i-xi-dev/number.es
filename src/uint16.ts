@@ -1,4 +1,3 @@
-import { normalizeNumber } from "./number.ts";
 import { SafeInteger } from "./safe_integer.ts";
 import { Uint8 } from "./uint8.ts";
 import * as UintN from "./uint_n.ts";

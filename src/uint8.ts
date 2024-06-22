@@ -1,4 +1,4 @@
-import { normalizeNumber } from "./number.ts";
+import { normalizeNumber } from "./numeric.ts";
 import { NumberRange } from "./number_range.ts";
 import { Radix } from "./radix.ts";
 import { RoundingMode } from "./rounding_mode.ts";

@@ -3,13 +3,13 @@ import {
   isEvenInteger,
   isNumber,
   isOddInteger,
-  normalizeNumber,
 } from "./number.ts";
 import {
-  isNegative,
-  isNonNegative,
-  isNonPositive,
-  isPositive,
+  isNegativeNumber,
+  isNonNegativeNumber,
+  isNonPositiveNumber,
+  isPositiveNumber,
+  normalizeNumber,
   ZERO,
 } from "./numeric.ts";
 import { NumberRange } from "./number_range.ts";
@@ -47,7 +47,7 @@ export namespace SafeInteger {
    * @returns Whether the `test` is a positive safe integer.
    */
   export function isPositiveSafeInteger(test: unknown): boolean {
-    return Number.isSafeInteger(test) && isPositive(test as number);
+    return Number.isSafeInteger(test) && isPositiveNumber(test as number);
   }
 
   /**
@@ -57,7 +57,7 @@ export namespace SafeInteger {
    * @returns Whether the `test` is a non-negative safe integer.
    */
   export function isNonNegativeSafeInteger(test: unknown): boolean {
-    return Number.isSafeInteger(test) && isNonNegative(test as number);
+    return Number.isSafeInteger(test) && isNonNegativeNumber(test as number);
   }
 
   /**
@@ -67,11 +67,11 @@ export namespace SafeInteger {
    * @returns Whether the `test` is a non-positive safe integer.
    */
   export function isNonPositiveSafeInteger(test: unknown): boolean {
-    return Number.isSafeInteger(test) && isNonPositive(test as number);
+    return Number.isSafeInteger(test) && isNonPositiveNumber(test as number);
   }
 
   export function isNegativeSafeInteger(test: unknown): boolean {
-    return Number.isSafeInteger(test) && isNegative(test as number);
+    return Number.isSafeInteger(test) && isNegativeNumber(test as number);
   }
 
   export function isOddSafeInteger(test: unknown): boolean {
@@ -113,7 +113,7 @@ export namespace SafeInteger {
 
     const nearestP = normalizeNumber(Math.ceil(source));
     const nearestN = normalizeNumber(Math.floor(source));
-    const sourceIsNegative = isNegative(source);
+    const sourceIsNegative = isNegativeNumber(source);
     const nearestPH = nearestP - 0.5;
     const nearestNH = nearestN + 0.5;
 
