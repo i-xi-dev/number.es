@@ -1,5 +1,4 @@
 export * as BigIntEx from "./src/bigint.ts";
-export * as NumberEx from "./src/number.ts";
 export * as Numeric from "./src/numeric.ts";
 export * from "./src/big_uint64.ts";
 export * from "./src/bigint_range.ts";

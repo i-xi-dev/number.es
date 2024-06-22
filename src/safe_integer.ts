@@ -1,8 +1,8 @@
-import { isEvenInteger, isNumber, isOddInteger } from "./number.ts";
 import {
   isNegativeNumber,
   isNonNegativeNumber,
   isNonPositiveNumber,
+  isNumber,
   isPositiveNumber,
   normalizeNumber,
   ZERO,
@@ -13,26 +13,6 @@ import { RoundingMode } from "./rounding_mode.ts";
 
 // 事実上定義できないのでnumberの別名とする
 export type SafeInteger = number;
-
-// function _toSafeIntegerRange(
-//   range: unknown, /* (NumberRange | Resolved) */
-// ): NumberRange.Resolved {
-//   const [min, max] = NumberRange.resolve(range as NumberRange<SafeInteger>);
-
-//   return [
-//     (min < Number.MIN_SAFE_INTEGER) ? Number.MIN_SAFE_INTEGER : Math.ceil(min),
-//     (max > Number.MAX_SAFE_INTEGER) ? Number.MAX_SAFE_INTEGER : Math.floor(max),
-//   ];
-// }
-
-function _resolveRoundingMode(roundingMode?: RoundingMode): RoundingMode {
-  if (Object.values(RoundingMode).includes(roundingMode as RoundingMode)) {
-    return roundingMode as RoundingMode;
-  }
-  return RoundingMode.TRUNCATE;
-}
-
-const _RESOLVED_MARKER = Symbol();
 
 export namespace SafeInteger {
   /**
@@ -65,16 +45,22 @@ export namespace SafeInteger {
     return Number.isSafeInteger(test) && isNonPositiveNumber(test as number);
   }
 
+  /**
+   * Determines whether the `test` is a negative safe integer.
+   *
+   * @param test - The value to be tested.
+   * @returns Whether the `test` is a negative safe integer.
+   */
   export function isNegativeSafeInteger(test: unknown): boolean {
     return Number.isSafeInteger(test) && isNegativeNumber(test as number);
   }
 
   export function isOddSafeInteger(test: unknown): boolean {
-    return Number.isSafeInteger(test) && isOddInteger(test);
+    return Number.isSafeInteger(test) && (((test as number) % 2) !== ZERO);
   }
 
   export function isEvenSafeInteger(test: unknown): boolean {
-    return Number.isSafeInteger(test) && isEvenInteger(test);
+    return Number.isSafeInteger(test) && (((test as number) % 2) === ZERO);
   }
 
   export function roundToSafeInteger(
@@ -92,7 +78,7 @@ export namespace SafeInteger {
     }
 
     const integralPart = normalizeNumber(Math.trunc(source));
-    const integralPartIsEven = isEvenInteger(integralPart); // safe-integerであることは明らかなのでisEvenIntegerを使用する
+    const integralPartIsEven = isEvenSafeInteger(integralPart);
 
     if (typeof roundingMode !== "symbol") {
       throw new TypeError("roundingMode");
@@ -350,3 +336,23 @@ export namespace SafeInteger {
     throw new TypeError("source");
   }
 }
+
+// function _toSafeIntegerRange(
+//   range: unknown, /* (NumberRange | Resolved) */
+// ): NumberRange.Resolved {
+//   const [min, max] = NumberRange.resolve(range as NumberRange<SafeInteger>);
+
+//   return [
+//     (min < Number.MIN_SAFE_INTEGER) ? Number.MIN_SAFE_INTEGER : Math.ceil(min),
+//     (max > Number.MAX_SAFE_INTEGER) ? Number.MAX_SAFE_INTEGER : Math.floor(max),
+//   ];
+// }
+
+// function _resolveRoundingMode(roundingMode?: RoundingMode): RoundingMode {
+//   if (Object.values(RoundingMode).includes(roundingMode as RoundingMode)) {
+//     return roundingMode as RoundingMode;
+//   }
+//   return RoundingMode.TRUNCATE;
+// }
+
+// const _RESOLVED_MARKER = Symbol();

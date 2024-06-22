@@ -126,10 +126,20 @@ Deno.test("SafeInteger.isNegativeSafeInteger(any)", () => {
 });
 
 Deno.test("SafeInteger.isOddSafeInteger(number)", () => {
-  assertStrictEquals(SafeInteger.isOddSafeInteger(-1), true);
-  assertStrictEquals(SafeInteger.isOddSafeInteger(-0), false);
   assertStrictEquals(SafeInteger.isOddSafeInteger(0), false);
+  assertStrictEquals(SafeInteger.isOddSafeInteger(-0), false);
   assertStrictEquals(SafeInteger.isOddSafeInteger(1), true);
+  assertStrictEquals(SafeInteger.isOddSafeInteger(-1), true);
+  assertStrictEquals(SafeInteger.isOddSafeInteger(2), false);
+  assertStrictEquals(SafeInteger.isOddSafeInteger(-2), false);
+  assertStrictEquals(SafeInteger.isOddSafeInteger(3), true);
+  assertStrictEquals(SafeInteger.isOddSafeInteger(-3), true);
+
+  assertStrictEquals(SafeInteger.isOddSafeInteger(-10.1), false);
+  assertStrictEquals(SafeInteger.isOddSafeInteger(-9.9), false);
+  assertStrictEquals(SafeInteger.isOddSafeInteger(9.9), false);
+  assertStrictEquals(SafeInteger.isOddSafeInteger(10.1), false);
+
   assertStrictEquals(
     SafeInteger.isOddSafeInteger(Number.MAX_SAFE_INTEGER),
     true,
@@ -149,6 +159,12 @@ Deno.test("SafeInteger.isOddSafeInteger(number)", () => {
     SafeInteger.isOddSafeInteger(Number.MIN_SAFE_INTEGER),
     true,
   );
+
+  assertStrictEquals(SafeInteger.isOddSafeInteger(undefined), false);
+  assertStrictEquals(SafeInteger.isOddSafeInteger(null), false);
+  assertStrictEquals(SafeInteger.isOddSafeInteger(0n), false);
+  assertStrictEquals(SafeInteger.isOddSafeInteger(""), false);
+  assertStrictEquals(SafeInteger.isOddSafeInteger("0"), false);
 });
 
 Deno.test("SafeInteger.isOddSafeInteger(any)", () => {
@@ -157,10 +173,20 @@ Deno.test("SafeInteger.isOddSafeInteger(any)", () => {
 });
 
 Deno.test("SafeInteger.isEvenSafeInteger(number)", () => {
-  assertStrictEquals(SafeInteger.isEvenSafeInteger(-1), false);
-  assertStrictEquals(SafeInteger.isEvenSafeInteger(-0), true);
   assertStrictEquals(SafeInteger.isEvenSafeInteger(0), true);
+  assertStrictEquals(SafeInteger.isEvenSafeInteger(-0), true);
   assertStrictEquals(SafeInteger.isEvenSafeInteger(1), false);
+  assertStrictEquals(SafeInteger.isEvenSafeInteger(-1), false);
+  assertStrictEquals(SafeInteger.isEvenSafeInteger(2), true);
+  assertStrictEquals(SafeInteger.isEvenSafeInteger(-2), true);
+  assertStrictEquals(SafeInteger.isEvenSafeInteger(3), false);
+  assertStrictEquals(SafeInteger.isEvenSafeInteger(-3), false);
+
+  assertStrictEquals(SafeInteger.isEvenSafeInteger(-10.1), false);
+  assertStrictEquals(SafeInteger.isEvenSafeInteger(-9.9), false);
+  assertStrictEquals(SafeInteger.isEvenSafeInteger(9.9), false);
+  assertStrictEquals(SafeInteger.isEvenSafeInteger(10.1), false);
+
   assertStrictEquals(
     SafeInteger.isEvenSafeInteger(Number.MAX_SAFE_INTEGER),
     false,
@@ -180,6 +206,12 @@ Deno.test("SafeInteger.isEvenSafeInteger(number)", () => {
     SafeInteger.isEvenSafeInteger(Number.MIN_SAFE_INTEGER),
     false,
   );
+
+  assertStrictEquals(SafeInteger.isEvenSafeInteger(undefined), false);
+  assertStrictEquals(SafeInteger.isEvenSafeInteger(null), false);
+  assertStrictEquals(SafeInteger.isEvenSafeInteger(0n), false);
+  assertStrictEquals(SafeInteger.isEvenSafeInteger(""), false);
+  assertStrictEquals(SafeInteger.isEvenSafeInteger("0"), false);
 });
 
 Deno.test("SafeInteger.isEvenSafeInteger(any)", () => {

@@ -1,5 +1,4 @@
-import * as _Utils from "./_utils.ts";
-import { normalizeNumber } from "./numeric.ts";
+import { isNumber } from "./numeric.ts";
 
 export class NumberRange<T extends number> {
   readonly #min: T;
@@ -45,9 +44,9 @@ export class NumberRange<T extends number> {
       throw new RangeError("source");
     }
 
-    if (source.length >= 1 && (typeof source[0] === "number")) {
+    if (source.length >= 1 && isNumber(source[0])) {
       if (source.length === 2) {
-        if (typeof source[1] === "number") {
+        if (isNumber(source[1])) {
           return NumberRange.#ofMinAndMax(source[0], source[1]);
         }
       } else {
@@ -65,13 +64,13 @@ export class NumberRange<T extends number> {
       if (args.length === 1) {
         if (Array.isArray(arg0)) {
           return NumberRange.#fromTuple(arg0 as NumberRange.SourceTuple<T>);
-        } else if (typeof arg0 === "number") {
+        } else if (isNumber(arg0)) {
           return NumberRange.#exact(arg0 as T);
         }
       } else if (args.length >= 2) {
         const arg1 = args[1];
         if (args.length === 2) {
-          if (typeof arg1 === "number") {
+          if (isNumber(arg1)) {
             return NumberRange.#ofMinAndMax(arg0 as T, arg1 as T);
           }
         }
@@ -91,7 +90,7 @@ export class NumberRange<T extends number> {
 
   //TODO 何にclampするかはsourceの型に依存する
   // clampNumber(source: T): T {
-  //   if ((typeof source !== "number") || Number.isNaN(source)) {
+  //   if (isNumber(source ) || Number.isNaN(source)) {
   //     throw new TypeError("source");
   //   }
 

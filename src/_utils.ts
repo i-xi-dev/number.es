@@ -1,7 +1,3 @@
-export function _isNumber(test: unknown): test is number {
-  return (typeof test === "number");
-}
-
 export function _isBigInt(test: unknown): test is bigint {
   return (typeof test === "bigint");
 }

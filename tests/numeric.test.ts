@@ -5,6 +5,28 @@ Deno.test("Numeric.ZERO", () => {
   assertStrictEquals(Numeric.ZERO, 0);
 });
 
+Deno.test("Numeric.isNumber()", () => {
+  assertStrictEquals(Numeric.isNumber(0), true);
+  assertStrictEquals(Numeric.isNumber(-0), true);
+  assertStrictEquals(Numeric.isNumber(1), true);
+  assertStrictEquals(Numeric.isNumber(-1), true);
+
+  assertStrictEquals(Numeric.isNumber(-10.1), true);
+  assertStrictEquals(Numeric.isNumber(-9.9), true);
+  assertStrictEquals(Numeric.isNumber(9.9), true);
+  assertStrictEquals(Numeric.isNumber(10.1), true);
+
+  assertStrictEquals(Numeric.isNumber(Number.NaN), true);
+  assertStrictEquals(Numeric.isNumber(Number.POSITIVE_INFINITY), true);
+  assertStrictEquals(Numeric.isNumber(Number.NEGATIVE_INFINITY), true);
+
+  assertStrictEquals(Numeric.isNumber(undefined), false);
+  assertStrictEquals(Numeric.isNumber(null), false);
+  assertStrictEquals(Numeric.isNumber(0n), false);
+  assertStrictEquals(Numeric.isNumber(""), false);
+  assertStrictEquals(Numeric.isNumber("0"), false);
+});
+
 Deno.test("Numeric.isPositiveNumber()", () => {
   assertStrictEquals(Numeric.isPositiveNumber(0), false);
   assertStrictEquals(Numeric.isPositiveNumber(-0), false);
