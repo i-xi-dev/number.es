@@ -8,7 +8,6 @@ const {
   isNegativeBigInt,
   isNonNegativeBigInt,
   isNonPositiveBigInt,
-  isBigInt,
   isOddBigInt,
   isPositiveBigInt,
   ZERO,
@@ -16,27 +15,6 @@ const {
 
 Deno.test("ZERO", () => {
   assertStrictEquals(ZERO, 0n);
-});
-
-Deno.test("isBigInt()", () => {
-  assertStrictEquals(isBigInt(0n), true);
-  assertStrictEquals(isBigInt(-0n), true);
-  assertStrictEquals(isBigInt(1n), true);
-  assertStrictEquals(isBigInt(-1n), true);
-
-  assertStrictEquals(isBigInt(-10.1), false);
-  assertStrictEquals(isBigInt(-9.9), false);
-  assertStrictEquals(isBigInt(9.9), false);
-  assertStrictEquals(isBigInt(10.1), false);
-
-  assertStrictEquals(isBigInt(Number.NaN), false);
-  assertStrictEquals(isBigInt(Number.POSITIVE_INFINITY), false);
-  assertStrictEquals(isBigInt(Number.NEGATIVE_INFINITY), false);
-
-  assertStrictEquals(isBigInt(undefined), false);
-  assertStrictEquals(isBigInt(null), false);
-  assertStrictEquals(isBigInt(""), false);
-  assertStrictEquals(isBigInt("0"), false);
 });
 
 Deno.test("isPositiveBigInt()", () => {

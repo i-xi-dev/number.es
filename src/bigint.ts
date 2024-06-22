@@ -1,9 +1,8 @@
 import * as _Utils from "./_utils.ts";
 import { BigIntRange } from "./bigint_range.ts";
+import { isBigInt } from "./numeric.ts";
 
 export const ZERO = 0n;
-
-export const isBigInt = _Utils._isBigInt;
 
 export function isPositiveBigInt(test: unknown): boolean {
   return isBigInt(test) && (test > ZERO);

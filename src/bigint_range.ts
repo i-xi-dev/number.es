@@ -1,4 +1,5 @@
 import * as _Utils from "./_utils.ts";
+import { isBigInt } from "./numeric.ts";
 
 export type BigIntRange = [min: bigint, max: bigint] | [minmax: bigint];
 
@@ -15,14 +16,14 @@ export namespace BigIntRange {
     let max = BigInt(Number.MAX_SAFE_INTEGER);
     if (Array.isArray(range)) {
       if (range.length > 0) {
-        if (_Utils._isBigInt(range[0])) {
+        if (isBigInt(range[0])) {
           min = range[0];
         } else {
           throw new TypeError("range[0]");
         }
 
         if (range.length > 1) {
-          if (_Utils._isBigInt(range[1])) {
+          if (isBigInt(range[1])) {
             max = range[1];
           } else {
             throw new TypeError("range[1]");

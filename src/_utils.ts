@@ -1,11 +1,9 @@
-export function _isBigInt(test: unknown): test is bigint {
-  return (typeof test === "bigint");
-}
+import { isBigInt } from "./numeric.ts";
 
 export function _max(...args: bigint[]): bigint {
   if (
     (Array.isArray(args) && (args.length > 0) &&
-      args.every((i) => _isBigInt(i))) !== true
+      args.every((i) => isBigInt(i))) !== true
   ) {
     throw new TypeError("args");
   }
@@ -23,7 +21,7 @@ export function _max(...args: bigint[]): bigint {
 export function _min(...args: bigint[]): bigint {
   if (
     (Array.isArray(args) && (args.length > 0) &&
-      args.every((i) => _isBigInt(i))) !== true
+      args.every((i) => isBigInt(i))) !== true
   ) {
     throw new TypeError("args");
   }

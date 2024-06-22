@@ -4,6 +4,10 @@ export function isNumber(test: unknown): test is number {
   return (typeof test === "number");
 }
 
+export function isBigInt(test: unknown): test is bigint {
+  return (typeof test === "bigint");
+}
+
 /**
  * Determines whether the `test` is a positive number.
  *
