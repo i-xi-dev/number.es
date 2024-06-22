@@ -1,5 +1,4 @@
 import { normalizeNumber } from "./numeric.ts";
-import { NumberRange } from "./number_range.ts";
 import { Radix } from "./radix.ts";
 import { RoundingMode } from "./rounding_mode.ts";
 import { SafeInteger } from "./safe_integer.ts";
@@ -149,7 +148,7 @@ const _INFO = UintN.infoOf<Uint8>(_BIT_LENGTH);
 //     unknown /* (Uint8.FromOptions | SafeInteger.FromOptions | SafeInteger.FromOptions.Resolved) */ =
 //       {},
 // ): SafeInteger.FromOptions.Resolved {
-//   const clampRange = NumberRange.resolve(
+//   const clampRange = NumericRange.resolve(
 //     (options as SafeInteger.FromOptions.Resolved)?.clampRange,
 //   );
 //   clampRange[0] = Math.max(clampRange[0], Uint8.MIN_VALUE);

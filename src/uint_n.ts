@@ -1,5 +1,5 @@
 import { normalizeNumber } from "./numeric.ts";
-import { NumberRange } from "./number_range.ts";
+import { NumericRange } from "./numeric_range.ts";
 import { SafeInteger } from "./safe_integer.ts";
 
 const Bits = [6, 7, 8, 16, 24, 32] as const;
@@ -12,7 +12,7 @@ export type Info<T extends SafeInteger> = {
   //bytes: SafeInteger;
   min: T;
   max: T;
-  range: NumberRange<T>;
+  range: NumericRange<T>;
   count: SafeInteger;
 };
 
@@ -36,7 +36,7 @@ export function infoOf<T extends SafeInteger>(bits: Bits): Info<T> {
     //bytes,
     min,
     max,
-    range: NumberRange.from(min, max),
+    range: NumericRange.from(min, max),
     count: max + 1,
   };
 }

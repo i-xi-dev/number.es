@@ -1,4 +1,3 @@
-import { NumberRange } from "./number_range.ts";
 import { SafeInteger } from "./safe_integer.ts";
 import { Uint6 } from "./uint6.ts";
 import * as UintN from "./uint_n.ts";

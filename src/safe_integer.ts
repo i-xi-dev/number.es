@@ -4,7 +4,7 @@ import {
   normalizeNumber,
   NUMBER_ZERO,
 } from "./numeric.ts";
-import { NumberRange } from "./number_range.ts";
+import { NumericRange } from "./numeric_range.ts";
 import { Radix } from "./radix.ts";
 import { RoundingMode } from "./rounding_mode.ts";
 
@@ -102,7 +102,7 @@ export namespace SafeInteger {
     strict?: boolean; // doNotTreatFalsyAsZero & acceptsOnlyIntegers
     fallback?: SafeInteger;
     roundingMode?: RoundingMode;
-    clampRange?: NumberRange<SafeInteger>;
+    clampRange?: NumericRange<SafeInteger>;
   };
 
   // export namespace FromOptions {
@@ -111,7 +111,7 @@ export namespace SafeInteger {
   //     strict: boolean;
   //     fallback: SafeInteger;
   //     roundingMode: RoundingMode;
-  //     clampRange: NumberRange<SafeInteger>;
+  //     clampRange: NumericRange<SafeInteger>;
   //   }>;
 
   //   export function resolve(options: FromOptions | Resolved = {}): Resolved {
@@ -157,13 +157,13 @@ export namespace SafeInteger {
 
   export function clamp(
     source: SafeInteger,
-    range: NumberRange<SafeInteger> | NumberRange.SourceTuple<SafeInteger>,
+    range: NumericRange<SafeInteger> | NumericRange.SourceTuple<SafeInteger>,
   ): SafeInteger {
     //TODO チェック
 
-    const range2 = (range instanceof NumberRange)
+    const range2 = (range instanceof NumericRange)
       ? range
-      : NumberRange.from(range);
+      : NumericRange.from(range);
     if (range2.includesNumber(source)) {
       return source;
     }
@@ -287,9 +287,9 @@ export namespace SafeInteger {
 }
 
 // function _toSafeIntegerRange(
-//   range: unknown, /* (NumberRange | Resolved) */
-// ): NumberRange.Resolved {
-//   const [min, max] = NumberRange.resolve(range as NumberRange<SafeInteger>);
+//   range: unknown, /* (NumericRange | Resolved) */
+// ): NumericRange.Resolved {
+//   const [min, max] = NumericRange.resolve(range as NumericRange<SafeInteger>);
 
 //   return [
 //     (min < Number.MIN_SAFE_INTEGER) ? Number.MIN_SAFE_INTEGER : Math.ceil(min),
