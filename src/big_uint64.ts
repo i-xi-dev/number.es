@@ -6,11 +6,15 @@ import * as BigUintN from "./big_uint_n.ts";
  */
 export type BigUint64 = bigint;
 
+const _BIT_LENGTH = 64;
+
+const _MAX_VALUE = BigUintN.maxValueOf<BigUint64>(_BIT_LENGTH, true); // 0xFFFF_FFFF_FFFF_FFFFn;
+
 export namespace BigUint64 {
   /**
    * The number of bits used to represent a 64-bit unsigned integer.
    */
-  export const SIZE = 64;
+  export const SIZE = _BIT_LENGTH;
 
   /**
    * The number of bytes used to represent a 64-bit unsigned integer.
@@ -25,7 +29,7 @@ export namespace BigUint64 {
   /**
    * The maximum value of 64-bit unsigned integer.
    */
-  export const MAX_VALUE = BigUintN.maxValueOf(SIZE, true); // 0xFFFF_FFFF_FFFF_FFFFn
+  export const MAX_VALUE = _MAX_VALUE;
 
   /**
    * Determines whether the passed `test` is a 64-bit unsigned integer.
