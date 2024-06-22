@@ -1,8 +1,8 @@
 import { assertStrictEquals, assertThrows } from "./deps.ts";
 import { Numeric } from "../mod.ts";
 
-Deno.test("Numeric.ZERO", () => {
-  assertStrictEquals(Numeric.ZERO, 0);
+Deno.test("Numeric.NUMBER_ZERO", () => {
+  assertStrictEquals(Numeric.NUMBER_ZERO, 0);
 });
 
 Deno.test("Numeric.isNumber()", () => {

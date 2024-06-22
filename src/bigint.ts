@@ -2,16 +2,6 @@ import * as _Utils from "./_utils.ts";
 import { BigIntRange } from "./bigint_range.ts";
 import { isBigInt } from "./numeric.ts";
 
-export const ZERO = 0n;
-
-export function isOddBigInt(test: unknown): boolean {
-  return isBigInt(test) ? ((test % 2n) !== ZERO) : false;
-}
-
-export function isEvenBigInt(test: unknown): boolean {
-  return isBigInt(test) ? ((test % 2n) === ZERO) : false;
-}
-
 export function clampBigInt(source: bigint, range: BigIntRange): bigint {
   if (isBigInt(source) !== true) {
     throw new TypeError("source");

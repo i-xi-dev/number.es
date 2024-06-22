@@ -4,64 +4,7 @@ import { BigIntEx } from "../mod.ts";
 const {
   clampBigInt,
   inRange,
-  isEvenBigInt,
-  isOddBigInt,
-  ZERO,
 } = BigIntEx;
-
-Deno.test("ZERO", () => {
-  assertStrictEquals(ZERO, 0n);
-});
-
-Deno.test("isOddBigInt()", () => {
-  assertStrictEquals(isOddBigInt(0n), false);
-  assertStrictEquals(isOddBigInt(-0n), false);
-  assertStrictEquals(isOddBigInt(1n), true);
-  assertStrictEquals(isOddBigInt(-1n), true);
-  assertStrictEquals(isOddBigInt(2n), false);
-  assertStrictEquals(isOddBigInt(-2n), false);
-  assertStrictEquals(isOddBigInt(3n), true);
-  assertStrictEquals(isOddBigInt(-3n), true);
-
-  assertStrictEquals(isOddBigInt(-10.1), false);
-  assertStrictEquals(isOddBigInt(-9.9), false);
-  assertStrictEquals(isOddBigInt(9.9), false);
-  assertStrictEquals(isOddBigInt(10.1), false);
-
-  assertStrictEquals(isOddBigInt(Number.NaN), false);
-  assertStrictEquals(isOddBigInt(Number.POSITIVE_INFINITY), false);
-  assertStrictEquals(isOddBigInt(Number.NEGATIVE_INFINITY), false);
-
-  assertStrictEquals(isOddBigInt(undefined), false);
-  assertStrictEquals(isOddBigInt(null), false);
-  assertStrictEquals(isOddBigInt(""), false);
-  assertStrictEquals(isOddBigInt("0"), false);
-});
-
-Deno.test("isEvenBigInt()", () => {
-  assertStrictEquals(isEvenBigInt(0n), true);
-  assertStrictEquals(isEvenBigInt(-0n), true);
-  assertStrictEquals(isEvenBigInt(1n), false);
-  assertStrictEquals(isEvenBigInt(-1n), false);
-  assertStrictEquals(isEvenBigInt(2n), true);
-  assertStrictEquals(isEvenBigInt(-2n), true);
-  assertStrictEquals(isEvenBigInt(3n), false);
-  assertStrictEquals(isEvenBigInt(-3n), false);
-
-  assertStrictEquals(isEvenBigInt(-10.1), false);
-  assertStrictEquals(isEvenBigInt(-9.9), false);
-  assertStrictEquals(isEvenBigInt(9.9), false);
-  assertStrictEquals(isEvenBigInt(10.1), false);
-
-  assertStrictEquals(isEvenBigInt(Number.NaN), false);
-  assertStrictEquals(isEvenBigInt(Number.POSITIVE_INFINITY), false);
-  assertStrictEquals(isEvenBigInt(Number.NEGATIVE_INFINITY), false);
-
-  assertStrictEquals(isEvenBigInt(undefined), false);
-  assertStrictEquals(isEvenBigInt(null), false);
-  assertStrictEquals(isEvenBigInt(""), false);
-  assertStrictEquals(isEvenBigInt("0"), false);
-});
 
 Deno.test("clampBigInt()", () => {
   assertStrictEquals(clampBigInt(0n, [0n, 0n]), 0n);

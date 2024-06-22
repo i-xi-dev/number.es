@@ -1,7 +1,8 @@
 import {
+  isEvenSafeInteger,
   isNegativeNumber,
   normalizeNumber,
-  ZERO,
+  NUMBER_ZERO,
 } from "./numeric.ts";
 import { NumberRange } from "./number_range.ts";
 import { Radix } from "./radix.ts";
@@ -11,14 +12,6 @@ import { RoundingMode } from "./rounding_mode.ts";
 export type SafeInteger = number;
 
 export namespace SafeInteger {
-  export function isOddSafeInteger(test: unknown): boolean {
-    return Number.isSafeInteger(test) && (((test as number) % 2) !== ZERO);
-  }
-
-  export function isEvenSafeInteger(test: unknown): boolean {
-    return Number.isSafeInteger(test) && (((test as number) % 2) === ZERO);
-  }
-
   export function roundToSafeInteger(
     source: number,
     roundingMode: RoundingMode,
@@ -101,7 +94,7 @@ export namespace SafeInteger {
         return halfUp();
 
       default:
-        return ZERO as never;
+        return NUMBER_ZERO as never;
     }
   }
 
@@ -127,7 +120,7 @@ export namespace SafeInteger {
   //     }
 
   //     const strict = (options as Resolved)?.strict === true;
-  //     let fallback = ZERO;
+  //     let fallback = NUMBER_ZERO;
   //     if (isNumber(options?.fallback)) {
   //       if (Number.isFinite(options.fallback)) {
   //         fallback = options.fallback;

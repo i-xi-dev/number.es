@@ -1,4 +1,6 @@
-export const ZERO = 0;
+export const NUMBER_ZERO = 0;
+
+export const BIGINT_ZERO = 0n;
 
 export function isNumber(test: unknown): test is number {
   return (typeof test === "number");
@@ -15,7 +17,7 @@ export function isBigInt(test: unknown): test is bigint {
  * @returns Whether the `test` is a positive number. (positive finite or positive infinity)
  */
 export function isPositiveNumber<T extends number>(test: T): boolean {
-  return isNumber(test) && (test > ZERO);
+  return isNumber(test) && (test > NUMBER_ZERO);
 }
 
 /**
@@ -29,7 +31,7 @@ export function isPositiveSafeInteger(test: unknown): boolean {
 }
 
 export function isPositiveBigInt(test: unknown): boolean {
-  return isBigInt(test) && (test > ZERO);
+  return isBigInt(test) && (test > BIGINT_ZERO);
 }
 
 /**
@@ -39,7 +41,7 @@ export function isPositiveBigInt(test: unknown): boolean {
  * @returns Whether the `test` is a non-negative number. (non-negative finite or positive infinity)
  */
 export function isNonNegativeNumber<T extends number>(test: T): boolean {
-  return isNumber(test) && (test >= ZERO);
+  return isNumber(test) && (test >= NUMBER_ZERO);
 }
 
 /**
@@ -53,7 +55,7 @@ export function isNonNegativeSafeInteger(test: unknown): boolean {
 }
 
 export function isNonNegativeBigInt(test: unknown): boolean {
-  return isBigInt(test) && (test >= ZERO);
+  return isBigInt(test) && (test >= BIGINT_ZERO);
 }
 
 /**
@@ -63,7 +65,7 @@ export function isNonNegativeBigInt(test: unknown): boolean {
  * @returns Whether the `test` is a non-positive number. (non-positive finite or negative infinity)
  */
 export function isNonPositiveNumber<T extends number>(test: T): boolean {
-  return isNumber(test) && (test <= ZERO);
+  return isNumber(test) && (test <= NUMBER_ZERO);
 }
 
 /**
@@ -77,7 +79,7 @@ export function isNonPositiveSafeInteger(test: unknown): boolean {
 }
 
 export function isNonPositiveBigInt(test: unknown): boolean {
-  return isBigInt(test) && (test <= ZERO);
+  return isBigInt(test) && (test <= BIGINT_ZERO);
 }
 
 /**
@@ -87,7 +89,7 @@ export function isNonPositiveBigInt(test: unknown): boolean {
  * @returns Whether the `test` is a negative number. (negative finite or negative infinity)
  */
 export function isNegativeNumber<T extends number>(test: T): boolean {
-  return isNumber(test) && (test < ZERO);
+  return isNumber(test) && (test < NUMBER_ZERO);
 }
 
 /**
@@ -101,7 +103,23 @@ export function isNegativeSafeInteger(test: unknown): boolean {
 }
 
 export function isNegativeBigInt(test: unknown): boolean {
-  return isBigInt(test) && (test < ZERO);
+  return isBigInt(test) && (test < BIGINT_ZERO);
+}
+
+export function isOddSafeInteger(test: unknown): boolean {
+  return Number.isSafeInteger(test) && (((test as number) % 2) !== NUMBER_ZERO);
+}
+
+export function isOddBigInt(test: unknown): boolean {
+  return isBigInt(test) ? ((test % 2n) !== BIGINT_ZERO) : false;
+}
+
+export function isEvenSafeInteger(test: unknown): boolean {
+  return Number.isSafeInteger(test) && (((test as number) % 2) === NUMBER_ZERO);
+}
+
+export function isEvenBigInt(test: unknown): boolean {
+  return isBigInt(test) ? ((test % 2n) === BIGINT_ZERO) : false;
 }
 
 export function normalizeNumber<T extends number>(source: T): T {
@@ -113,5 +131,5 @@ export function normalizeNumber<T extends number>(source: T): T {
   }
 
   // -0は0とする
-  return (source === ZERO) ? ZERO as T : source;
+  return (source === NUMBER_ZERO) ? NUMBER_ZERO as T : source;
 }

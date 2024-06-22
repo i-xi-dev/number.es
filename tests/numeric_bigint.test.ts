@@ -1,6 +1,10 @@
 import { assertStrictEquals, assertThrows } from "./deps.ts";
 import { Numeric } from "../mod.ts";
 
+Deno.test("Numeric.BIGINT_ZERO", () => {
+  assertStrictEquals(Numeric.BIGINT_ZERO, 0n);
+});
+
 Deno.test("Numeric.isBigInt()", () => {
   assertStrictEquals(Numeric.isBigInt(0n), true);
   assertStrictEquals(Numeric.isBigInt(-0n), true);
@@ -116,4 +120,54 @@ Deno.test("Numeric.isNegativeBigInt()", () => {
   assertStrictEquals(Numeric.isNegativeBigInt(null), false);
   assertStrictEquals(Numeric.isNegativeBigInt(""), false);
   assertStrictEquals(Numeric.isNegativeBigInt("0"), false);
+});
+
+Deno.test("Numeric.isOddBigInt()", () => {
+  assertStrictEquals(Numeric.isOddBigInt(0n), false);
+  assertStrictEquals(Numeric.isOddBigInt(-0n), false);
+  assertStrictEquals(Numeric.isOddBigInt(1n), true);
+  assertStrictEquals(Numeric.isOddBigInt(-1n), true);
+  assertStrictEquals(Numeric.isOddBigInt(2n), false);
+  assertStrictEquals(Numeric.isOddBigInt(-2n), false);
+  assertStrictEquals(Numeric.isOddBigInt(3n), true);
+  assertStrictEquals(Numeric.isOddBigInt(-3n), true);
+
+  assertStrictEquals(Numeric.isOddBigInt(-10.1), false);
+  assertStrictEquals(Numeric.isOddBigInt(-9.9), false);
+  assertStrictEquals(Numeric.isOddBigInt(9.9), false);
+  assertStrictEquals(Numeric.isOddBigInt(10.1), false);
+
+  assertStrictEquals(Numeric.isOddBigInt(Number.NaN), false);
+  assertStrictEquals(Numeric.isOddBigInt(Number.POSITIVE_INFINITY), false);
+  assertStrictEquals(Numeric.isOddBigInt(Number.NEGATIVE_INFINITY), false);
+
+  assertStrictEquals(Numeric.isOddBigInt(undefined), false);
+  assertStrictEquals(Numeric.isOddBigInt(null), false);
+  assertStrictEquals(Numeric.isOddBigInt(""), false);
+  assertStrictEquals(Numeric.isOddBigInt("0"), false);
+});
+
+Deno.test("Numeric.isEvenBigInt()", () => {
+  assertStrictEquals(Numeric.isEvenBigInt(0n), true);
+  assertStrictEquals(Numeric.isEvenBigInt(-0n), true);
+  assertStrictEquals(Numeric.isEvenBigInt(1n), false);
+  assertStrictEquals(Numeric.isEvenBigInt(-1n), false);
+  assertStrictEquals(Numeric.isEvenBigInt(2n), true);
+  assertStrictEquals(Numeric.isEvenBigInt(-2n), true);
+  assertStrictEquals(Numeric.isEvenBigInt(3n), false);
+  assertStrictEquals(Numeric.isEvenBigInt(-3n), false);
+
+  assertStrictEquals(Numeric.isEvenBigInt(-10.1), false);
+  assertStrictEquals(Numeric.isEvenBigInt(-9.9), false);
+  assertStrictEquals(Numeric.isEvenBigInt(9.9), false);
+  assertStrictEquals(Numeric.isEvenBigInt(10.1), false);
+
+  assertStrictEquals(Numeric.isEvenBigInt(Number.NaN), false);
+  assertStrictEquals(Numeric.isEvenBigInt(Number.POSITIVE_INFINITY), false);
+  assertStrictEquals(Numeric.isEvenBigInt(Number.NEGATIVE_INFINITY), false);
+
+  assertStrictEquals(Numeric.isEvenBigInt(undefined), false);
+  assertStrictEquals(Numeric.isEvenBigInt(null), false);
+  assertStrictEquals(Numeric.isEvenBigInt(""), false);
+  assertStrictEquals(Numeric.isEvenBigInt("0"), false);
 });
