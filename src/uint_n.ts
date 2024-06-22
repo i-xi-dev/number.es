@@ -1,11 +1,45 @@
-import { inRange } from "./number.ts";
 import { normalizeNumber } from "./numeric.ts";
+import { NumberRange } from "./number_range.ts";
 import { SafeInteger } from "./safe_integer.ts";
 
 const Bits = [6, 7, 8, 16, 24, 32] as const;
 type Bits = typeof Bits[number];
 
 export const BITS_PER_BYTE = 8;
+
+export type Info<T extends SafeInteger> = {
+  bits: Bits;
+  //bytes: SafeInteger;
+  min: T;
+  max: T;
+  range: NumberRange<T>;
+  count: SafeInteger;
+};
+
+export function bytesOf(bits: Bits): SafeInteger {
+  if ((bits % BITS_PER_BYTE) !== 0) {
+    throw new RangeError("bits");
+  }
+
+  return Math.ceil(bits / BITS_PER_BYTE);
+}
+
+const _MIN_VALUE = 0;
+
+export function infoOf<T extends SafeInteger>(bits: Bits): Info<T> {
+  //const bytes = _bytesOf(bits);
+  const min = _MIN_VALUE as T;
+  const max = ((2 ** bits) - 1) as T;
+
+  return {
+    bits,
+    //bytes,
+    min,
+    max,
+    range: NumberRange.from(min, max),
+    count: max + 1,
+  };
+}
 
 function _assertBits(bits: Bits, _bitsTrusted: boolean): void {
   if (_bitsTrusted !== true) {
@@ -15,58 +49,31 @@ function _assertBits(bits: Bits, _bitsTrusted: boolean): void {
   }
 }
 
-export function bytesOf(bits: Bits, _bitsTrusted = false): SafeInteger {
-  _assertBits(bits, _bitsTrusted);
-
-  if ((bits % BITS_PER_BYTE) !== 0) {
-    throw new RangeError("bits");
-  }
-
-  return bits / BITS_PER_BYTE;
-}
-
-export const MIN_VALUE = 0;
-
-export function maxValueOf<T extends SafeInteger>(
-  bits: Bits,
-  _bitsTrusted = false,
-): T {
-  _assertBits(bits, _bitsTrusted);
-
-  return ((2 ** bits) - 1) as T;
-}
-
-export function isUintN(
-  bits: Bits,
+export function isUintN<T extends SafeInteger>(
+  info: Info<T>,
   test: unknown,
-  _bitsTrusted = false,
 ): boolean {
-  _assertBits(bits, _bitsTrusted);
-
   return Number.isSafeInteger(test) &&
-    inRange(test as number, [MIN_VALUE, maxValueOf(bits, true)]);
+    info.range.includesNumber(test as number);
 }
 
-const _buffer = new ArrayBuffer(96);
+const _buffer = new ArrayBuffer(96); //TODO 32専用になってる
 const _bufferUint32View = new Uint32Array(_buffer);
 const _bufferUint16View = new Uint16Array(_buffer);
 
 export function bitwiseAnd<T extends SafeInteger>(
-  bits: Bits,
+  info: Info<T>,
   a: T,
   b: T,
-  _bitsTrusted = false,
 ): T {
-  _assertBits(bits, _bitsTrusted);
-
-  if (isUintN(bits, a, true) !== true) {
+  if (isUintN(info, a) !== true) {
     throw new TypeError("a");
   }
-  if (isUintN(bits, b, true) !== true) {
+  if (isUintN(info, b) !== true) {
     throw new TypeError("b");
   }
 
-  if (bits === 32) {
+  if (info.bits >= 32) {
     // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
 
     // bigintに変換してビット演算するよりこちらの方が速い
@@ -78,26 +85,23 @@ export function bitwiseAnd<T extends SafeInteger>(
     _bufferUint16View[5] = a2 & b2;
     return _bufferUint32View[2] as T;
   } else {
-    return ((a & b) & maxValueOf(bits, true)) as T;
+    return ((a & b) & info.max) as T;
   }
 }
 
 export function bitwiseOr<T extends SafeInteger>(
-  bits: Bits,
+  info: Info<T>,
   a: T,
   b: T,
-  _bitsTrusted = false,
 ): T {
-  _assertBits(bits, _bitsTrusted);
-
-  if (isUintN(bits, a, true) !== true) {
+  if (isUintN(info, a) !== true) {
     throw new TypeError("a");
   }
-  if (isUintN(bits, b, true) !== true) {
+  if (isUintN(info, b) !== true) {
     throw new TypeError("b");
   }
 
-  if (bits === 32) {
+  if (info.bits >= 32) {
     // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
 
     // bigintに変換してビット演算するよりこちらの方が速い
@@ -109,26 +113,23 @@ export function bitwiseOr<T extends SafeInteger>(
     _bufferUint16View[5] = a2 | b2;
     return _bufferUint32View[2] as T;
   } else {
-    return ((a | b) & maxValueOf(bits, true)) as T;
+    return ((a | b) & info.max) as T;
   }
 }
 
 export function bitwiseXOr<T extends SafeInteger>(
-  bits: Bits,
+  info: Info<T>,
   a: T,
   b: T,
-  _bitsTrusted = false,
 ): T {
-  _assertBits(bits, _bitsTrusted);
-
-  if (isUintN(bits, a, true) !== true) {
+  if (isUintN(info, a) !== true) {
     throw new TypeError("a");
   }
-  if (isUintN(bits, b, true) !== true) {
+  if (isUintN(info, b) !== true) {
     throw new TypeError("b");
   }
 
-  if (bits === 32) {
+  if (info.bits >= 32) {
     // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
 
     // bigintに変換してビット演算するよりこちらの方が速い
@@ -140,84 +141,72 @@ export function bitwiseXOr<T extends SafeInteger>(
     _bufferUint16View[5] = a2 ^ b2;
     return _bufferUint32View[2] as T;
   } else {
-    return ((a ^ b) & maxValueOf(bits, true)) as T;
+    return ((a ^ b) & info.max) as T;
   }
 }
 
 export function rotateLeft<T extends SafeInteger>(
-  bits: Bits,
+  info: Info<T>,
   source: T,
   amount: SafeInteger,
-  _bitsTrusted = false,
 ): T {
-  _assertBits(bits, _bitsTrusted);
-
-  if (isUintN(bits, source, true) !== true) {
+  if (isUintN(info, source) !== true) {
     throw new TypeError("source");
   }
   if (Number.isSafeInteger(amount) !== true) {
     throw new TypeError("amount");
   }
 
-  let normalizedAmount = amount % bits;
+  let normalizedAmount = amount % info.bits;
   if (normalizedAmount < 0) {
-    normalizedAmount = normalizedAmount + bits;
+    normalizedAmount = normalizedAmount + info.bits;
   }
   if (normalizedAmount === 0) {
     return source;
   }
 
-  const max = maxValueOf(bits, true);
-  if (bits === 32) {
+  if (info.bits === 32) {
     // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
     const bs = BigInt(source);
     return Number(
       ((bs << BigInt(normalizedAmount)) |
-        (bs >> BigInt(bits - normalizedAmount))) & BigInt(max),
+        (bs >> BigInt(info.bits - normalizedAmount))) & BigInt(info.max),
     ) as T;
   } else {
     return (((source << normalizedAmount) |
-      (source >> (bits - normalizedAmount))) & max) as T;
+      (source >> (info.bits - normalizedAmount))) & info.max) as T;
   }
 }
 
 export function saturateFromSafeInteger<T extends SafeInteger>(
-  bits: Bits,
+  info: Info<T>,
   source: SafeInteger,
-  _bitsTrusted = false,
 ): T {
-  _assertBits(bits, _bitsTrusted);
-
   if (Number.isSafeInteger(source) !== true) {
     throw new TypeError("source");
   }
 
-  const max = maxValueOf(bits, true);
-  if (source > max) {
-    return max as T;
-  } else if (source < MIN_VALUE) {
-    return MIN_VALUE as T;
+  if (source > info.max) {
+    return info.max as T;
+  } else if (source < info.min) {
+    return info.min as T;
   }
   return normalizeNumber(source) as T;
 }
 
 export function truncateFromSafeInteger<T extends SafeInteger>(
-  bits: Bits,
+  info: Info<T>,
   source: SafeInteger,
-  _bitsTrusted = false,
 ): T {
-  _assertBits(bits, _bitsTrusted);
-
   if (Number.isSafeInteger(source) !== true) {
     throw new TypeError("source");
   }
 
-  const count = maxValueOf(bits, true) + 1;
   if (source === 0) {
     return 0 as T;
   } else if (source > 0) {
-    return (source % count) as T;
+    return (source % info.count) as T;
   } else {
-    return (count + (source % count)) as T;
+    return (info.count + (source % info.count)) as T;
   }
 }

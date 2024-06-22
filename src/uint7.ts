@@ -1,3 +1,4 @@
+import { NumberRange } from "./number_range.ts";
 import { SafeInteger } from "./safe_integer.ts";
 import { Uint6 } from "./uint6.ts";
 import * as UintN from "./uint_n.ts";
@@ -72,21 +73,25 @@ export type Uint7 =
   | 0x7E
   | 0x7F;
 
+const _BIT_LENGTH = 7;
+
+const _INFO = UintN.infoOf<Uint7>(_BIT_LENGTH);
+
 export namespace Uint7 {
   /**
    * The number of bits used to represent a 7-bit unsigned integer.
    */
-  export const SIZE = 7;
+  export const SIZE = _BIT_LENGTH;
 
   /**
    * The minimum value of 7-bit unsigned integer.
    */
-  export const MIN_VALUE = UintN.MIN_VALUE;
+  export const MIN_VALUE = _INFO.min;
 
   /**
    * The maximum value of 7-bit unsigned integer.
    */
-  export const MAX_VALUE = UintN.maxValueOf<Uint7>(SIZE, true); // 0x7F;
+  export const MAX_VALUE = _INFO.max;
 
   /**
    * Determines whether the passed `test` is a 7-bit unsigned integer.
@@ -95,30 +100,30 @@ export namespace Uint7 {
    * @returns Whether the passed `test` is a 7-bit unsigned integer.
    */
   export function isUint7(test: unknown): test is Uint7 {
-    return UintN.isUintN(SIZE, test, true);
+    return UintN.isUintN(_INFO, test);
   }
 
   export function bitwiseAnd(a: Uint7, b: Uint7): Uint7 {
-    return UintN.bitwiseAnd(SIZE, a, b, true);
+    return UintN.bitwiseAnd(_INFO, a, b);
   }
 
   export function bitwiseOr(a: Uint7, b: Uint7): Uint7 {
-    return UintN.bitwiseOr(SIZE, a, b, true);
+    return UintN.bitwiseOr(_INFO, a, b);
   }
 
   export function bitwiseXOr(a: Uint7, b: Uint7): Uint7 {
-    return UintN.bitwiseXOr(SIZE, a, b, true);
+    return UintN.bitwiseXOr(_INFO, a, b);
   }
 
   export function rotateLeft(source: Uint7, amount: SafeInteger): Uint7 {
-    return UintN.rotateLeft(SIZE, source, amount, true);
+    return UintN.rotateLeft(_INFO, source, amount);
   }
 
   export function saturateFromSafeInteger(source: SafeInteger): Uint7 {
-    return UintN.saturateFromSafeInteger(SIZE, source, true);
+    return UintN.saturateFromSafeInteger(_INFO, source);
   }
 
   export function truncateFromSafeInteger(source: SafeInteger): Uint7 {
-    return UintN.truncateFromSafeInteger(SIZE, source, true);
+    return UintN.truncateFromSafeInteger(_INFO, source);
   }
 }

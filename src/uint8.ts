@@ -140,43 +140,47 @@ export type Uint8 =
   | 0xFE
   | 0xFF;
 
-function _toSafeIntegerFromOptions(
-  options:
-    unknown /* (Uint8.FromOptions | SafeInteger.FromOptions | SafeInteger.FromOptions.Resolved) */ =
-      {},
-): SafeInteger.FromOptions.Resolved {
-  const clampRange = NumberRange.resolve(
-    (options as SafeInteger.FromOptions.Resolved)?.clampRange,
-  );
-  clampRange[0] = Math.max(clampRange[0], Uint8.MIN_VALUE);
-  clampRange[1] = Math.min(clampRange[1], Uint8.MAX_VALUE);
+const _BIT_LENGTH = 8;
 
-  return SafeInteger.FromOptions.resolve({
-    ...(options as SafeInteger.FromOptions.Resolved),
-    clampRange,
-  });
-}
+const _INFO = UintN.infoOf<Uint8>(_BIT_LENGTH);
+
+// function _toSafeIntegerFromOptions(
+//   options:
+//     unknown /* (Uint8.FromOptions | SafeInteger.FromOptions | SafeInteger.FromOptions.Resolved) */ =
+//       {},
+// ): SafeInteger.FromOptions.Resolved {
+//   const clampRange = NumberRange.resolve(
+//     (options as SafeInteger.FromOptions.Resolved)?.clampRange,
+//   );
+//   clampRange[0] = Math.max(clampRange[0], Uint8.MIN_VALUE);
+//   clampRange[1] = Math.min(clampRange[1], Uint8.MAX_VALUE);
+
+//   return SafeInteger.FromOptions.resolve({
+//     ...(options as SafeInteger.FromOptions.Resolved),
+//     clampRange,
+//   });
+// }
 
 export namespace Uint8 {
   /**
    * The number of bits used to represent an 8-bit unsigned integer.
    */
-  export const SIZE = 8;
+  export const SIZE = _BIT_LENGTH;
 
   /**
    * The number of bytes used to represent an 8-bit unsigned integer.
    */
-  export const BYTES = UintN.bytesOf(SIZE, true);
+  export const BYTES = UintN.bytesOf(_BIT_LENGTH);
 
   /**
    * The minimum value of 8-bit unsigned integer.
    */
-  export const MIN_VALUE = UintN.MIN_VALUE;
+  export const MIN_VALUE = _INFO.min;
 
   /**
    * The maximum value of 8-bit unsigned integer.
    */
-  export const MAX_VALUE = UintN.maxValueOf<Uint8>(SIZE, true); // 0xFF
+  export const MAX_VALUE = _INFO.max;
 
   /**
    * Determines whether the passed `test` is an 8-bit unsigned integer.
@@ -185,33 +189,33 @@ export namespace Uint8 {
    * @returns Whether the passed `test` is an 8-bit unsigned integer.
    */
   export function isUint8(test: unknown): test is Uint8 {
-    return UintN.isUintN(SIZE, test, true);
+    return UintN.isUintN(_INFO, test);
   }
 
   export function bitwiseAnd(a: Uint8, b: Uint8): Uint8 {
-    return UintN.bitwiseAnd(SIZE, a, b, true);
+    return UintN.bitwiseAnd(_INFO, a, b);
   }
 
   export function bitwiseOr(a: Uint8, b: Uint8): Uint8 {
-    return UintN.bitwiseOr(SIZE, a, b, true);
+    return UintN.bitwiseOr(_INFO, a, b);
   }
 
   export function bitwiseXOr(a: Uint8, b: Uint8): Uint8 {
-    return UintN.bitwiseXOr(SIZE, a, b, true);
+    return UintN.bitwiseXOr(_INFO, a, b);
   }
 
   export function rotateLeft(source: Uint8, amount: SafeInteger): Uint8 {
-    return UintN.rotateLeft(SIZE, source, amount, true);
+    return UintN.rotateLeft(_INFO, source, amount);
   }
 
   export function saturateFromSafeInteger(source: SafeInteger): Uint8 {
     // Uint8ClampedArrayにオーバーフローorアンダーフローする整数をセットしたのと同じ結果
-    return UintN.saturateFromSafeInteger(SIZE, source, true);
+    return UintN.saturateFromSafeInteger(_INFO, source);
   }
 
   export function truncateFromSafeInteger(source: SafeInteger): Uint8 {
     // Uint8Arrayにオーバーフローorアンダーフローする整数をセットしたのと同じ結果
-    return UintN.truncateFromSafeInteger(SIZE, source, true);
+    return UintN.truncateFromSafeInteger(_INFO, source);
   }
 
   export type FromOptions = {
@@ -220,35 +224,35 @@ export namespace Uint8 {
     roundingMode?: RoundingMode;
   };
 
-  export function fromNumber(source: number, options?: FromOptions): Uint8 {
-    const resolvedOptions = _toSafeIntegerFromOptions(options);
+  // export function fromNumber(source: number, options?: FromOptions): Uint8 {
+  //   const resolvedOptions = _toSafeIntegerFromOptions(options);
 
-    return SafeInteger.fromNumber(source, resolvedOptions) as Uint8;
-  }
+  //   return SafeInteger.fromNumber(source, resolvedOptions) as Uint8;
+  // }
 
-  export function fromBigInt(source: bigint, options?: FromOptions): Uint8 {
-    const resolvedOptions = _toSafeIntegerFromOptions(options);
+  // export function fromBigInt(source: bigint, options?: FromOptions): Uint8 {
+  //   const resolvedOptions = _toSafeIntegerFromOptions(options);
 
-    return SafeInteger.fromBigInt(source, resolvedOptions) as Uint8;
-  }
+  //   return SafeInteger.fromBigInt(source, resolvedOptions) as Uint8;
+  // }
 
-  export function toBigInt(source: Uint8): bigint {
-    if (isUint8(source)) {
-      return BigInt(source);
-    }
-    throw new TypeError("source");
-  }
+  // export function toBigInt(source: Uint8): bigint {
+  //   if (isUint8(source)) {
+  //     return BigInt(source);
+  //   }
+  //   throw new TypeError("source");
+  // }
 
-  export function fromString(source: string, options?: FromOptions): Uint8 {
-    const resolvedOptions = _toSafeIntegerFromOptions(options);
+  // export function fromString(source: string, options?: FromOptions): Uint8 {
+  //   const resolvedOptions = _toSafeIntegerFromOptions(options);
 
-    return SafeInteger.fromString(source, resolvedOptions) as Uint8;
-  }
+  //   return SafeInteger.fromString(source, resolvedOptions) as Uint8;
+  // }
 
-  export function toString(source: SafeInteger): string {
-    if (isUint8(source)) {
-      return normalizeNumber(source).toString(Radix.DECIMAL);
-    }
-    throw new TypeError("source");
-  }
+  // export function toString(source: SafeInteger): string {
+  //   if (isUint8(source)) {
+  //     return normalizeNumber(source).toString(Radix.DECIMAL);
+  //   }
+  //   throw new TypeError("source");
+  // }
 }

@@ -1,3 +1,4 @@
+import { NumberRange } from "./number_range.ts";
 import { SafeInteger } from "./safe_integer.ts";
 import { Uint8 } from "./uint8.ts";
 import * as UintN from "./uint_n.ts";
@@ -7,28 +8,30 @@ import * as UintN from "./uint_n.ts";
  */
 export type Uint32 = number;
 
-const _buffer = new ArrayBuffer(96);
+const _BIT_LENGTH = 32;
+
+const _INFO = UintN.infoOf<Uint32>(_BIT_LENGTH);
 
 export namespace Uint32 {
   /**
    * The number of bits used to represent a 32-bit unsigned integer.
    */
-  export const SIZE = 32;
+  export const SIZE = _BIT_LENGTH;
 
   /**
    * The number of bytes used to represent a 32-bit unsigned integer.
    */
-  export const BYTES = UintN.bytesOf(SIZE, true);
+  export const BYTES = UintN.bytesOf(_BIT_LENGTH);
 
   /**
    * The minimum value of 32-bit unsigned integer.
    */
-  export const MIN_VALUE = UintN.MIN_VALUE;
+  export const MIN_VALUE = _INFO.min;
 
   /**
    * The maximum value of 32-bit unsigned integer.
    */
-  export const MAX_VALUE = UintN.maxValueOf<Uint32>(SIZE, true); // 0xFFFF_FFFF
+  export const MAX_VALUE = _INFO.max;
 
   /**
    * Determines whether the passed `test` is a 32-bit unsigned integer.
@@ -37,31 +40,31 @@ export namespace Uint32 {
    * @returns Whether the passed `test` is a 32-bit unsigned integer.
    */
   export function isUint32(test: unknown): boolean {
-    return UintN.isUintN(SIZE, test, true);
+    return UintN.isUintN(_INFO, test);
   }
 
   export function bitwiseAnd(a: Uint32, b: Uint32): Uint32 {
-    return UintN.bitwiseAnd(SIZE, a, b, true);
+    return UintN.bitwiseAnd(_INFO, a, b);
   }
 
   export function bitwiseOr(a: Uint32, b: Uint32): Uint32 {
-    return UintN.bitwiseOr(SIZE, a, b, true);
+    return UintN.bitwiseOr(_INFO, a, b);
   }
 
   export function bitwiseXOr(a: Uint32, b: Uint32): Uint32 {
-    return UintN.bitwiseXOr(SIZE, a, b, true);
+    return UintN.bitwiseXOr(_INFO, a, b);
   }
 
   export function rotateLeft(source: Uint32, amount: SafeInteger): Uint32 {
-    return UintN.rotateLeft(SIZE, source, amount, true);
+    return UintN.rotateLeft(_INFO, source, amount);
   }
 
   export function saturateFromSafeInteger(source: SafeInteger): Uint32 {
-    return UintN.saturateFromSafeInteger(SIZE, source, true);
+    return UintN.saturateFromSafeInteger(_INFO, source);
   }
 
   export function truncateFromSafeInteger(source: SafeInteger): Uint32 {
-    return UintN.truncateFromSafeInteger(SIZE, source, true);
+    return UintN.truncateFromSafeInteger(_INFO, source);
   }
 
   export function toBytes(

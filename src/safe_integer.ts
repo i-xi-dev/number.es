@@ -1,9 +1,4 @@
-import {
-  clampNumber,
-  isEvenInteger,
-  isNumber,
-  isOddInteger,
-} from "./number.ts";
+import { isEvenInteger, isNumber, isOddInteger } from "./number.ts";
 import {
   isNegativeNumber,
   isNonNegativeNumber,
@@ -19,16 +14,16 @@ import { RoundingMode } from "./rounding_mode.ts";
 // 事実上定義できないのでnumberの別名とする
 export type SafeInteger = number;
 
-function _toSafeIntegerRange(
-  range: unknown, /* (NumberRange | Resolved) */
-): NumberRange.Resolved {
-  const [min, max] = NumberRange.resolve(range as NumberRange);
+// function _toSafeIntegerRange(
+//   range: unknown, /* (NumberRange | Resolved) */
+// ): NumberRange.Resolved {
+//   const [min, max] = NumberRange.resolve(range as NumberRange<SafeInteger>);
 
-  return [
-    (min < Number.MIN_SAFE_INTEGER) ? Number.MIN_SAFE_INTEGER : Math.ceil(min),
-    (max > Number.MAX_SAFE_INTEGER) ? Number.MAX_SAFE_INTEGER : Math.floor(max),
-  ];
-}
+//   return [
+//     (min < Number.MIN_SAFE_INTEGER) ? Number.MIN_SAFE_INTEGER : Math.ceil(min),
+//     (max > Number.MAX_SAFE_INTEGER) ? Number.MAX_SAFE_INTEGER : Math.floor(max),
+//   ];
+// }
 
 function _resolveRoundingMode(roundingMode?: RoundingMode): RoundingMode {
   if (Object.values(RoundingMode).includes(roundingMode as RoundingMode)) {
@@ -172,46 +167,46 @@ export namespace SafeInteger {
     strict?: boolean; // doNotTreatFalsyAsZero & acceptsOnlyIntegers
     fallback?: SafeInteger;
     roundingMode?: RoundingMode;
-    clampRange?: NumberRange;
+    clampRange?: NumberRange<SafeInteger>;
   };
 
-  export namespace FromOptions {
-    export type Resolved = Readonly<{
-      [_RESOLVED_MARKER]: true;
-      strict: boolean;
-      fallback: SafeInteger;
-      roundingMode: RoundingMode;
-      clampRange: NumberRange;
-    }>;
+  // export namespace FromOptions {
+  //   export type Resolved = Readonly<{
+  //     [_RESOLVED_MARKER]: true;
+  //     strict: boolean;
+  //     fallback: SafeInteger;
+  //     roundingMode: RoundingMode;
+  //     clampRange: NumberRange<SafeInteger>;
+  //   }>;
 
-    export function resolve(options: FromOptions | Resolved = {}): Resolved {
-      if (_RESOLVED_MARKER in options) {
-        return options;
-      }
+  //   export function resolve(options: FromOptions | Resolved = {}): Resolved {
+  //     if (_RESOLVED_MARKER in options) {
+  //       return options;
+  //     }
 
-      const strict = (options as Resolved)?.strict === true;
-      let fallback = ZERO;
-      if (isNumber(options?.fallback)) {
-        if (Number.isFinite(options.fallback)) {
-          fallback = options.fallback;
-        } else if ((options.fallback) >= Number.MAX_SAFE_INTEGER) {
-          fallback = Number.MAX_SAFE_INTEGER;
-        } else if ((options.fallback) <= Number.MIN_SAFE_INTEGER) {
-          fallback = Number.MIN_SAFE_INTEGER;
-        }
-      }
-      const roundingMode = _resolveRoundingMode(options?.roundingMode);
-      const clampRange = _toSafeIntegerRange(options?.clampRange);
+  //     const strict = (options as Resolved)?.strict === true;
+  //     let fallback = ZERO;
+  //     if (isNumber(options?.fallback)) {
+  //       if (Number.isFinite(options.fallback)) {
+  //         fallback = options.fallback;
+  //       } else if ((options.fallback) >= Number.MAX_SAFE_INTEGER) {
+  //         fallback = Number.MAX_SAFE_INTEGER;
+  //       } else if ((options.fallback) <= Number.MIN_SAFE_INTEGER) {
+  //         fallback = Number.MIN_SAFE_INTEGER;
+  //       }
+  //     }
+  //     const roundingMode = _resolveRoundingMode(options?.roundingMode);
+  //     const clampRange = _toSafeIntegerRange(options?.clampRange);
 
-      return Object.freeze({
-        [_RESOLVED_MARKER]: true as true,
-        strict,
-        fallback,
-        roundingMode,
-        clampRange,
-      });
-    }
-  }
+  //     return Object.freeze({
+  //       [_RESOLVED_MARKER]: true as true,
+  //       strict,
+  //       fallback,
+  //       roundingMode,
+  //       clampRange,
+  //     });
+  //   }
+  // }
 
   /*
                       | null      |       |       |       |       |       |       |
@@ -225,100 +220,119 @@ export namespace SafeInteger {
   fromString(!strict) | 0         | N/A   | 0     | N/A   | N/A   | MAX   | MIN   |
   */
 
-  export function fromNumber(
-    source?: number,
-    options?: FromOptions,
+  export function clamp(
+    source: SafeInteger,
+    range: NumberRange<SafeInteger> | NumberRange.SourceTuple<SafeInteger>,
   ): SafeInteger {
-    const resolvedOptions = FromOptions.resolve(options);
+    //TODO チェック
 
-    let adjusted = source;
-    if (resolvedOptions.strict === true) {
-      if (typeof adjusted !== "number") {
-        throw new TypeError("source");
-      }
-      if (Number.isSafeInteger(adjusted) !== true) {
-        throw new RangeError("source");
-      }
-    } else {
-      if (Number.isFinite(adjusted)) {
-        if ((adjusted as number) > Number.MAX_SAFE_INTEGER) {
-          adjusted = Number.MAX_SAFE_INTEGER;
-        } else if ((adjusted as number) < Number.MIN_SAFE_INTEGER) {
-          adjusted = Number.MIN_SAFE_INTEGER;
-        }
-      } else {
-        if (typeof (adjusted ?? Number.NaN) !== "number") {
-          // number,null,undefined のいずれでもない場合
-          throw new TypeError("source");
-        } else if (adjusted === Number.POSITIVE_INFINITY) {
-          adjusted = Number.MAX_SAFE_INTEGER;
-        } else if (adjusted === Number.NEGATIVE_INFINITY) {
-          adjusted = Number.MIN_SAFE_INTEGER;
-        } else {
-          adjusted = resolvedOptions.fallback;
-        }
-      }
+    const range2 = (range instanceof NumberRange)
+      ? range
+      : NumberRange.from(range);
+    if (range2.includesNumber(source)) {
+      return source;
     }
-
-    if (Number.isSafeInteger(adjusted)) {
-      return clampNumber(adjusted as number, resolvedOptions.clampRange); // clampRangeはsafe-integerなのでclampToSafeIntegerを使用する
-    }
-
-    const rounded = roundToSafeInteger(
-      adjusted as number,
-      resolvedOptions.roundingMode,
-    );
-    return clampNumber(rounded, resolvedOptions.clampRange); // clampRangeはsafe-integerなのでclampToSafeIntegerを使用する
+    const clamped = Math.max(range2.min, Math.min(range2.max, source));
+    return normalizeNumber(clamped);
   }
 
-  export function fromBigInt(
-    source?: bigint,
-    options?: FromOptions,
-  ): SafeInteger {
-    if (typeof (source ?? 0n) !== "bigint") {
-      // bigint,null,undefined のいずれでもない場合
-      throw new TypeError("source");
-    }
+  // export function fromNumber(
+  //   source?: number,
+  //   options?: FromOptions,
+  // ): SafeInteger {
+  //   const resolvedOptions = FromOptions.resolve(options);
 
-    // ignore options.roundingMode, strict, fallback
-    return fromNumber(Number(source), options);
-  }
+  //   let adjusted = source;
+  //   if (resolvedOptions.strict === true) {
+  //     if (typeof adjusted !== "number") {
+  //       throw new TypeError("source");
+  //     }
+  //     if (Number.isSafeInteger(adjusted) !== true) {
+  //       throw new RangeError("source");
+  //     }
+  //   } else {
+  //     if (Number.isFinite(adjusted)) {
+  //       if ((adjusted as number) > Number.MAX_SAFE_INTEGER) {
+  //         adjusted = Number.MAX_SAFE_INTEGER;
+  //       } else if ((adjusted as number) < Number.MIN_SAFE_INTEGER) {
+  //         adjusted = Number.MIN_SAFE_INTEGER;
+  //       }
+  //     } else {
+  //       if (typeof (adjusted ?? Number.NaN) !== "number") {
+  //         // number,null,undefined のいずれでもない場合
+  //         throw new TypeError("source");
+  //       } else if (adjusted === Number.POSITIVE_INFINITY) {
+  //         adjusted = Number.MAX_SAFE_INTEGER;
+  //       } else if (adjusted === Number.NEGATIVE_INFINITY) {
+  //         adjusted = Number.MIN_SAFE_INTEGER;
+  //       } else {
+  //         adjusted = resolvedOptions.fallback;
+  //       }
+  //     }
+  //   }
 
-  export function fromString(
-    source?: string,
-    options?: FromOptions,
-  ): SafeInteger {
-    if (typeof (source ?? "") !== "string") {
-      // string,null,undefined のいずれでもない場合
-      throw new TypeError("source");
-    }
+  //   const min = resolvedOptions.clampRange[0];
+  //   const max = resolvedOptions.clampRange[1] as number;
 
-    let adjusted = source;
-    let pattern: RegExp;
+  //   if (Number.isSafeInteger(adjusted)) {
+  //     return clampNumber(adjusted as number, min, max); // clampRangeはsafe-integerなのでclampToSafeIntegerを使用する
+  //   }
 
-    if (options?.strict === true) {
-      pattern = /^[\-+]?(?:[0-9]|[1-9][0-9]+)(?:.0+)?$/;
+  //   const rounded = roundToSafeInteger(
+  //     adjusted as number,
+  //     resolvedOptions.roundingMode,
+  //   );
+  //   return clampNumber(rounded, min, max); // clampRangeはsafe-integerなのでclampToSafeIntegerを使用する
+  // }
 
-      if ((adjusted === null) || (adjusted === undefined)) {
-        throw new TypeError("source");
-      }
-    } else {
-      pattern = /^[\-+]?(?:[0-9]+)(?:.[0-9]+)?$/; //XXX ".1"を0.1として扱うか？
+  // export function fromBigInt(
+  //   source?: bigint,
+  //   options?: FromOptions,
+  // ): SafeInteger {
+  //   if (typeof (source ?? 0n) !== "bigint") {
+  //     // bigint,null,undefined のいずれでもない場合
+  //     throw new TypeError("source");
+  //   }
 
-      if (typeof adjusted === "string") {
-        adjusted = adjusted.trim();
-      }
-      if ((adjusted ?? "") === "") {
-        // stringかつ"",null,undefined のいずれかの場合
-        return fromNumber(Number.NaN, options);
-      }
-    }
+  //   // ignore options.roundingMode, strict, fallback
+  //   return fromNumber(Number(source), options);
+  // }
 
-    if (pattern.test(adjusted as string)) {
-      return fromNumber(Number.parseFloat(adjusted as string), options);
-    }
-    throw new RangeError("source");
-  }
+  // export function fromString(
+  //   source?: string,
+  //   options?: FromOptions,
+  // ): SafeInteger {
+  //   if (typeof (source ?? "") !== "string") {
+  //     // string,null,undefined のいずれでもない場合
+  //     throw new TypeError("source");
+  //   }
+
+  //   let adjusted = source;
+  //   let pattern: RegExp;
+
+  //   if (options?.strict === true) {
+  //     pattern = /^[\-+]?(?:[0-9]|[1-9][0-9]+)(?:.0+)?$/;
+
+  //     if ((adjusted === null) || (adjusted === undefined)) {
+  //       throw new TypeError("source");
+  //     }
+  //   } else {
+  //     pattern = /^[\-+]?(?:[0-9]+)(?:.[0-9]+)?$/; //XXX ".1"を0.1として扱うか？
+
+  //     if (typeof adjusted === "string") {
+  //       adjusted = adjusted.trim();
+  //     }
+  //     if ((adjusted ?? "") === "") {
+  //       // stringかつ"",null,undefined のいずれかの場合
+  //       return fromNumber(Number.NaN, options);
+  //     }
+  //   }
+
+  //   if (pattern.test(adjusted as string)) {
+  //     return fromNumber(Number.parseFloat(adjusted as string), options);
+  //   }
+  //   throw new RangeError("source");
+  // }
 
   //XXX export function from()
 
