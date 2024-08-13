@@ -1,3 +1,4 @@
+import {IntegerRange}from "./integer_range.ts";
 import { _IntegerRangeBase, _IntegerRange } from "./_integer_range.ts";
 
 export const ZERO = 0n;
@@ -72,7 +73,7 @@ function _parseRangeLike(rangeLike: Range.Like): Range.Struct {
   return _IntegerRange.parse<bigint>(rangeLike, isBigInt);
 }
 
-export class Range extends _IntegerRangeBase<bigint> implements _IntegerRange<bigint> {
+export class Range extends _IntegerRangeBase<bigint> implements IntegerRange<bigint> {
   private constructor(min: bigint, max: bigint) {
     super(min, max);
   }
@@ -87,7 +88,7 @@ export class Range extends _IntegerRangeBase<bigint> implements _IntegerRange<bi
   }
 
   static of(...args: Array<bigint>): Range {
-    return this.from(args as _IntegerRange.Tuple<bigint>);
+    return this.from(args as Range.Tuple);
   }
 
   override rangeEquals(otherRange: Range.Like): boolean {
@@ -129,7 +130,7 @@ export class Range extends _IntegerRangeBase<bigint> implements _IntegerRange<bi
 }
 
 export namespace Range {
-  export type Tuple = _IntegerRange.Tuple<bigint>;
-  export type Struct = _IntegerRange.Struct<bigint>;
-  export type Like = _IntegerRange.Like<bigint>;
+  export type Tuple = IntegerRange.Tuple<bigint>;
+  export type Struct = IntegerRange.Struct<bigint>;
+  export type Like = IntegerRange.Like<bigint>;
 }

@@ -1,24 +1,6 @@
-export interface _IntegerRange<T extends (number | bigint)> {
-  min: T;
-  max: T;
-  rangeEquals(otherRange: _IntegerRange.Like<T>): boolean;
-  overlaps(otherRange: _IntegerRange.Like<T>): boolean;
-  isSuperrangeOf(otherRange: _IntegerRange.Like<T>): boolean;
-  // isSubrangeOf(otherRange: _IntegerRange.Like<T>): boolean;
-  // touches(otherRange: _IntegerRange.Like<T>): boolean;
-  // disjoint(otherRange: _IntegerRange.Like<T>): boolean;
-  // exceptWith(otherRange: _IntegerRange.Like): _IntegerRange;
-  // intersectWith(otherRange: _IntegerRange.Like): _IntegerRange;
-  // unionWith(otherRange: _IntegerRange.Like): _IntegerRange;
-  // normalize(ranges)
-  includes(test: T): boolean;
-  clamp(input: T): T;
-  equals(other: unknown): boolean;
-  [Symbol.iterator](): IterableIterator<T>;
-  toArray(): Array<T>;
-}
+import {IntegerRange}from "./integer_range.ts";
 
-export abstract class _IntegerRangeBase<T extends (number | bigint)> implements _IntegerRange<T> {
+export abstract class _IntegerRangeBase<T extends (number | bigint)> implements IntegerRange<T> {
   readonly #min: T;
   readonly #max: T;
 
@@ -35,34 +17,39 @@ export abstract class _IntegerRangeBase<T extends (number | bigint)> implements 
     return this.#max;
   }
 
+  get size(): number {
+    return (this.#max - this.#min) + 1;
+  }
+
   protected abstract _checkType(test: unknown): test is T;
 
-  abstract rangeEquals(otherRange: _IntegerRange.Like<T>): boolean;
+  abstract rangeEquals(otherRange: IntegerRange.Like<T>): boolean;
 
   protected _rangeEquals(otherMin: T, otherMax: T): boolean {
     return (this.#min === otherMin) && (this.#max === otherMax);
   }
 
-  abstract overlaps(otherRange: _IntegerRange.Like<T>): boolean;
+  abstract overlaps(otherRange: IntegerRange.Like<T>): boolean;
 
   protected _rangeOverlaps(otherMin: T, otherMax: T): boolean {
     return (this.#min <= otherMax) || (this.#max >= otherMin);
   }
 
-  abstract isSuperrangeOf(otherRange: _IntegerRange.Like<T>): boolean;
+  abstract isSuperrangeOf(otherRange: IntegerRange.Like<T>): boolean;
 
   protected _rangeContains(otherMin: T, otherMax: T): boolean {
     return (this.#min <= otherMin) && (this.#max >= otherMax);
   }
 
   includes(test: T): boolean {
-    if (this._checkType(test) !== true) {
-      throw new TypeError("The type of `test` does not match the type of range.");
-    }
-    return (test >= this.#min) && (test <= this.#max);
+    return this._checkType(test) && (test >= this.#min) && (test <= this.#max);
   }
 
   clamp(input: T): T {
+    if (this._checkType(input) !== true) {
+      throw new TypeError("The type of `input` does not match the type of range.");
+    }
+
     if (this.includes(input)) {
       return input;
     }
@@ -90,19 +77,14 @@ export abstract class _IntegerRangeBase<T extends (number | bigint)> implements 
   toArray(): Array<T> {
     return [...this[Symbol.iterator]()];
   }
+
+  toSet(): Set<T> {
+    return new Set<T>(this[Symbol.iterator]());
+  }
 }
 
 export namespace _IntegerRange {
-  export type Tuple<T extends (number | bigint)> = [min: T, max: T] | [minmax: T];
-
-  export type Struct<T extends (number | bigint)> = {
-    min: T,
-    max: T,
-  };
-  
-  export type Like<T extends (number | bigint)> = Tuple<T> | Struct<T>;
-
-  export function parse<T extends (number | bigint)>(rangeLike: _IntegerRange.Like<T>, validator: (test: unknown) => test is T): Struct<T> {
+  export function parse<T extends (number | bigint)>(rangeLike: IntegerRange.Like<T>, validator: (test: unknown) => test is T): IntegerRange.Struct<T> {
     let parsedMin: T | undefined;
     let parsedMax: T | undefined;
   
@@ -124,7 +106,7 @@ export namespace _IntegerRange {
       parsedMax = ("max" in rangeLike) ? rangeLike.max : undefined;
     }
     else {
-      throw new TypeError("`rangeLike` must be a `_IntegerRange.Like`.");
+      throw new TypeError("`rangeLike` must be a `IntegerRange.Like`.");
     }
   
     if (validator(parsedMin) !== true) {

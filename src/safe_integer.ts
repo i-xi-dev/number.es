@@ -1,13 +1,103 @@
+import {IntegerRange}from "./integer_range.ts";
 import { _IntegerRangeBase, _IntegerRange } from "./_integer_range.ts";
-import { normalize,ZERO } from "./numeric.ts";
+import { isNegative,normalize,ZERO } from "./numeric.ts";
 import { Radix } from "./radix.ts";
+import { RoundingMode } from "./rounding_mode.ts";
 
-export function isOdd(test: number): boolean {
+type safeint = number;
+
+export function isOdd(test: safeint): boolean {
   return Number.isSafeInteger(test) && ((test % 2) !== ZERO);
 }
 
-export function isEven(test: number): boolean {
+export function isEven(test: safeint): boolean {
   return Number.isSafeInteger(test) && ((test % 2) === ZERO);
+}
+
+export function roundFrom(
+  source: number,
+  roundingMode: RoundingMode,
+): safeint {
+  if (Number.isFinite(source) !== true) {
+    throw new TypeError("TODO");
+  }
+
+  if (source > Number.MAX_SAFE_INTEGER) {
+    throw new RangeError("TODO");
+  } else if (source < Number.MIN_SAFE_INTEGER) {
+    throw new RangeError("TODO");
+  }
+
+  const integralPart = normalize(Math.trunc(source));
+  const integralPartIsEven = isEven(integralPart);
+
+  if (typeof roundingMode !== "symbol") {
+    throw new TypeError("roundingMode");
+  } else if (
+    Object.values(RoundingMode).includes(roundingMode) !== true
+  ) {
+    throw new RangeError("roundingMode");
+  }
+
+  if (Number.isInteger(source)) {
+    return normalize(source);
+  }
+
+  const nearestP = normalize(Math.ceil(source));
+  const nearestN = normalize(Math.floor(source));
+  const sourceIsNegative = isNegative(source);
+  const nearestPH = nearestP - 0.5;
+  const nearestNH = nearestN + 0.5;
+
+  const halfUp = (): safeint => {
+    return (source >= nearestPH) ? nearestP : nearestN;
+  };
+
+  const halfDown = (): safeint => {
+    return (source <= nearestNH) ? nearestN : nearestP;
+  };
+
+  switch (roundingMode) {
+    case RoundingMode.UP:
+      return nearestP;
+
+    case RoundingMode.DOWN:
+      return nearestN;
+
+    case RoundingMode.TOWARD_ZERO:
+      return integralPart;
+
+    case RoundingMode.AWAY_FROM_ZERO:
+      return sourceIsNegative ? nearestN : nearestP;
+
+    case RoundingMode.HALF_UP:
+      return halfUp();
+
+    case RoundingMode.HALF_DOWN:
+      return halfDown();
+
+    case RoundingMode.HALF_TOWARD_ZERO:
+      return sourceIsNegative ? halfUp() : halfDown();
+
+    case RoundingMode.HALF_AWAY_FROM_ZERO:
+      return sourceIsNegative ? halfDown() : halfUp();
+
+    case RoundingMode.HALF_TO_EVEN:
+      if (sourceIsNegative) {
+        if (source === nearestPH) {
+          return integralPartIsEven ? integralPart : nearestN;
+        }
+        return halfDown();
+      }
+
+      if (source === nearestNH) {
+        return integralPartIsEven ? integralPart : nearestP;
+      }
+      return halfUp();
+
+    default:
+      return ZERO as never;
+  }
 }
 
 export function toBigInt(source: number): bigint {
@@ -28,7 +118,7 @@ function _parseRangeLike(rangeLike: Range.Like): Range.Struct {
   return _IntegerRange.parse<number>(rangeLike, Number.isSafeInteger as (test: unknown) => test is number);
 }
 
-export class Range extends _IntegerRangeBase<number> implements _IntegerRange<number> {
+export class Range extends _IntegerRangeBase<number> implements IntegerRange<number> {
   private constructor(min: number, max: number) {
     super(min, max);
   }
@@ -43,7 +133,7 @@ export class Range extends _IntegerRangeBase<number> implements _IntegerRange<nu
   }
 
   static of(...args: Array<number>): Range {
-    return this.from(args as _IntegerRange.Tuple<number>);
+    return this.from(args as Range.Tuple);
   }
 
   override rangeEquals(otherRange: Range.Like): boolean {
@@ -90,7 +180,7 @@ export class Range extends _IntegerRangeBase<number> implements _IntegerRange<nu
 }
 
 export namespace Range {
-  export type Tuple = _IntegerRange.Tuple<number>;
-  export type Struct = _IntegerRange.Struct<number>;
-  export type Like = _IntegerRange.Like<number>;
+  export type Tuple = IntegerRange.Tuple<number>;
+  export type Struct = IntegerRange.Struct<number>;
+  export type Like = IntegerRange.Like<number>;
 }
