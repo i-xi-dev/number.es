@@ -14,29 +14,36 @@ export function isEven(test: safeint): boolean {
   return Number.isSafeInteger(test) && ((test % 2) === ZERO);
 }
 
+const _INT32_MAX = 2_147_483_647;
+const _INT32_MIN = -2_147_483_648;
+
 export function roundFrom(
   source: number,
   roundingMode: RoundingMode,
 ): safeint {
   if (Number.isFinite(source) !== true) {
-    throw new TypeError("TODO");
+    throw new TypeError("`source` must be a finite number.");
   }
 
-  if (source > Number.MAX_SAFE_INTEGER) {
-    throw new RangeError("TODO");
-  } else if (source < Number.MIN_SAFE_INTEGER) {
-    throw new RangeError("TODO");
+  //TODO 受け付ける範囲は暫定
+  if (source > _INT32_MAX) {
+    throw new RangeError(
+      "`source` must be less than or equal to Int32 maximum value.",
+    );
+  } else if (source < _INT32_MIN) {
+    throw new RangeError(
+      "`source` must be greater than or equal to int32 minimum value.",
+    );
   }
 
   const integralPart = normalize(Math.trunc(source));
   const integralPartIsEven = isEven(integralPart);
 
-  if (typeof roundingMode !== "symbol") {
-    throw new TypeError("TODO");
-  } else if (
-    Object.values(RoundingMode).includes(roundingMode) !== true
+  if (
+    (typeof roundingMode !== "symbol") ||
+    (Object.values(RoundingMode).includes(roundingMode) !== true)
   ) {
-    throw new RangeError("TODO");
+    throw new TypeError("`roundingMode` must be a `RoundingMode`.");
   }
 
   if (Number.isInteger(source)) {
