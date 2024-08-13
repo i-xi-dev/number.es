@@ -5,24 +5,24 @@ export function isNumber(test: unknown): test is number {
 }
 
 export function isPositive(test: number): boolean {
-  return (test > ZERO);
+  return isNumber(test) && (test > ZERO);
 }
 
 export function isNonNegative(test: number): boolean {
-  return (test >= ZERO);
+  return isNumber(test) && (test >= ZERO);
 }
 
 export function isNonPositive(test: number): boolean {
-  return (test <= ZERO);
+  return isNumber(test) && (test <= ZERO);
 }
 
 export function isNegative(test: number): boolean {
-  return (test < ZERO);
+  return (isNumber(test) && test < ZERO);
 }
 
 export function normalize<T extends number>(source: T): T {
   if (isNumber(source) !== true) {
-    throw new TypeError("source");
+    throw new TypeError("`source` is must be a `number`.");
   }
   if (Number.isFinite(source) !== true) {
     return source;
