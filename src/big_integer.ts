@@ -1,5 +1,6 @@
-import {IntegerRange}from "./integer_range.ts";
-import { _IntegerRangeBase, _IntegerRange } from "./_integer_range.ts";
+import { _IntegerRange, _IntegerRangeBase } from "./_integer_range.ts";
+import { IntegerRange } from "./integer_range.ts";
+import { Radix } from "./radix.ts";
 
 export const ZERO = 0n;
 
@@ -69,11 +70,33 @@ export function max<T extends bigint>(...args: T[]): T {
   return max;
 }
 
+export function fromInteger(source: number): bigint {
+  if (Number.isSafeInteger(source)) {
+    return BigInt(source);
+  }
+  throw new TypeError("`source` must be a safe integer.");
+}
+
+export function fromString(source: string): bigint {
+  if (/^[0-9]$/.test(source)) {
+    return BigInt(source);
+  }
+  throw new TypeError("TODO");
+}
+
+export function toString(source: bigint): string {
+  if (isBigInt(source)) {
+    return source.toString(Radix.DECIMAL);
+  }
+  throw new TypeError("TODO");
+}
+
 function _parseRangeLike(rangeLike: Range.Like): Range.Struct {
   return _IntegerRange.parse<bigint>(rangeLike, isBigInt);
 }
 
-export class Range extends _IntegerRangeBase<bigint> implements IntegerRange<bigint> {
+export class Range extends _IntegerRangeBase<bigint>
+  implements IntegerRange<bigint> {
   private constructor(min: bigint, max: bigint) {
     super(min, max);
   }
@@ -95,8 +118,7 @@ export class Range extends _IntegerRangeBase<bigint> implements IntegerRange<big
     try {
       const { min, max } = _parseRangeLike(otherRange);
       return this._rangeEquals(min, max);
-    }
-    catch {
+    } catch {
       return false;
     }
   }
@@ -105,8 +127,7 @@ export class Range extends _IntegerRangeBase<bigint> implements IntegerRange<big
     try {
       const { min, max } = _parseRangeLike(otherRange);
       return this._rangeOverlaps(min, max);
-    }
-    catch {
+    } catch {
       return false;
     }
   }
@@ -115,12 +136,11 @@ export class Range extends _IntegerRangeBase<bigint> implements IntegerRange<big
     try {
       const { min, max } = _parseRangeLike(otherRange);
       return this._rangeContains(min, max);
-    }
-    catch {
+    } catch {
       return false;
     }
   }
-  
+
   override equals(other: unknown): boolean {
     if (other instanceof Range) {
       return this._rangeEquals(other.min, other.max);

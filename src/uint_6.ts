@@ -1,13 +1,15 @@
-import {rangeOf} from "./_uint_n.ts";
-import {uint6} from "./uint_n_type.ts";
 import * as UintN from "./_uint_n.ts";
+import { rangeOf } from "./_uint_n.ts";
+import { uint6 } from "./uint_n_type.ts";
 
 const _BIT_LENGTH = 6;
 
 const _range = rangeOf(_BIT_LENGTH);
 
 export const SIZE = _BIT_LENGTH;
+
 export const MIN_VALUE = _range.min;
+
 export const MAX_VALUE = _range.max;
 
 export function isUint6(test: unknown): test is uint6 {

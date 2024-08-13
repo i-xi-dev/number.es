@@ -1,8 +1,8 @@
-import { normalize,ZERO } from "./numeric.ts";
-import {Range}from "./safe_integer.ts";
+import { normalize, ZERO } from "./numeric.ts";
+import { Range } from "./safe_integer.ts";
 
 // supported bits.
-export const BITS = [1,2,3,4,5,6,7,8,16,24,32] as const;
+export const BITS = [1, 2, 3, 4, 5, 6, 7, 8, 16, 24, 32] as const;
 export type BITS = typeof BITS[number];
 
 export function rangeOf(bits: BITS): Range {
@@ -11,9 +11,9 @@ export function rangeOf(bits: BITS): Range {
   }
 
   const min = ZERO;
-  const max = ((2 ** bits) - 1);
+  const max = (2 ** bits) - 1;
 
-  return Range.of(min,max);
+  return Range.of(min, max);
 }
 
 const _buffer = new ArrayBuffer(96);
@@ -21,10 +21,10 @@ const _bufferUint32View = new Uint32Array(_buffer);
 const _bufferUint16View = new Uint16Array(_buffer);
 
 export function bitwiseAnd<T extends number>(
-  bits: BITS,// BITSであることを保証して渡すこと
+  bits: BITS, // BITSであることを保証して渡すこと
   range: Range,
-  a: T,// Tであることを保証して渡すこと
-  b: T,// Tであることを保証して渡すこと
+  a: T, // Tであることを保証して渡すこと
+  b: T, // Tであることを保証して渡すこと
 ): T {
   if (bits === 32) {
     // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
@@ -36,17 +36,16 @@ export function bitwiseAnd<T extends number>(
     _bufferUint16View[4] = a1 & b1;
     _bufferUint16View[5] = a2 & b2;
     return _bufferUint32View[2] as T;
-  }
-  else {
+  } else {
     return ((a & b) & range.max) as T;
   }
 }
 
 export function bitwiseOr<T extends number>(
-  bits: BITS,// BITSであることを保証して渡すこと
+  bits: BITS, // BITSであることを保証して渡すこと
   range: Range,
-  a: T,// Tであることを保証して渡すこと
-  b: T,// Tであることを保証して渡すこと
+  a: T, // Tであることを保証して渡すこと
+  b: T, // Tであることを保証して渡すこと
 ): T {
   if (bits === 32) {
     // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
@@ -64,10 +63,10 @@ export function bitwiseOr<T extends number>(
 }
 
 export function bitwiseXOr<T extends number>(
-  bits: BITS,// BITSであることを保証して渡すこと
+  bits: BITS, // BITSであることを保証して渡すこと
   range: Range,
-  a: T,// Tであることを保証して渡すこと
-  b: T,// Tであることを保証して渡すこと
+  a: T, // Tであることを保証して渡すこと
+  b: T, // Tであることを保証して渡すこと
 ): T {
   if (bits === 32) {
     // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
@@ -85,9 +84,9 @@ export function bitwiseXOr<T extends number>(
 }
 
 export function rotateLeft<T extends number>(
-  bits: BITS,// BITSであることを保証して渡すこと
+  bits: BITS, // BITSであることを保証して渡すこと
   range: Range,
-  source: T,// Tであることを保証して渡すこと
+  source: T, // Tであることを保証して渡すこと
   amount: number,
 ): T {
   if (Number.isSafeInteger(amount) !== true) {
@@ -120,7 +119,7 @@ export function saturateFromSafeInteger<T extends number>(
   source: number,
 ): T {
   if (Number.isSafeInteger(source) !== true) {
-    throw new TypeError("source");
+    throw new TypeError("TODO");
   }
 
   if (source > range.max) {
@@ -136,7 +135,7 @@ export function truncateFromSafeInteger<T extends number>(
   source: number,
 ): T {
   if (Number.isSafeInteger(source) !== true) {
-    throw new TypeError("source");
+    throw new TypeError("TODO");
   }
 
   if (source === ZERO) {

@@ -1,16 +1,18 @@
-import {BITS_PER_BYTE} from "./_uint_8x.ts";
-import {uint8} from "./uint_n_type.ts";
 import * as UintN from "./_uint_n.ts";
+import { BITS_PER_BYTE } from "./_uint_8x.ts";
+import { uint8 } from "./uint_n_type.ts";
 
 const _BIT_LENGTH = 8;
 
 const _range = UintN.rangeOf(_BIT_LENGTH);
 
 export const SIZE = _BIT_LENGTH;
+
 export const MIN_VALUE = _range.min;
+
 export const MAX_VALUE = _range.max;
 
-export const BYTES = _BIT_LENGTH/BITS_PER_BYTE;
+export const BYTES = _BIT_LENGTH / BITS_PER_BYTE;
 
 export function isUint8(test: unknown): test is uint8 {
   return Number.isSafeInteger(test) && _range.includes(test as number);

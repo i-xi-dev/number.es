@@ -1,23 +1,28 @@
-import {BITS_PER_BYTE} from "./_uint_8x.ts";
-import {isBigInt} from "./big_integer.ts";
-import {uint8} from "./uint_n_type.ts";
 import * as BigUintN from "./_big_uint_n.ts";
+import { BITS_PER_BYTE } from "./_uint_8x.ts";
+import { isBigInt } from "./big_integer.ts";
+import { uint8 } from "./uint_n_type.ts";
 
 const _BIT_LENGTH = 64;
 
 const _range = BigUintN.rangeOf(_BIT_LENGTH);
 
 export const SIZE = _BIT_LENGTH;
+
 export const MIN_VALUE = _range.min;
+
 export const MAX_VALUE = _range.max;
 
-export const BYTES = _BIT_LENGTH/BITS_PER_BYTE;
+export const BYTES = _BIT_LENGTH / BITS_PER_BYTE;
 
-export function isBigUint64(test: unknown): boolean /* test is biguint64 */{
+export function isBigUint64(test: unknown): boolean /* test is biguint64 */ {
   return isBigInt(test) && _range.includes(test as bigint);
 }
 
-export function bitwiseAnd(a: bigint/* biguint64 */, b: bigint/* biguint64 */): bigint/* biguint64 */ {
+export function bitwiseAnd(
+  a: bigint, /* biguint64 */
+  b: bigint, /* biguint64 */
+): bigint /* biguint64 */ {
   if (isBigUint64(a) !== true) {
     throw new TypeError("TODO");
   }
@@ -28,7 +33,10 @@ export function bitwiseAnd(a: bigint/* biguint64 */, b: bigint/* biguint64 */): 
   return BigUintN.bitwiseAnd(_BIT_LENGTH, _range, a, b);
 }
 
-export function bitwiseOr(a: bigint/* biguint64 */, b: bigint/* biguint64 */): bigint/* biguint64 */ {
+export function bitwiseOr(
+  a: bigint, /* biguint64 */
+  b: bigint, /* biguint64 */
+): bigint /* biguint64 */ {
   if (isBigUint64(a) !== true) {
     throw new TypeError("TODO");
   }
@@ -39,7 +47,10 @@ export function bitwiseOr(a: bigint/* biguint64 */, b: bigint/* biguint64 */): b
   return BigUintN.bitwiseOr(_BIT_LENGTH, _range, a, b);
 }
 
-export function bitwiseXOr(a: bigint/* biguint64 */, b: bigint/* biguint64 */): bigint/* biguint64 */ {
+export function bitwiseXOr(
+  a: bigint, /* biguint64 */
+  b: bigint, /* biguint64 */
+): bigint /* biguint64 */ {
   if (isBigUint64(a) !== true) {
     throw new TypeError("TODO");
   }
@@ -50,7 +61,10 @@ export function bitwiseXOr(a: bigint/* biguint64 */, b: bigint/* biguint64 */): 
   return BigUintN.bitwiseXOr(_BIT_LENGTH, _range, a, b);
 }
 
-export function rotateLeft(source: bigint/* biguint64 */, amount: number): bigint/* biguint64 */ {
+export function rotateLeft(
+  source: bigint, /* biguint64 */
+  amount: number,
+): bigint /* biguint64 */ {
   if (isBigUint64(source) !== true) {
     throw new TypeError("TODO");
   }
@@ -58,21 +72,21 @@ export function rotateLeft(source: bigint/* biguint64 */, amount: number): bigin
   return BigUintN.rotateLeft(_BIT_LENGTH, _range, source, amount);
 }
 
-export function saturateFrom(source: bigint): bigint/* biguint64 */ {
+export function saturateFrom(source: bigint): bigint /* biguint64 */ {
   void source;
-  throw new Error("not implemented");//TODO
+  throw new Error("not implemented"); //TODO
 }
 
-export function truncateFrom(source: bigint): bigint/* biguint64 */ {
+export function truncateFrom(source: bigint): bigint /* biguint64 */ {
   void source;
-  throw new Error("not implemented");//TODO
+  throw new Error("not implemented"); //TODO
 }
 
 export function toBytes(
-  source: bigint/* biguint64 */,
+  source: bigint, /* biguint64 */
   littleEndian = false,
 ): [uint8, uint8, uint8, uint8, uint8, uint8, uint8, uint8] {
   void source;
   void littleEndian;
-  throw new Error("not implemented");//TODO
+  throw new Error("not implemented"); //TODO
 }

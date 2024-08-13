@@ -1,6 +1,6 @@
-import {IntegerRange}from "./integer_range.ts";
-import { _IntegerRangeBase, _IntegerRange } from "./_integer_range.ts";
-import { isNegative,normalize,ZERO } from "./numeric.ts";
+import { _IntegerRange, _IntegerRangeBase } from "./_integer_range.ts";
+import { IntegerRange } from "./integer_range.ts";
+import { isNegative, normalize, ZERO } from "./numeric.ts";
 import { Radix } from "./radix.ts";
 import { RoundingMode } from "./rounding_mode.ts";
 
@@ -32,11 +32,11 @@ export function roundFrom(
   const integralPartIsEven = isEven(integralPart);
 
   if (typeof roundingMode !== "symbol") {
-    throw new TypeError("roundingMode");
+    throw new TypeError("TODO");
   } else if (
     Object.values(RoundingMode).includes(roundingMode) !== true
   ) {
-    throw new RangeError("roundingMode");
+    throw new RangeError("TODO");
   }
 
   if (Number.isInteger(source)) {
@@ -100,25 +100,29 @@ export function roundFrom(
   }
 }
 
-export function toBigInt(source: number): bigint {
-  if (Number.isSafeInteger(source)) {
-    return BigInt(source);
+export function fromString(source: string): safeint {
+  if (/^[0-9]$/.test(source)) {
+    return Number.parseInt(source, Radix.DECIMAL);
   }
-  throw new TypeError("`source` must be a safe integer.");
+  throw new TypeError("TODO");
 }
 
 export function toString(source: number): string {
   if (Number.isSafeInteger(source)) {
     return normalize(source).toString(Radix.DECIMAL);
   }
-  throw new TypeError("source");
+  throw new TypeError("TODO");
 }
 
 function _parseRangeLike(rangeLike: Range.Like): Range.Struct {
-  return _IntegerRange.parse<number>(rangeLike, Number.isSafeInteger as (test: unknown) => test is number);
+  return _IntegerRange.parse<number>(
+    rangeLike,
+    Number.isSafeInteger as (test: unknown) => test is number,
+  );
 }
 
-export class Range extends _IntegerRangeBase<number> implements IntegerRange<number> {
+export class Range extends _IntegerRangeBase<number>
+  implements IntegerRange<number> {
   private constructor(min: number, max: number) {
     super(min, max);
   }
@@ -140,8 +144,7 @@ export class Range extends _IntegerRangeBase<number> implements IntegerRange<num
     try {
       const { min, max } = _parseRangeLike(otherRange);
       return this._rangeEquals(min, max);
-    }
-    catch {
+    } catch {
       return false;
     }
   }
@@ -150,8 +153,7 @@ export class Range extends _IntegerRangeBase<number> implements IntegerRange<num
     try {
       const { min, max } = _parseRangeLike(otherRange);
       return this._rangeOverlaps(min, max);
-    }
-    catch {
+    } catch {
       return false;
     }
   }
@@ -160,12 +162,11 @@ export class Range extends _IntegerRangeBase<number> implements IntegerRange<num
     try {
       const { min, max } = _parseRangeLike(otherRange);
       return this._rangeContains(min, max);
-    }
-    catch {
+    } catch {
       return false;
     }
   }
-  
+
   override equals(other: unknown): boolean {
     if (other instanceof Range) {
       return this._rangeEquals(other.min, other.max);
@@ -176,7 +177,6 @@ export class Range extends _IntegerRangeBase<number> implements IntegerRange<num
   override clamp(input: number): number {
     return normalize(super.clamp(input));
   }
-
 }
 
 export namespace Range {

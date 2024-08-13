@@ -1,5 +1,5 @@
-import {max,Range,ZERO}from "./big_integer.ts";
-import { ZERO as _NUMBER_ZERO} from "./numeric.ts";
+import { Range, ZERO } from "./big_integer.ts";
+import { ZERO as _NUMBER_ZERO } from "./numeric.ts";
 
 // supported bits.
 export const BITS = [64] as const;
@@ -11,16 +11,16 @@ export function rangeOf(bits: BITS): Range {
   }
 
   const min = ZERO;
-  const max = ((2n ** BigInt(bits)) - 1n);
+  const max = (2n ** BigInt(bits)) - 1n;
 
-  return Range.of(min,max);
+  return Range.of(min, max);
 }
 
 export function bitwiseAnd<T extends bigint>(
-  bits: BITS,// BITSであることを保証して渡すこと
+  bits: BITS, // BITSであることを保証して渡すこと
   range: Range,
-  a: T,// Tであることを保証して渡すこと
-  b: T,// Tであることを保証して渡すこと
+  a: T, // Tであることを保証して渡すこと
+  b: T, // Tであることを保証して渡すこと
 ): T {
   void bits;
   const aAndB = (a as bigint) & (b as bigint); //XXX 何故かtypescriptにbigintでなくnumberだと言われる
@@ -28,10 +28,10 @@ export function bitwiseAnd<T extends bigint>(
 }
 
 export function bitwiseOr<T extends bigint>(
-  bits: BITS,// BITSであることを保証して渡すこと
+  bits: BITS, // BITSであることを保証して渡すこと
   range: Range,
-  a: T,// Tであることを保証して渡すこと
-  b: T,// Tであることを保証して渡すこと
+  a: T, // Tであることを保証して渡すこと
+  b: T, // Tであることを保証して渡すこと
 ): T {
   void bits;
   const aOrB = (a as bigint) | (b as bigint); //XXX 何故かtypescriptにbigintでなくnumberだと言われる
@@ -39,10 +39,10 @@ export function bitwiseOr<T extends bigint>(
 }
 
 export function bitwiseXOr<T extends bigint>(
-  bits: BITS,// BITSであることを保証して渡すこと
+  bits: BITS, // BITSであることを保証して渡すこと
   range: Range,
-  a: T,// Tであることを保証して渡すこと
-  b: T,// Tであることを保証して渡すこと
+  a: T, // Tであることを保証して渡すこと
+  b: T, // Tであることを保証して渡すこと
 ): T {
   void bits;
   const aXOrB = (a as bigint) ^ (b as bigint); //XXX 何故かtypescriptにbigintでなくnumberだと言われる
@@ -50,9 +50,9 @@ export function bitwiseXOr<T extends bigint>(
 }
 
 export function rotateLeft<T extends bigint>(
-  bits: BITS,// BITSであることを保証して渡すこと
+  bits: BITS, // BITSであることを保証して渡すこと
   range: Range,
-  source: T,// Tであることを保証して渡すこと
+  source: T, // Tであることを保証して渡すこと
   amount: number,
 ): T {
   if (Number.isSafeInteger(amount) !== true) {

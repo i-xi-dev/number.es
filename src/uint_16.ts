@@ -1,22 +1,27 @@
-import {BITS_PER_BYTE} from "./_uint_8x.ts";
-import {uint8} from "./uint_n_type.ts";
 import * as UintN from "./_uint_n.ts";
+import { BITS_PER_BYTE } from "./_uint_8x.ts";
+import { uint8 } from "./uint_n_type.ts";
 
 const _BIT_LENGTH = 16;
 
 const _range = UintN.rangeOf(_BIT_LENGTH);
 
 export const SIZE = _BIT_LENGTH;
+
 export const MIN_VALUE = _range.min;
+
 export const MAX_VALUE = _range.max;
 
-export const BYTES = _BIT_LENGTH/BITS_PER_BYTE;
+export const BYTES = _BIT_LENGTH / BITS_PER_BYTE;
 
-export function isUint16(test: unknown): boolean /* test is uint16 */{
+export function isUint16(test: unknown): boolean /* test is uint16 */ {
   return Number.isSafeInteger(test) && _range.includes(test as number);
 }
 
-export function bitwiseAnd(a: number/* uint16 */, b: number/* uint16 */): number/* uint16 */ {
+export function bitwiseAnd(
+  a: number, /* uint16 */
+  b: number, /* uint16 */
+): number /* uint16 */ {
   if (isUint16(a) !== true) {
     throw new TypeError("TODO");
   }
@@ -27,7 +32,10 @@ export function bitwiseAnd(a: number/* uint16 */, b: number/* uint16 */): number
   return UintN.bitwiseAnd(_BIT_LENGTH, _range, a, b);
 }
 
-export function bitwiseOr(a: number/* uint16 */, b: number/* uint16 */): number/* uint16 */ {
+export function bitwiseOr(
+  a: number, /* uint16 */
+  b: number, /* uint16 */
+): number /* uint16 */ {
   if (isUint16(a) !== true) {
     throw new TypeError("TODO");
   }
@@ -38,7 +46,10 @@ export function bitwiseOr(a: number/* uint16 */, b: number/* uint16 */): number/
   return UintN.bitwiseOr(_BIT_LENGTH, _range, a, b);
 }
 
-export function bitwiseXOr(a: number/* uint16 */, b: number/* uint16 */): number/* uint16 */ {
+export function bitwiseXOr(
+  a: number, /* uint16 */
+  b: number, /* uint16 */
+): number /* uint16 */ {
   if (isUint16(a) !== true) {
     throw new TypeError("TODO");
   }
@@ -49,7 +60,10 @@ export function bitwiseXOr(a: number/* uint16 */, b: number/* uint16 */): number
   return UintN.bitwiseXOr(_BIT_LENGTH, _range, a, b);
 }
 
-export function rotateLeft(source: number/* uint16 */, amount: number): number/* uint16 */ {
+export function rotateLeft(
+  source: number, /* uint16 */
+  amount: number,
+): number /* uint16 */ {
   if (isUint16(source) !== true) {
     throw new TypeError("TODO");
   }
@@ -57,18 +71,18 @@ export function rotateLeft(source: number/* uint16 */, amount: number): number/*
   return UintN.rotateLeft(_BIT_LENGTH, _range, source, amount);
 }
 
-export function saturateFromSafeInteger(source: number): number/* uint16 */ {
+export function saturateFromSafeInteger(source: number): number /* uint16 */ {
   return UintN.saturateFromSafeInteger(_range, source);
 }
 
-export function truncateFromSafeInteger(source: number): number/* uint16 */ {
+export function truncateFromSafeInteger(source: number): number /* uint16 */ {
   // Uint16Arrayにオーバーフローorアンダーフローする整数をセットしたのと同じ結果
   return UintN.truncateFromSafeInteger(_range, source);
 }
 
 //TODO Uint16ArrayからUint8Arrayにした方が速いのでは
 export function toBytes(
-  source: number/* uint16 */,
+  source: number, /* uint16 */
   littleEndian = false,
 ): [uint8, uint8] {
   if (isUint16(source) !== true) {

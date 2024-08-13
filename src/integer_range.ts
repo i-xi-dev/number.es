@@ -22,12 +22,14 @@ export interface IntegerRange<T extends (number | bigint)> {
 //TODO 命名をSetのメソッド名に寄せる
 
 export namespace IntegerRange {
-  export type Tuple<T extends (number | bigint)> = [min: T, max: T] | [minmax: T];
+  export type Tuple<T extends (number | bigint)> = [min: T, max: T] | [
+    minmax: T,
+  ];
 
   export type Struct<T extends (number | bigint)> = {
-    min: T,
-    max: T,
+    min: T;
+    max: T;
   };
-  
+
   export type Like<T extends (number | bigint)> = Tuple<T> | Struct<T>;
 }
