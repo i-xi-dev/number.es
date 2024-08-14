@@ -997,6 +997,67 @@ Deno.test("SafeInteger.fromNumber(number, HALF_TO_EVEN)", () => {
   );
 });
 
-//TODO fromString
+const fse0 = "`source` must be a string.";
+const fse1 = "`source` must be a decimal representation of a number.";
+
+Deno.test("SafeInteger.fromString(string)", () => {
+  assertStrictEquals(SafeInteger.fromString("1"), 1);
+  assertStrictEquals(SafeInteger.fromString("+1"), 1);
+  assertStrictEquals(SafeInteger.fromString("0"), 0);
+  assertStrictEquals(SafeInteger.fromString("-0"), 0);
+  assertStrictEquals(SafeInteger.fromString("-1"), -1);
+
+  assertStrictEquals(SafeInteger.fromString("1.0"), 1);
+  assertStrictEquals(SafeInteger.fromString("1.9"), 1);
+
+  assertStrictEquals(SafeInteger.fromString("001"), 1);
+  // assertStrictEquals(SafeInteger.fromString(" 001 "), 1); //TODO optionsにtrim追加する？
+  assertStrictEquals(SafeInteger.fromString("+001"), 1);
+  assertStrictEquals(SafeInteger.fromString("-001"), -1);
+
+  assertThrows(
+    () => {
+      SafeInteger.fromString(null as unknown as string);
+    },
+    TypeError,
+    fse0,
+  );
+  assertThrows(
+    () => {
+      SafeInteger.fromString(1 as unknown as string);
+    },
+    TypeError,
+    fse0,
+  );
+
+  assertThrows(
+    () => {
+      SafeInteger.fromString("");
+    },
+    RangeError,
+    fse1,
+  );
+  assertThrows(
+    () => {
+      SafeInteger.fromString("-");
+    },
+    RangeError,
+    fse1,
+  );
+  assertThrows(
+    () => {
+      SafeInteger.fromString(".8"); //TODO okにすべき？
+    },
+    RangeError,
+    fse1,
+  );
+  assertThrows(
+    () => {
+      SafeInteger.fromString("8.");
+    },
+    RangeError,
+    fse1,
+  );
+});
 
 //TODO toString

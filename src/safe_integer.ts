@@ -25,10 +25,7 @@ export type FromOptions = {
   //XXX clampRange?: Range;
 };
 
-export function fromNumber(
-  source: number,
-  options?: FromOptions,
-): safeint {
+export function fromNumber(source: number, options?: FromOptions): safeint {
   if (Number.isFinite(source) !== true) {
     throw new TypeError("`source` must be a finite number.");
   }
@@ -116,11 +113,16 @@ export function fromNumber(
   }
 }
 
-export function fromString(source: string): safeint {
-  if (/^[0-9]$/.test(source)) {
-    return Number.parseInt(source, Radix.DECIMAL);
+export function fromString(source: string, options?: FromOptions): safeint {
+  if (typeof source !== "string") {
+    throw new TypeError("`source` must be a string.");
   }
-  throw new TypeError("TODO");
+  if (/^[-+]?[0-9]+(?:.[0-9]+)?$/.test(source)) {
+    return fromNumber(Number.parseFloat(source), options);
+  }
+  throw new RangeError(
+    "`source` must be a decimal representation of a number.",
+  );
 }
 
 export function toString(source: number): string {
@@ -129,6 +131,9 @@ export function toString(source: number): string {
   }
   throw new TypeError("TODO");
 }
+
+//TODO fromBigInt
+//TODO toBigInt
 
 function _parseRangeLike(rangeLike: Range.Like): Range.Struct {
   return _IntegerRange.parse<number>(

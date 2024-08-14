@@ -1,6 +1,7 @@
 import { _IntegerRange, _IntegerRangeBase } from "./_integer_range.ts";
 import { IntegerRange } from "./integer_range.ts";
 import { Radix } from "./radix.ts";
+import { RoundingMode } from "./rounding_mode.ts";
 
 export const ZERO = 0n;
 
@@ -70,14 +71,21 @@ export function max<T extends bigint>(...args: T[]): T {
   return max;
 }
 
-export function fromInteger(source: number): bigint {
+export type FromOptions = {
+  roundingMode?: RoundingMode;
+  //XXX fallback?: "exception" | ...;
+  //XXX clampRange?: Range;
+};
+
+//TODO fromNumber
+export function fromInteger(source: number): bigint {//TODO options
   if (Number.isSafeInteger(source)) {
     return BigInt(source);
   }
   throw new TypeError("`source` must be a safe integer.");
 }
 
-export function fromString(source: string): bigint {
+export function fromString(source: string): bigint {//TODO options
   if (/^[0-9]$/.test(source)) {
     return BigInt(source);
   }
