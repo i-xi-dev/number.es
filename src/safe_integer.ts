@@ -17,9 +17,17 @@ export function isEven(test: safeint): boolean {
 const _INT32_MAX = 2_147_483_647;
 const _INT32_MIN = -2_147_483_648;
 
-export function roundFrom(
+//TODO FromOptions
+
+export type FromOptions = {
+  roundingMode?: RoundingMode;
+  //XXX fallback?: "exception" | ...;
+  //XXX clampRange?: Range;
+};
+
+export function fromNumber(
   source: number,
-  roundingMode: RoundingMode,
+  options?: FromOptions,
 ): safeint {
   if (Number.isFinite(source) !== true) {
     throw new TypeError("`source` must be a finite number.");
@@ -39,6 +47,7 @@ export function roundFrom(
   const integralPart = normalize(Math.trunc(source));
   const integralPartIsEven = isEven(integralPart);
 
+  const roundingMode = options?.roundingMode ?? RoundingMode.TRUNCATE;
   if (
     (typeof roundingMode !== "symbol") ||
     (Object.values(RoundingMode).includes(roundingMode) !== true)

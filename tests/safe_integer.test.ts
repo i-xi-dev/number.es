@@ -73,10 +73,10 @@ const rfe4 = "`roundingMode` must be a `RoundingMode`.";
 const inMax = 2_147_483_647;
 const inMin = -2_147_483_648;
 
-Deno.test("SafeInteger.roundFrom()", () => {
+Deno.test("SafeInteger.fromNumber()", () => {
   assertThrows(
     () => {
-      SafeInteger.roundFrom(undefined as unknown as number, Symbol());
+      SafeInteger.fromNumber(undefined as unknown as number);
     },
     TypeError,
     rfe1,
@@ -84,7 +84,7 @@ Deno.test("SafeInteger.roundFrom()", () => {
 
   assertThrows(
     () => {
-      SafeInteger.roundFrom(Number.NaN, Symbol());
+      SafeInteger.fromNumber(Number.NaN);
     },
     TypeError,
     rfe1,
@@ -92,7 +92,7 @@ Deno.test("SafeInteger.roundFrom()", () => {
 
   assertThrows(
     () => {
-      SafeInteger.roundFrom(Number.POSITIVE_INFINITY, Symbol());
+      SafeInteger.fromNumber(Number.POSITIVE_INFINITY);
     },
     TypeError,
     rfe1,
@@ -100,7 +100,7 @@ Deno.test("SafeInteger.roundFrom()", () => {
 
   assertThrows(
     () => {
-      SafeInteger.roundFrom(Number.NEGATIVE_INFINITY, Symbol());
+      SafeInteger.fromNumber(Number.NEGATIVE_INFINITY);
     },
     TypeError,
     rfe1,
@@ -108,7 +108,7 @@ Deno.test("SafeInteger.roundFrom()", () => {
 
   assertThrows(
     () => {
-      SafeInteger.roundFrom(Number.MAX_SAFE_INTEGER, Symbol());
+      SafeInteger.fromNumber(Number.MAX_SAFE_INTEGER);
     },
     RangeError,
     rfe2,
@@ -116,7 +116,7 @@ Deno.test("SafeInteger.roundFrom()", () => {
 
   assertThrows(
     () => {
-      SafeInteger.roundFrom(Number.MIN_SAFE_INTEGER, Symbol());
+      SafeInteger.fromNumber(Number.MIN_SAFE_INTEGER);
     },
     RangeError,
     rfe3,
@@ -124,7 +124,7 @@ Deno.test("SafeInteger.roundFrom()", () => {
 
   assertThrows(
     () => {
-      SafeInteger.roundFrom(inMax + 1, Symbol());
+      SafeInteger.fromNumber(inMax + 1);
     },
     RangeError,
     rfe2,
@@ -132,15 +132,44 @@ Deno.test("SafeInteger.roundFrom()", () => {
 
   assertThrows(
     () => {
-      SafeInteger.roundFrom(inMin - 1, Symbol());
+      SafeInteger.fromNumber(inMin - 1);
     },
     RangeError,
     rfe3,
   );
 
+  // assertThrows(
+  //   () => {
+  //     SafeInteger.fromNumber(
+  //       1,
+  //       false as unknown as { roundingMode: RoundingMode },
+  //     );
+  //   },
+  //   TypeError,
+  //   rfe4,
+  // );
+  assertStrictEquals(
+    SafeInteger.fromNumber(
+      0,
+      false as unknown as { roundingMode: RoundingMode },
+    ),
+    0,
+  );
+
+  // assertThrows(
+  //   () => {
+  //     SafeInteger.fromNumber(
+  //       inMax,
+  //       Symbol() as unknown as { roundingMode: RoundingMode },
+  //     );
+  //   },
+  //   TypeError,
+  //   rfe4,
+  // );
+
   assertThrows(
     () => {
-      SafeInteger.roundFrom(1, undefined as unknown as symbol);
+      SafeInteger.fromNumber(inMin, { roundingMode: Symbol() });
     },
     TypeError,
     rfe4,
@@ -148,782 +177,822 @@ Deno.test("SafeInteger.roundFrom()", () => {
 
   assertThrows(
     () => {
-      SafeInteger.roundFrom(inMax, Symbol());
-    },
-    TypeError,
-    rfe4,
-  );
-
-  assertThrows(
-    () => {
-      SafeInteger.roundFrom(inMin, Symbol());
-    },
-    TypeError,
-    rfe4,
-  );
-
-  assertThrows(
-    () => {
-      SafeInteger.roundFrom(1, Symbol());
+      SafeInteger.fromNumber(1, {
+        roundingMode: false as unknown as RoundingMode,
+      });
     },
     TypeError,
     rfe4,
   );
 });
 
-Deno.test("SafeInteger.roundFrom(number, UP)", () => {
-  const op = RoundingMode.UP;
+Deno.test("SafeInteger.fromNumber(number, UP)", () => {
+  const op = { roundingMode: RoundingMode.UP };
 
-  assertStrictEquals(SafeInteger.roundFrom(0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(-1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
 
-  assertStrictEquals(SafeInteger.roundFrom(inMax, op), inMax);
-  assertStrictEquals(SafeInteger.roundFrom(inMin, op), inMin);
+  assertStrictEquals(SafeInteger.fromNumber(inMax, op), inMax);
+  assertStrictEquals(SafeInteger.fromNumber(inMin, op), inMin);
 
-  assertStrictEquals(SafeInteger.roundFrom(0.1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.4, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.45, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.5, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.55, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.6, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.9, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 1);
 
-  assertStrictEquals(SafeInteger.roundFrom(-0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.5, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.55, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.6, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.9, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), 0);
 
-  assertStrictEquals(SafeInteger.roundFrom(1.1, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.4, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.45, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.5, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.55, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.6, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.9, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.1, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.4, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.45, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.5, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.55, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.6, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.9, op), 2);
 
-  assertStrictEquals(SafeInteger.roundFrom(-1.1, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.4, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.45, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.5, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.55, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.6, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.9, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.4, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.45, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.5, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.55, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -1);
 
   assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.4, op),
+    SafeInteger.fromNumber(2_147_483_646.4, op),
     2_147_483_647,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.5, op),
+    SafeInteger.fromNumber(2_147_483_646.5, op),
     2_147_483_647,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.6, op),
+    SafeInteger.fromNumber(2_147_483_646.6, op),
     2_147_483_647,
   );
 
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.4, op),
+    SafeInteger.fromNumber(-2_147_483_647.4, op),
     -2_147_483_647,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.5, op),
+    SafeInteger.fromNumber(-2_147_483_647.5, op),
     -2_147_483_647,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.6, op),
-    -2_147_483_647,
-  );
-});
-
-Deno.test("SafeInteger.roundFrom(number, CEILING)", () => {
-  const op = RoundingMode.CEILING;
-
-  assertStrictEquals(SafeInteger.roundFrom(0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(-1, op), -1);
-
-  assertStrictEquals(SafeInteger.roundFrom(inMax, op), inMax);
-  assertStrictEquals(SafeInteger.roundFrom(inMin, op), inMin);
-
-  assertStrictEquals(SafeInteger.roundFrom(0.1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.4, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.45, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.5, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.55, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.6, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.9, op), 1);
-
-  assertStrictEquals(SafeInteger.roundFrom(-0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.5, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.55, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.6, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.9, op), 0);
-});
-
-Deno.test("SafeInteger.roundFrom(number, DOWN)", () => {
-  const op = RoundingMode.DOWN;
-
-  assertStrictEquals(SafeInteger.roundFrom(0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(-1, op), -1);
-
-  assertStrictEquals(SafeInteger.roundFrom(inMax, op), inMax);
-  assertStrictEquals(SafeInteger.roundFrom(inMin, op), inMin);
-
-  assertStrictEquals(SafeInteger.roundFrom(0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.5, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.55, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.6, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.9, op), 0);
-
-  assertStrictEquals(SafeInteger.roundFrom(-0.1, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.4, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.45, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.5, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.55, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.6, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.9, op), -1);
-
-  assertStrictEquals(SafeInteger.roundFrom(1.1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.4, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.45, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.5, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.55, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.6, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.9, op), 1);
-
-  assertStrictEquals(SafeInteger.roundFrom(-1.1, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.4, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.45, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.5, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.55, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.6, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.9, op), -2);
-
-  assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.4, op),
-    2_147_483_646,
-  );
-  assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.5, op),
-    2_147_483_646,
-  );
-  assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.6, op),
-    2_147_483_646,
-  );
-
-  assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.4, op),
-    -2_147_483_648,
-  );
-  assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.5, op),
-    -2_147_483_648,
-  );
-  assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.6, op),
-    -2_147_483_648,
-  );
-});
-
-Deno.test("SafeInteger.roundFrom(number, FLOOR)", () => {
-  const op = RoundingMode.FLOOR;
-
-  assertStrictEquals(SafeInteger.roundFrom(0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(-1, op), -1);
-
-  assertStrictEquals(SafeInteger.roundFrom(inMax, op), inMax);
-  assertStrictEquals(SafeInteger.roundFrom(inMin, op), inMin);
-
-  assertStrictEquals(SafeInteger.roundFrom(0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.5, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.55, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.6, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.9, op), 0);
-
-  assertStrictEquals(SafeInteger.roundFrom(-0.1, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.4, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.45, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.5, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.55, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.6, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.9, op), -1);
-});
-
-Deno.test("SafeInteger.roundFrom(number, TOWARD_ZERO)", () => {
-  const op = RoundingMode.TOWARD_ZERO;
-
-  assertStrictEquals(SafeInteger.roundFrom(0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(-1, op), -1);
-
-  assertStrictEquals(SafeInteger.roundFrom(inMax, op), inMax);
-  assertStrictEquals(SafeInteger.roundFrom(inMin, op), inMin);
-
-  assertStrictEquals(SafeInteger.roundFrom(0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.5, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.55, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.6, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.9, op), 0);
-
-  assertStrictEquals(SafeInteger.roundFrom(-0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.5, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.55, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.6, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.9, op), 0);
-
-  assertStrictEquals(SafeInteger.roundFrom(1.1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.4, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.45, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.5, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.55, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.6, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.9, op), 1);
-
-  assertStrictEquals(SafeInteger.roundFrom(-1.1, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.4, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.45, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.5, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.55, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.6, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.9, op), -1);
-
-  assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.4, op),
-    2_147_483_646,
-  );
-  assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.5, op),
-    2_147_483_646,
-  );
-  assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.6, op),
-    2_147_483_646,
-  );
-
-  assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.4, op),
-    -2_147_483_647,
-  );
-  assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.5, op),
-    -2_147_483_647,
-  );
-  assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.6, op),
+    SafeInteger.fromNumber(-2_147_483_647.6, op),
     -2_147_483_647,
   );
 });
 
-Deno.test("SafeInteger.roundFrom(number, TRUNCATE)", () => {
-  const op = RoundingMode.TRUNCATE;
+Deno.test("SafeInteger.fromNumber(number, CEILING)", () => {
+  const op = { roundingMode: RoundingMode.CEILING };
 
-  assertStrictEquals(SafeInteger.roundFrom(0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(-1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
 
-  assertStrictEquals(SafeInteger.roundFrom(inMax, op), inMax);
-  assertStrictEquals(SafeInteger.roundFrom(inMin, op), inMin);
+  assertStrictEquals(SafeInteger.fromNumber(inMax, op), inMax);
+  assertStrictEquals(SafeInteger.fromNumber(inMin, op), inMin);
 
-  assertStrictEquals(SafeInteger.roundFrom(0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.5, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.55, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.6, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.9, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 1);
 
-  assertStrictEquals(SafeInteger.roundFrom(-0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.5, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.55, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.6, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.9, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), 0);
 });
 
-Deno.test("SafeInteger.roundFrom(number, AWAY_FROM_ZERO)", () => {
-  const op = RoundingMode.AWAY_FROM_ZERO;
+Deno.test("SafeInteger.fromNumber(number, DOWN)", () => {
+  const op = { roundingMode: RoundingMode.DOWN };
 
-  assertStrictEquals(SafeInteger.roundFrom(0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(-1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
 
-  assertStrictEquals(SafeInteger.roundFrom(inMax, op), inMax);
-  assertStrictEquals(SafeInteger.roundFrom(inMin, op), inMin);
+  assertStrictEquals(SafeInteger.fromNumber(inMax, op), inMax);
+  assertStrictEquals(SafeInteger.fromNumber(inMin, op), inMin);
 
-  assertStrictEquals(SafeInteger.roundFrom(0.1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.4, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.45, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.5, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.55, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.6, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.9, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 0);
 
-  assertStrictEquals(SafeInteger.roundFrom(-0.1, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.4, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.45, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.5, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.55, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.6, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.9, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), -1);
 
-  assertStrictEquals(SafeInteger.roundFrom(1.1, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.4, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.45, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.5, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.55, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.6, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.9, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.4, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.45, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.5, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.55, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.6, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.9, op), 1);
 
-  assertStrictEquals(SafeInteger.roundFrom(-1.1, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.4, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.45, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.5, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.55, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.6, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.9, op), -2);
-
-  assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.4, op),
-    2_147_483_647,
-  );
-  assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.5, op),
-    2_147_483_647,
-  );
-  assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.6, op),
-    2_147_483_647,
-  );
+  assertStrictEquals(SafeInteger.fromNumber(-1.1, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.4, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.45, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.5, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.55, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -2);
 
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.4, op),
-    -2_147_483_648,
-  );
-  assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.5, op),
-    -2_147_483_648,
-  );
-  assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.6, op),
-    -2_147_483_648,
-  );
-});
-
-Deno.test("SafeInteger.roundFrom(number, HALF_UP)", () => {
-  const op = RoundingMode.HALF_UP;
-
-  assertStrictEquals(SafeInteger.roundFrom(0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(-1, op), -1);
-
-  assertStrictEquals(SafeInteger.roundFrom(inMax, op), inMax);
-  assertStrictEquals(SafeInteger.roundFrom(inMin, op), inMin);
-
-  assertStrictEquals(SafeInteger.roundFrom(0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.5, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.55, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.6, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.9, op), 1);
-
-  assertStrictEquals(SafeInteger.roundFrom(-0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.5, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.55, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.6, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.9, op), -1);
-
-  assertStrictEquals(SafeInteger.roundFrom(1.1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.4, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.45, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.5, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.55, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.6, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.9, op), 2);
-
-  assertStrictEquals(SafeInteger.roundFrom(-1.1, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.4, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.45, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.5, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.55, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.6, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.9, op), -2);
-
-  assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.4, op),
+    SafeInteger.fromNumber(2_147_483_646.4, op),
     2_147_483_646,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.5, op),
-    2_147_483_647,
+    SafeInteger.fromNumber(2_147_483_646.5, op),
+    2_147_483_646,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.6, op),
-    2_147_483_647,
+    SafeInteger.fromNumber(2_147_483_646.6, op),
+    2_147_483_646,
   );
 
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.4, op),
-    -2_147_483_647,
+    SafeInteger.fromNumber(-2_147_483_647.4, op),
+    -2_147_483_648,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.5, op),
-    -2_147_483_647,
+    SafeInteger.fromNumber(-2_147_483_647.5, op),
+    -2_147_483_648,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.6, op),
+    SafeInteger.fromNumber(-2_147_483_647.6, op),
     -2_147_483_648,
   );
 });
 
-Deno.test("SafeInteger.roundFrom(number, HALF_DOWN)", () => {
-  const op = RoundingMode.HALF_DOWN;
+Deno.test("SafeInteger.fromNumber(number, FLOOR)", () => {
+  const op = { roundingMode: RoundingMode.FLOOR };
 
-  assertStrictEquals(SafeInteger.roundFrom(0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(-1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
 
-  assertStrictEquals(SafeInteger.roundFrom(inMax, op), inMax);
-  assertStrictEquals(SafeInteger.roundFrom(inMin, op), inMin);
+  assertStrictEquals(SafeInteger.fromNumber(inMax, op), inMax);
+  assertStrictEquals(SafeInteger.fromNumber(inMin, op), inMin);
 
-  assertStrictEquals(SafeInteger.roundFrom(0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.5, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.55, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.6, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.9, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 0);
 
-  assertStrictEquals(SafeInteger.roundFrom(-0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.5, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.55, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.6, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.9, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), -1);
+});
 
-  assertStrictEquals(SafeInteger.roundFrom(1.1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.4, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.45, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.5, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.55, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.6, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.9, op), 2);
+Deno.test("SafeInteger.fromNumber(number, TOWARD_ZERO)", () => {
+  const op = { roundingMode: RoundingMode.TOWARD_ZERO };
 
-  assertStrictEquals(SafeInteger.roundFrom(-1.1, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.4, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.45, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.5, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.55, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.6, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.9, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
+
+  assertStrictEquals(SafeInteger.fromNumber(inMax, op), inMax);
+  assertStrictEquals(SafeInteger.fromNumber(inMin, op), inMin);
+
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 0);
+
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), 0);
+
+  assertStrictEquals(SafeInteger.fromNumber(1.1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.4, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.45, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.5, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.55, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.6, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.9, op), 1);
+
+  assertStrictEquals(SafeInteger.fromNumber(-1.1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.4, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.45, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.5, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.55, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -1);
 
   assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.4, op),
+    SafeInteger.fromNumber(2_147_483_646.4, op),
     2_147_483_646,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.5, op),
+    SafeInteger.fromNumber(2_147_483_646.5, op),
     2_147_483_646,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.6, op),
+    SafeInteger.fromNumber(2_147_483_646.6, op),
+    2_147_483_646,
+  );
+
+  assertStrictEquals(
+    SafeInteger.fromNumber(-2_147_483_647.4, op),
+    -2_147_483_647,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(-2_147_483_647.5, op),
+    -2_147_483_647,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(-2_147_483_647.6, op),
+    -2_147_483_647,
+  );
+});
+
+Deno.test("SafeInteger.fromNumber(number, TRUNCATE)", () => {
+  const op = { roundingMode: RoundingMode.TRUNCATE };
+
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
+
+  assertStrictEquals(SafeInteger.fromNumber(inMax, op), inMax);
+  assertStrictEquals(SafeInteger.fromNumber(inMin, op), inMin);
+
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 0);
+
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), 0);
+});
+
+Deno.test("SafeInteger.fromNumber(number, TRUNCATE)", () => {
+  const op = {};
+
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
+
+  assertStrictEquals(SafeInteger.fromNumber(inMax, op), inMax);
+  assertStrictEquals(SafeInteger.fromNumber(inMin, op), inMin);
+
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 0);
+
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), 0);
+});
+
+Deno.test("SafeInteger.fromNumber(number, TRUNCATE)", () => {
+  assertStrictEquals(SafeInteger.fromNumber(0), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1), 1);
+  assertStrictEquals(SafeInteger.fromNumber(-1), -1);
+
+  assertStrictEquals(SafeInteger.fromNumber(inMax), inMax);
+  assertStrictEquals(SafeInteger.fromNumber(inMin), inMin);
+
+  assertStrictEquals(SafeInteger.fromNumber(0.1), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.4), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.45), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.5), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.55), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.6), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.9), 0);
+
+  assertStrictEquals(SafeInteger.fromNumber(-0.1), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.9), 0);
+});
+
+Deno.test("SafeInteger.fromNumber(number, AWAY_FROM_ZERO)", () => {
+  const op = { roundingMode: RoundingMode.AWAY_FROM_ZERO };
+
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
+
+  assertStrictEquals(SafeInteger.fromNumber(inMax, op), inMax);
+  assertStrictEquals(SafeInteger.fromNumber(inMin, op), inMin);
+
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 1);
+
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), -1);
+
+  assertStrictEquals(SafeInteger.fromNumber(1.1, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.4, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.45, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.5, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.55, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.6, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.9, op), 2);
+
+  assertStrictEquals(SafeInteger.fromNumber(-1.1, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.4, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.45, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.5, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.55, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -2);
+
+  assertStrictEquals(
+    SafeInteger.fromNumber(2_147_483_646.4, op),
+    2_147_483_647,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(2_147_483_646.5, op),
+    2_147_483_647,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(2_147_483_646.6, op),
     2_147_483_647,
   );
 
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.4, op),
-    -2_147_483_647,
-  );
-  assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.5, op),
+    SafeInteger.fromNumber(-2_147_483_647.4, op),
     -2_147_483_648,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.6, op),
+    SafeInteger.fromNumber(-2_147_483_647.5, op),
+    -2_147_483_648,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(-2_147_483_647.6, op),
     -2_147_483_648,
   );
 });
 
-Deno.test("SafeInteger.roundFrom(number, HALF_TOWARD_ZERO)", () => {
-  const op = RoundingMode.HALF_TOWARD_ZERO;
+Deno.test("SafeInteger.fromNumber(number, HALF_UP)", () => {
+  const op = { roundingMode: RoundingMode.HALF_UP };
 
-  assertStrictEquals(SafeInteger.roundFrom(0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(-1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
 
-  assertStrictEquals(SafeInteger.roundFrom(inMax, op), inMax);
-  assertStrictEquals(SafeInteger.roundFrom(inMin, op), inMin);
+  assertStrictEquals(SafeInteger.fromNumber(inMax, op), inMax);
+  assertStrictEquals(SafeInteger.fromNumber(inMin, op), inMin);
 
-  assertStrictEquals(SafeInteger.roundFrom(0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.5, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.55, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.6, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.9, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 1);
 
-  assertStrictEquals(SafeInteger.roundFrom(-0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.5, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.55, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.6, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.9, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), -1);
 
-  assertStrictEquals(SafeInteger.roundFrom(1.1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.4, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.45, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.5, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.55, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.6, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.9, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.4, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.45, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.5, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.55, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.6, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.9, op), 2);
 
-  assertStrictEquals(SafeInteger.roundFrom(-1.1, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.4, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.45, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.5, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.55, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.6, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.9, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.4, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.45, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.5, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.55, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -2);
 
   assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.4, op),
+    SafeInteger.fromNumber(2_147_483_646.4, op),
     2_147_483_646,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.5, op),
-    2_147_483_646,
+    SafeInteger.fromNumber(2_147_483_646.5, op),
+    2_147_483_647,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.6, op),
+    SafeInteger.fromNumber(2_147_483_646.6, op),
     2_147_483_647,
   );
 
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.4, op),
+    SafeInteger.fromNumber(-2_147_483_647.4, op),
     -2_147_483_647,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.5, op),
+    SafeInteger.fromNumber(-2_147_483_647.5, op),
     -2_147_483_647,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.6, op),
+    SafeInteger.fromNumber(-2_147_483_647.6, op),
     -2_147_483_648,
   );
 });
 
-Deno.test("SafeInteger.roundFrom(number, HALF_AWAY_FROM_ZERO)", () => {
-  const op = RoundingMode.HALF_AWAY_FROM_ZERO;
+Deno.test("SafeInteger.fromNumber(number, HALF_DOWN)", () => {
+  const op = { roundingMode: RoundingMode.HALF_DOWN };
 
-  assertStrictEquals(SafeInteger.roundFrom(0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(-1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
 
-  assertStrictEquals(SafeInteger.roundFrom(inMax, op), inMax);
-  assertStrictEquals(SafeInteger.roundFrom(inMin, op), inMin);
+  assertStrictEquals(SafeInteger.fromNumber(inMax, op), inMax);
+  assertStrictEquals(SafeInteger.fromNumber(inMin, op), inMin);
 
-  assertStrictEquals(SafeInteger.roundFrom(0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.5, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.55, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.6, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.9, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 1);
 
-  assertStrictEquals(SafeInteger.roundFrom(-0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.5, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.55, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.6, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.9, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), -1);
 
-  assertStrictEquals(SafeInteger.roundFrom(1.1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.4, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.45, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.5, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.55, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.6, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.9, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.4, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.45, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.5, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.55, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.6, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.9, op), 2);
 
-  assertStrictEquals(SafeInteger.roundFrom(-1.1, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.4, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.45, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.5, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.55, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.6, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.9, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.4, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.45, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.5, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.55, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -2);
 
   assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.4, op),
+    SafeInteger.fromNumber(2_147_483_646.4, op),
     2_147_483_646,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.5, op),
-    2_147_483_647,
+    SafeInteger.fromNumber(2_147_483_646.5, op),
+    2_147_483_646,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.6, op),
+    SafeInteger.fromNumber(2_147_483_646.6, op),
     2_147_483_647,
   );
 
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.4, op),
+    SafeInteger.fromNumber(-2_147_483_647.4, op),
     -2_147_483_647,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.5, op),
+    SafeInteger.fromNumber(-2_147_483_647.5, op),
     -2_147_483_648,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.6, op),
+    SafeInteger.fromNumber(-2_147_483_647.6, op),
     -2_147_483_648,
   );
 });
 
-Deno.test("SafeInteger.roundFrom(number, ROUND)", () => {
-  const op = RoundingMode.ROUND;
+Deno.test("SafeInteger.fromNumber(number, HALF_TOWARD_ZERO)", () => {
+  const op = { roundingMode: RoundingMode.HALF_TOWARD_ZERO };
 
-  assertStrictEquals(SafeInteger.roundFrom(0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(-1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
 
-  assertStrictEquals(SafeInteger.roundFrom(inMax, op), inMax);
-  assertStrictEquals(SafeInteger.roundFrom(inMin, op), inMin);
+  assertStrictEquals(SafeInteger.fromNumber(inMax, op), inMax);
+  assertStrictEquals(SafeInteger.fromNumber(inMin, op), inMin);
 
-  assertStrictEquals(SafeInteger.roundFrom(0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.5, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.55, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.6, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.9, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 1);
 
-  assertStrictEquals(SafeInteger.roundFrom(-0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.5, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.55, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.6, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.9, op), -1);
-});
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), -1);
 
-Deno.test("SafeInteger.roundFrom(number, HALF_TO_EVEN)", () => {
-  const op = RoundingMode.HALF_TO_EVEN;
+  assertStrictEquals(SafeInteger.fromNumber(1.1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.4, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.45, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.5, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.55, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.6, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.9, op), 2);
 
-  assertStrictEquals(SafeInteger.roundFrom(0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(-1, op), -1);
-
-  assertStrictEquals(SafeInteger.roundFrom(inMax, op), inMax);
-  assertStrictEquals(SafeInteger.roundFrom(inMin, op), inMin);
-
-  assertStrictEquals(SafeInteger.roundFrom(0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.5, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(0.55, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.6, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(0.9, op), 1);
-
-  assertStrictEquals(SafeInteger.roundFrom(-0.1, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.4, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.45, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.5, op), 0);
-  assertStrictEquals(SafeInteger.roundFrom(-0.55, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.6, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-0.9, op), -1);
-
-  assertStrictEquals(SafeInteger.roundFrom(1.1, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.4, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.45, op), 1);
-  assertStrictEquals(SafeInteger.roundFrom(1.5, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.55, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.6, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(1.9, op), 2);
-
-  assertStrictEquals(SafeInteger.roundFrom(-1.1, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.4, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.45, op), -1);
-  assertStrictEquals(SafeInteger.roundFrom(-1.5, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.55, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.6, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-1.9, op), -2);
-
-  assertStrictEquals(SafeInteger.roundFrom(2.1, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(2.4, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(2.45, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(2.5, op), 2);
-  assertStrictEquals(SafeInteger.roundFrom(2.55, op), 3);
-  assertStrictEquals(SafeInteger.roundFrom(2.6, op), 3);
-  assertStrictEquals(SafeInteger.roundFrom(2.9, op), 3);
-
-  assertStrictEquals(SafeInteger.roundFrom(-2.1, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-2.4, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-2.45, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-2.5, op), -2);
-  assertStrictEquals(SafeInteger.roundFrom(-2.55, op), -3);
-  assertStrictEquals(SafeInteger.roundFrom(-2.6, op), -3);
-  assertStrictEquals(SafeInteger.roundFrom(-2.9, op), -3);
+  assertStrictEquals(SafeInteger.fromNumber(-1.1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.4, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.45, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.5, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.55, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -2);
 
   assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.4, op),
+    SafeInteger.fromNumber(2_147_483_646.4, op),
     2_147_483_646,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.5, op),
+    SafeInteger.fromNumber(2_147_483_646.5, op),
     2_147_483_646,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(2_147_483_646.6, op),
+    SafeInteger.fromNumber(2_147_483_646.6, op),
     2_147_483_647,
   );
 
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.4, op),
+    SafeInteger.fromNumber(-2_147_483_647.4, op),
     -2_147_483_647,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.5, op),
+    SafeInteger.fromNumber(-2_147_483_647.5, op),
+    -2_147_483_647,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(-2_147_483_647.6, op),
+    -2_147_483_648,
+  );
+});
+
+Deno.test("SafeInteger.fromNumber(number, HALF_AWAY_FROM_ZERO)", () => {
+  const op = { roundingMode: RoundingMode.HALF_AWAY_FROM_ZERO };
+
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
+
+  assertStrictEquals(SafeInteger.fromNumber(inMax, op), inMax);
+  assertStrictEquals(SafeInteger.fromNumber(inMin, op), inMin);
+
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 1);
+
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), -1);
+
+  assertStrictEquals(SafeInteger.fromNumber(1.1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.4, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.45, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.5, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.55, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.6, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.9, op), 2);
+
+  assertStrictEquals(SafeInteger.fromNumber(-1.1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.4, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.45, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.5, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.55, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -2);
+
+  assertStrictEquals(
+    SafeInteger.fromNumber(2_147_483_646.4, op),
+    2_147_483_646,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(2_147_483_646.5, op),
+    2_147_483_647,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(2_147_483_646.6, op),
+    2_147_483_647,
+  );
+
+  assertStrictEquals(
+    SafeInteger.fromNumber(-2_147_483_647.4, op),
+    -2_147_483_647,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(-2_147_483_647.5, op),
     -2_147_483_648,
   );
   assertStrictEquals(
-    SafeInteger.roundFrom(-2_147_483_647.6, op),
+    SafeInteger.fromNumber(-2_147_483_647.6, op),
+    -2_147_483_648,
+  );
+});
+
+Deno.test("SafeInteger.fromNumber(number, ROUND)", () => {
+  const op = { roundingMode: RoundingMode.ROUND };
+
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
+
+  assertStrictEquals(SafeInteger.fromNumber(inMax, op), inMax);
+  assertStrictEquals(SafeInteger.fromNumber(inMin, op), inMin);
+
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 1);
+
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), -1);
+});
+
+Deno.test("SafeInteger.fromNumber(number, HALF_TO_EVEN)", () => {
+  const op = { roundingMode: RoundingMode.HALF_TO_EVEN };
+
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
+
+  assertStrictEquals(SafeInteger.fromNumber(inMax, op), inMax);
+  assertStrictEquals(SafeInteger.fromNumber(inMin, op), inMin);
+
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 1);
+
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), -1);
+
+  assertStrictEquals(SafeInteger.fromNumber(1.1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.4, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.45, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.5, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.55, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.6, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.9, op), 2);
+
+  assertStrictEquals(SafeInteger.fromNumber(-1.1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.4, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.45, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.5, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.55, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -2);
+
+  assertStrictEquals(SafeInteger.fromNumber(2.1, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(2.4, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(2.45, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(2.5, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(2.55, op), 3);
+  assertStrictEquals(SafeInteger.fromNumber(2.6, op), 3);
+  assertStrictEquals(SafeInteger.fromNumber(2.9, op), 3);
+
+  assertStrictEquals(SafeInteger.fromNumber(-2.1, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-2.4, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-2.45, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-2.5, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-2.55, op), -3);
+  assertStrictEquals(SafeInteger.fromNumber(-2.6, op), -3);
+  assertStrictEquals(SafeInteger.fromNumber(-2.9, op), -3);
+
+  assertStrictEquals(
+    SafeInteger.fromNumber(2_147_483_646.4, op),
+    2_147_483_646,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(2_147_483_646.5, op),
+    2_147_483_646,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(2_147_483_646.6, op),
+    2_147_483_647,
+  );
+
+  assertStrictEquals(
+    SafeInteger.fromNumber(-2_147_483_647.4, op),
+    -2_147_483_647,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(-2_147_483_647.5, op),
+    -2_147_483_648,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(-2_147_483_647.6, op),
     -2_147_483_648,
   );
 });
