@@ -1,28 +1,32 @@
-import { _IntegerRange, _IntegerRangeBase } from "./_integer_range.ts";
+import { BIGINT_ZERO, isBigInt, isString } from "./utils.ts";
+import { fromNumber as safeIntegerFromNumber } from "./safe_integer.ts";
+import {
+  FromNumberOptions,
+  FromStringOptions,
+  REGEX,
+  resolveRadix,
+  ToStringOptions,
+} from "./integer.ts";
+import { inSafeIntegerRange } from "./numeric.ts";
 import { IntegerRange } from "./integer_range.ts";
 import { Radix } from "./radix.ts";
-import { RoundingMode } from "./rounding_mode.ts";
 
-export const ZERO = 0n;
-
-export function isBigInt(test: unknown): test is bigint {
-  return (typeof test === "bigint");
-}
+export const ZERO = BIGINT_ZERO;
 
 export function isPositive(test: bigint): boolean {
-  return (test > ZERO);
+  return isBigInt(test) && (test > ZERO);
 }
 
 export function isNonNegative(test: bigint): boolean {
-  return (test >= ZERO);
+  return isBigInt(test) && (test >= ZERO);
 }
 
 export function isNonPositive(test: bigint): boolean {
-  return (test <= ZERO);
+  return isBigInt(test) && (test <= ZERO);
 }
 
 export function isNegative(test: bigint): boolean {
-  return (test < ZERO);
+  return isBigInt(test) && (test < ZERO);
 }
 
 export function isOdd(test: bigint): boolean {
@@ -71,94 +75,166 @@ export function max<T extends bigint>(...args: T[]): T {
   return max;
 }
 
-export type FromOptions = {
-  roundingMode?: RoundingMode;
-  //XXX fallback?: "exception" | ...;
-  //XXX clampRange?: Range;
-};
+export function fromNumber(
+  source: number,
+  options?: FromNumberOptions,
+): bigint {
+  return BigInt(safeIntegerFromNumber(source, options));
+}
 
-//TODO fromNumber
-export function fromInteger(source: number): bigint {//TODO options
-  if (Number.isSafeInteger(source)) {
+export function toNumber(input: bigint): number {
+  if (isBigInt(input) !== true) {
+    throw new TypeError("TODO");
+  }
+  if (inSafeIntegerRange(input) !== true) {
+    throw new RangeError("TODO");
+  }
+  return Number(input);
+}
+
+export function fromString(
+  source: string,
+  options?: FromStringOptions,
+): bigint {
+  if (isString(source) !== true) {
+    throw new TypeError("`source` must be a string.");
+  }
+
+  const radix = resolveRadix(options?.radix);
+  const regex = REGEX[radix];
+  if (regex.test(source) !== true) {
+    throw new RangeError("`source` must be a representation of a integer.");
+  }
+
+  if (radix === Radix.DECIMAL) {
     return BigInt(source);
+  } else {
+    throw new Error("not implemented"); //TODO 10進に変換しないと
   }
-  throw new TypeError("`source` must be a safe integer.");
 }
 
-export function fromString(source: string): bigint {//TODO options
-  if (/^[0-9]$/.test(source)) {
-    return BigInt(source);
+export function toString(source: bigint, options?: ToStringOptions): string {
+  if (isBigInt(source) !== true) {
+    throw new TypeError("`source` must be a `bigint`.");
   }
-  throw new TypeError("TODO");
+
+  const radix = resolveRadix(options?.radix);
+  return Number(source).toString(radix);
 }
 
-export function toString(source: bigint): string {
-  if (isBigInt(source)) {
-    return source.toString(Radix.DECIMAL);
-  }
-  throw new TypeError("TODO");
-}
+export class BigIntegerRange<T extends bigint> implements IntegerRange<T> {
+  readonly #min: T;
+  readonly #max: T;
 
-function _parseRangeLike(rangeLike: Range.Like): Range.Struct {
-  return _IntegerRange.parse<bigint>(rangeLike, isBigInt);
-}
-
-export class Range extends _IntegerRangeBase<bigint>
-  implements IntegerRange<bigint> {
-  private constructor(min: bigint, max: bigint) {
-    super(min, max);
+  private constructor(min: T, max: T) {
+    this.#min = min;
+    this.#max = max;
   }
 
-  protected override _checkType(test: unknown): test is bigint {
-    return isBigInt(test);
+  get min(): T {
+    return this.#min;
   }
 
-  static from(rangeLike: Range.Like): Range {
-    const { min, max } = _parseRangeLike(rangeLike);
-    return new Range(min, max);
+  get max(): T {
+    return this.#max;
   }
 
-  static of(...args: Array<bigint>): Range {
-    return this.from(args as Range.Tuple);
+  get size(): number {
+    const d = this.#max - this.#min;
+    if (d > Number.MAX_SAFE_INTEGER) {
+      throw new Error("TODO");
+    }
+    return Number(d) + 1;
   }
 
-  override rangeEquals(otherRange: Range.Like): boolean {
+  static from<T extends bigint>(
+    rangeLike: BigIntegerRange.Like<T>,
+  ): BigIntegerRange<T> {
+    const { min, max } = IntegerRange.Struct.fromRangeLike(rangeLike);
+    return new BigIntegerRange(min, max);
+  }
+
+  static of<T extends bigint>(...args: Array<T>): BigIntegerRange<T> {
+    return this.from(args as BigIntegerRange.Tuple<T>);
+  }
+
+  rangeEquals(otherRangeLike: BigIntegerRange.Like<T>): boolean {
     try {
-      const { min, max } = _parseRangeLike(otherRange);
-      return this._rangeEquals(min, max);
+      const otherRange = IntegerRange.Struct.fromRangeLike(otherRangeLike);
+      return IntegerRange.aEqualsB(this, otherRange);
     } catch {
       return false;
     }
   }
 
-  override overlaps(otherRange: Range.Like): boolean {
+  overlaps(otherRangeLike: BigIntegerRange.Like<T>): boolean {
     try {
-      const { min, max } = _parseRangeLike(otherRange);
-      return this._rangeOverlaps(min, max);
+      const otherRange = IntegerRange.Struct.fromRangeLike(otherRangeLike);
+      return IntegerRange.aOverlapsB(this, otherRange);
     } catch {
       return false;
     }
   }
 
-  override isSuperrangeOf(otherRange: Range.Like): boolean {
+  isSuperrangeOf(otherRangeLike: BigIntegerRange.Like<T>): boolean {
     try {
-      const { min, max } = _parseRangeLike(otherRange);
-      return this._rangeContains(min, max);
+      const otherRange = IntegerRange.Struct.fromRangeLike(otherRangeLike);
+      return IntegerRange.aContainsB(this, otherRange);
     } catch {
       return false;
     }
   }
 
-  override equals(other: unknown): boolean {
-    if (other instanceof Range) {
-      return this._rangeEquals(other.min, other.max);
+  includes(test: bigint): test is T {
+    return isBigInt(test) && (test >= this.#min) && (test <= this.#max);
+  }
+
+  clamp(input: bigint): T {
+    if (isBigInt(input) !== true) {
+      throw new TypeError(
+        "The type of `input` does not match the type of range.",
+      );
+    }
+
+    if (this.includes(input)) {
+      return input;
+    }
+
+    if (input < this.#min) {
+      return this.#min;
+    } else { // if (input > this.#max) {
+      return this.#max;
+    }
+  }
+
+  equals(other: unknown): boolean {
+    if (other instanceof BigIntegerRange) {
+      return IntegerRange.aEqualsB(this, other);
     }
     return false;
   }
+
+  [Symbol.iterator](): IterableIterator<T> {
+    const min = this.min;
+    const max = this.max;
+    return (function* () {
+      for (let i = min; i <= max; i++) {
+        yield i;
+      }
+    })();
+  }
+
+  toArray(): Array<T> {
+    return [...this[Symbol.iterator]()];
+  }
+
+  toSet(): Set<T> {
+    return new Set(this[Symbol.iterator]());
+  }
 }
 
-export namespace Range {
-  export type Tuple = IntegerRange.Tuple<bigint>;
-  export type Struct = IntegerRange.Struct<bigint>;
-  export type Like = IntegerRange.Like<bigint>;
+export namespace BigIntegerRange {
+  export type Tuple<T extends bigint> = IntegerRange.Tuple<T>;
+  export type Struct<T extends bigint> = IntegerRange.Struct<T>;
+  export type Like<T extends bigint> = IntegerRange.Like<T>;
 }

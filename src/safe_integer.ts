@@ -1,76 +1,104 @@
-import { _IntegerRange, _IntegerRangeBase } from "./_integer_range.ts";
+import {
+  clampToSafeInteger,
+  isBigInt,
+  isNumber,
+  isString,
+  normalizeNumber,
+  NUMBER_ZERO,
+} from "./utils.ts";
+import {
+  FromNumberOptions,
+  FromStringOptions,
+  REGEX,
+  resolveRadix,
+  ToStringOptions,
+} from "./integer.ts";
+import { inSafeIntegerRange } from "./numeric.ts";
 import { IntegerRange } from "./integer_range.ts";
-import { isNegative, normalize, ZERO } from "./numeric.ts";
-import { Radix } from "./radix.ts";
 import { RoundingMode } from "./rounding_mode.ts";
 
-type safeint = number;
+export const ZERO = NUMBER_ZERO;
 
-export function isOdd(test: safeint): boolean {
+export function isPositive(test: number): boolean {
+  return Number.isSafeInteger(test) && (test > ZERO);
+}
+
+export function isNonNegative(test: number): boolean {
+  return Number.isSafeInteger(test) && (test >= ZERO);
+}
+
+export function isNonPositive(test: number): boolean {
+  return Number.isSafeInteger(test) && (test <= ZERO);
+}
+
+export function isNegative(test: number): boolean {
+  return Number.isSafeInteger(test) && (test < ZERO);
+}
+
+export function isOdd(test: number): boolean {
   return Number.isSafeInteger(test) && ((test % 2) !== ZERO);
 }
 
-export function isEven(test: safeint): boolean {
+export function isEven(test: number): boolean {
   return Number.isSafeInteger(test) && ((test % 2) === ZERO);
 }
 
-const _INT32_MAX = 2_147_483_647;
-const _INT32_MIN = -2_147_483_648;
+export function fromNumber(
+  source: number,
+  options?: FromNumberOptions,
+): number {
+  if ((isNumber(source) !== true) || Number.isNaN(source)) {
+    throw new TypeError("TODO");
+  }
 
-//TODO FromOptions
+  if (inSafeIntegerRange(source) !== true) {
+    throw new RangeError("TODO");
+  }
 
-export type FromOptions = {
-  roundingMode?: RoundingMode;
-  //XXX fallback?: "exception" | ...;
-  //XXX clampRange?: Range;
-};
+  if (Number.isSafeInteger(source)) {
+    return normalizeNumber(source);
+  }
 
-export function fromNumber(source: number, options?: FromOptions): safeint {
+  const rounded = _roundToSafeInteger(source, options?.roundingMode);
+
+  return clampToSafeInteger(rounded);
+}
+
+export function _roundToSafeInteger(
+  source: number,
+  roundingMode?: RoundingMode,
+): number {
   if (Number.isFinite(source) !== true) {
-    throw new TypeError("`source` must be a finite number.");
+    throw new Error("TODO");
   }
 
-  //TODO 受け付ける範囲は暫定
-  if (source > _INT32_MAX) {
-    throw new RangeError(
-      "`source` must be less than or equal to Int32 maximum value.",
-    );
-  } else if (source < _INT32_MIN) {
-    throw new RangeError(
-      "`source` must be greater than or equal to int32 minimum value.",
-    );
-  }
-
-  const integralPart = normalize(Math.trunc(source));
+  const integralPart = normalizeNumber(Math.trunc(source));
   const integralPartIsEven = isEven(integralPart);
 
-  const roundingMode = options?.roundingMode ?? RoundingMode.TRUNCATE;
-  if (
-    (typeof roundingMode !== "symbol") ||
-    (Object.values(RoundingMode).includes(roundingMode) !== true)
-  ) {
-    throw new TypeError("`roundingMode` must be a `RoundingMode`.");
-  }
+  const resolvedRoundingMode =
+    Object.values(RoundingMode).includes(roundingMode as RoundingMode)
+      ? roundingMode
+      : RoundingMode.TRUNCATE;
 
   if (Number.isInteger(source)) {
-    return normalize(source);
+    return normalizeNumber(source);
   }
 
-  const nearestP = normalize(Math.ceil(source));
-  const nearestN = normalize(Math.floor(source));
+  const nearestP = normalizeNumber(Math.ceil(source));
+  const nearestN = normalizeNumber(Math.floor(source));
   const sourceIsNegative = isNegative(source);
   const nearestPH = nearestP - 0.5;
   const nearestNH = nearestN + 0.5;
 
-  const halfUp = (): safeint => {
+  const halfUp = (): number => {
     return (source >= nearestPH) ? nearestP : nearestN;
   };
 
-  const halfDown = (): safeint => {
+  const halfDown = (): number => {
     return (source <= nearestNH) ? nearestN : nearestP;
   };
 
-  switch (roundingMode) {
+  switch (resolvedRoundingMode) {
     case RoundingMode.UP:
       return nearestP;
 
@@ -113,95 +141,163 @@ export function fromNumber(source: number, options?: FromOptions): safeint {
   }
 }
 
-export function fromString(source: string, options?: FromOptions): safeint {
-  if (typeof source !== "string") {
+// toNumber は不要
+
+export function fromBigInt(
+  source: bigint, /* , options?: FromBigIntOptions */
+): number {
+  if (isBigInt(source) !== true) {
+    throw new TypeError("`source` must be a bigint.");
+  }
+  if (inSafeIntegerRange(source) !== true) {
+    throw new RangeError("`source` must be within the range of safe integer.");
+  }
+
+  return Number(source);
+}
+
+export function toBigInt(source: number): bigint {
+  if (Number.isSafeInteger(source) !== true) {
+    throw new TypeError("TODO");
+  }
+  return BigInt(source);
+}
+
+export function fromString(
+  source: string,
+  options?: FromStringOptions,
+): number {
+  if (isString(source) !== true) {
     throw new TypeError("`source` must be a string.");
   }
-  if (/^[-+]?[0-9]+(?:.[0-9]+)?$/.test(source)) {
-    return fromNumber(Number.parseFloat(source), options);
+
+  const radix = resolveRadix(options?.radix);
+  const regex = REGEX[radix];
+  if (regex.test(source) !== true) {
+    throw new RangeError("`source` must be a representation of a integer.");
   }
-  throw new RangeError(
-    "`source` must be a decimal representation of a number.",
-  );
+
+  return Number.parseInt(source, radix);
 }
 
-export function toString(source: number): string {
-  if (Number.isSafeInteger(source)) {
-    return normalize(source).toString(Radix.DECIMAL);
+export function toString(source: number, options?: ToStringOptions): string {
+  if (Number.isSafeInteger(source) !== true) {
+    throw new TypeError("`source` must be a safe integer.");
   }
-  throw new TypeError("TODO");
+
+  const radix = resolveRadix(options?.radix);
+  return normalizeNumber(source).toString(radix);
 }
 
-//TODO fromBigInt
-//TODO toBigInt
+export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
+  readonly #min: T;
+  readonly #max: T;
 
-function _parseRangeLike(rangeLike: Range.Like): Range.Struct {
-  return _IntegerRange.parse<number>(
-    rangeLike,
-    Number.isSafeInteger as (test: unknown) => test is number,
-  );
-}
-
-export class Range extends _IntegerRangeBase<number>
-  implements IntegerRange<number> {
-  private constructor(min: number, max: number) {
-    super(min, max);
+  private constructor(min: T, max: T) {
+    this.#min = min;
+    this.#max = max;
+  }
+  get min(): T {
+    return this.#min;
   }
 
-  protected override _checkType(test: unknown): test is number {
-    return Number.isSafeInteger(test);
+  get max(): T {
+    return this.#max;
   }
 
-  static from(rangeLike: Range.Like): Range {
-    const { min, max } = _parseRangeLike(rangeLike);
-    return new Range(min, max);
+  get size(): number {
+    return (this.#max - this.#min) + 1;
   }
 
-  static of(...args: Array<number>): Range {
-    return this.from(args as Range.Tuple);
+  static from<T extends number>(
+    rangeLike: SafeIntegerRange.Like<T>,
+  ): SafeIntegerRange<T> {
+    const { min, max } = IntegerRange.Struct.fromRangeLike(rangeLike);
+    return new SafeIntegerRange(min, max);
   }
 
-  override rangeEquals(otherRange: Range.Like): boolean {
+  static of<T extends number>(...args: Array<T>): SafeIntegerRange<T> {
+    return this.from(args as SafeIntegerRange.Tuple<T>);
+  }
+
+  rangeEquals(otherRangeLike: SafeIntegerRange.Like<T>): boolean {
     try {
-      const { min, max } = _parseRangeLike(otherRange);
-      return this._rangeEquals(min, max);
+      const otherRange = IntegerRange.Struct.fromRangeLike(otherRangeLike);
+      return IntegerRange.aEqualsB(this, otherRange);
     } catch {
       return false;
     }
   }
 
-  override overlaps(otherRange: Range.Like): boolean {
+  overlaps(otherRangeLike: SafeIntegerRange.Like<T>): boolean {
     try {
-      const { min, max } = _parseRangeLike(otherRange);
-      return this._rangeOverlaps(min, max);
+      const otherRange = IntegerRange.Struct.fromRangeLike(otherRangeLike);
+      return IntegerRange.aOverlapsB(this, otherRange);
     } catch {
       return false;
     }
   }
 
-  override isSuperrangeOf(otherRange: Range.Like): boolean {
+  isSuperrangeOf(otherRangeLike: SafeIntegerRange.Like<T>): boolean {
     try {
-      const { min, max } = _parseRangeLike(otherRange);
-      return this._rangeContains(min, max);
+      const otherRange = IntegerRange.Struct.fromRangeLike(otherRangeLike);
+      return IntegerRange.aContainsB(this, otherRange);
     } catch {
       return false;
     }
   }
 
-  override equals(other: unknown): boolean {
-    if (other instanceof Range) {
-      return this._rangeEquals(other.min, other.max);
+  includes(test: number): test is T {
+    return Number.isSafeInteger(test) && (test >= this.#min) &&
+      (test <= this.#max);
+  }
+
+  clamp(input: number): T {
+    if (Number.isSafeInteger(input) !== true) {
+      throw new TypeError(
+        "The type of `input` does not match the type of range.",
+      );
+    }
+
+    if (this.includes(input)) {
+      return normalizeNumber(input);
+    }
+
+    if (input < this.#min) {
+      return normalizeNumber(this.#min);
+    } else { // if (input > this.#max) {
+      return normalizeNumber(this.#max);
+    }
+  }
+
+  equals(other: unknown): boolean {
+    if (other instanceof SafeIntegerRange) {
+      return IntegerRange.aEqualsB(this, other);
     }
     return false;
   }
 
-  override clamp(input: number): number {
-    return normalize(super.clamp(input));
+  [Symbol.iterator](): IterableIterator<T> {
+    const min = this.min;
+    const max = this.max;
+    return (function* () {
+      for (let i = min; i <= max; i++) {
+        yield i;
+      }
+    })();
+  }
+
+  toArray(): Array<T> {
+    return [...this[Symbol.iterator]()];
+  }
+
+  toSet(): Set<T> {
+    return new Set(this[Symbol.iterator]());
   }
 }
 
-export namespace Range {
-  export type Tuple = IntegerRange.Tuple<number>;
-  export type Struct = IntegerRange.Struct<number>;
-  export type Like = IntegerRange.Like<number>;
+export namespace SafeIntegerRange {
+  export type Tuple<T extends number> = IntegerRange.Tuple<T>;
+  export type Struct<T extends number> = IntegerRange.Struct<T>;
+  export type Like<T extends number> = IntegerRange.Like<T>;
 }
