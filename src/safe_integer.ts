@@ -1,11 +1,11 @@
 import {
   clampToSafeInteger,
+  inSafeIntegerRange,
   isBigInt,
   isNumber,
-  isString,
   normalizeNumber,
   NUMBER_ZERO,
-} from "./utils.ts";
+} from "./numeric.ts";
 import {
   FromNumberOptions,
   FromStringOptions,
@@ -13,8 +13,8 @@ import {
   resolveRadix,
   ToStringOptions,
 } from "./integer.ts";
-import { inSafeIntegerRange } from "./numeric.ts";
 import { IntegerRange } from "./integer_range.ts";
+import { isString } from "./utils.ts";
 import { RoundingMode } from "./rounding_mode.ts";
 
 export const ZERO = NUMBER_ZERO;

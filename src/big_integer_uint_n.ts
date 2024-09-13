@@ -1,6 +1,6 @@
 import { BigIntegerRange } from "./big_integer.ts";
 import { BITS_PER_BYTE, Uint8xOperations, UintNOperations } from "./uint_n.ts";
-import { NUMBER_ZERO } from "./utils.ts";
+import { NUMBER_ZERO } from "./numeric.ts";
 
 class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   readonly #bitLength: number;
