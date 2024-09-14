@@ -308,6 +308,14 @@ Deno.test("SafeInteger.fromNumber()", () => {
   assertStrictEquals(SafeInteger.fromNumber(MIN - 0.9), MIN);
   // <<<
 
+  assertStrictEquals(SafeInteger.fromNumber(-8.5), -8);
+  assertStrictEquals(SafeInteger.fromNumber(-7.5), -7);
+  assertStrictEquals(SafeInteger.fromNumber(-6.5), -6);
+  assertStrictEquals(SafeInteger.fromNumber(-5.5), -5);
+  assertStrictEquals(SafeInteger.fromNumber(-4.5), -4);
+  assertStrictEquals(SafeInteger.fromNumber(-3.5), -3);
+  assertStrictEquals(SafeInteger.fromNumber(-2.5), -2);
+
   assertStrictEquals(SafeInteger.fromNumber(-1.9), -1);
   assertStrictEquals(SafeInteger.fromNumber(-1.6), -1);
   assertStrictEquals(SafeInteger.fromNumber(-1.55), -1);
@@ -340,6 +348,14 @@ Deno.test("SafeInteger.fromNumber()", () => {
   assertStrictEquals(SafeInteger.fromNumber(1.6), 1);
   assertStrictEquals(SafeInteger.fromNumber(1.9), 1);
 
+  assertStrictEquals(SafeInteger.fromNumber(2.5), 2);
+  assertStrictEquals(SafeInteger.fromNumber(3.5), 3);
+  assertStrictEquals(SafeInteger.fromNumber(4.5), 4);
+  assertStrictEquals(SafeInteger.fromNumber(5.5), 5);
+  assertStrictEquals(SafeInteger.fromNumber(6.5), 6);
+  assertStrictEquals(SafeInteger.fromNumber(7.5), 7);
+  assertStrictEquals(SafeInteger.fromNumber(8.5), 8);
+
   // ずれるのはNumber型の問題なので関知しない >>>
   assertStrictEquals(SafeInteger.fromNumber(MAX - 0.9), MAX - 1);
   assertStrictEquals(SafeInteger.fromNumber(MAX - 0.1), MAX);
@@ -369,6 +385,14 @@ Deno.test("SafeInteger.fromNumber() - roundingMode:UP", () => {
   assertStrictEquals(SafeInteger.fromNumber(MIN - 0.1, op), MIN);
   assertStrictEquals(SafeInteger.fromNumber(MIN - 0.9, op), MIN);
   // <<<
+
+  assertStrictEquals(SafeInteger.fromNumber(-8.5, op), -8);
+  assertStrictEquals(SafeInteger.fromNumber(-7.5, op), -7);
+  assertStrictEquals(SafeInteger.fromNumber(-6.5, op), -6);
+  assertStrictEquals(SafeInteger.fromNumber(-5.5, op), -5);
+  assertStrictEquals(SafeInteger.fromNumber(-4.5, op), -4);
+  assertStrictEquals(SafeInteger.fromNumber(-3.5, op), -3);
+  assertStrictEquals(SafeInteger.fromNumber(-2.5, op), -2);
 
   assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -1);
   assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -1);
@@ -401,6 +425,92 @@ Deno.test("SafeInteger.fromNumber() - roundingMode:UP", () => {
   assertStrictEquals(SafeInteger.fromNumber(1.55, op), 2);
   assertStrictEquals(SafeInteger.fromNumber(1.6, op), 2);
   assertStrictEquals(SafeInteger.fromNumber(1.9, op), 2);
+
+  assertStrictEquals(SafeInteger.fromNumber(2.5, op), 3);
+  assertStrictEquals(SafeInteger.fromNumber(3.5, op), 4);
+  assertStrictEquals(SafeInteger.fromNumber(4.5, op), 5);
+  assertStrictEquals(SafeInteger.fromNumber(5.5, op), 6);
+  assertStrictEquals(SafeInteger.fromNumber(6.5, op), 7);
+  assertStrictEquals(SafeInteger.fromNumber(7.5, op), 8);
+  assertStrictEquals(SafeInteger.fromNumber(8.5, op), 9);
+
+  // ずれるのはNumber型の問題なので関知しない >>>
+  assertStrictEquals(SafeInteger.fromNumber(MAX - 0.9, op), MAX - 1);
+  assertStrictEquals(SafeInteger.fromNumber(MAX - 0.1, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MAX + 0.1, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MAX + 0.9, op), MAX);
+  // <<<
+});
+
+Deno.test("SafeInteger.fromNumber() - roundingMode:CEILING", () => {
+  const op = { roundingMode: Integer.RoundingMode.CEILING };
+
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+
+  assertStrictEquals(SafeInteger.fromNumber(Number.POSITIVE_INFINITY, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MAX + 1, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MAX, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MIN, op), MIN);
+  assertStrictEquals(SafeInteger.fromNumber(MIN - 1, op), MIN);
+  assertStrictEquals(SafeInteger.fromNumber(Number.NEGATIVE_INFINITY, op), MIN);
+
+  // ずれるのはNumber型の問題なので関知しない >>>
+  assertStrictEquals(SafeInteger.fromNumber(MIN + 0.9, op), MIN + 1);
+  assertStrictEquals(SafeInteger.fromNumber(MIN + 0.1, op), MIN);
+  assertStrictEquals(SafeInteger.fromNumber(MIN - 0.1, op), MIN);
+  assertStrictEquals(SafeInteger.fromNumber(MIN - 0.9, op), MIN);
+  // <<<
+
+  assertStrictEquals(SafeInteger.fromNumber(-8.5, op), -8);
+  assertStrictEquals(SafeInteger.fromNumber(-7.5, op), -7);
+  assertStrictEquals(SafeInteger.fromNumber(-6.5, op), -6);
+  assertStrictEquals(SafeInteger.fromNumber(-5.5, op), -5);
+  assertStrictEquals(SafeInteger.fromNumber(-4.5, op), -4);
+  assertStrictEquals(SafeInteger.fromNumber(-3.5, op), -3);
+  assertStrictEquals(SafeInteger.fromNumber(-2.5, op), -2);
+
+  assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.55, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.5, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.45, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.4, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.1, op), -1);
+
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), 0);
+
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 1);
+
+  assertStrictEquals(SafeInteger.fromNumber(1.1, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.4, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.45, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.5, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.55, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.6, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.9, op), 2);
+
+  assertStrictEquals(SafeInteger.fromNumber(2.5, op), 3);
+  assertStrictEquals(SafeInteger.fromNumber(3.5, op), 4);
+  assertStrictEquals(SafeInteger.fromNumber(4.5, op), 5);
+  assertStrictEquals(SafeInteger.fromNumber(5.5, op), 6);
+  assertStrictEquals(SafeInteger.fromNumber(6.5, op), 7);
+  assertStrictEquals(SafeInteger.fromNumber(7.5, op), 8);
+  assertStrictEquals(SafeInteger.fromNumber(8.5, op), 9);
 
   // ずれるのはNumber型の問題なので関知しない >>>
   assertStrictEquals(SafeInteger.fromNumber(MAX - 0.9, op), MAX - 1);
@@ -432,6 +542,14 @@ Deno.test("SafeInteger.fromNumber() - roundingMode:DOWN", () => {
   assertStrictEquals(SafeInteger.fromNumber(MIN - 0.9, op), MIN);
   // <<<
 
+  assertStrictEquals(SafeInteger.fromNumber(-8.5, op), -9);
+  assertStrictEquals(SafeInteger.fromNumber(-7.5, op), -8);
+  assertStrictEquals(SafeInteger.fromNumber(-6.5, op), -7);
+  assertStrictEquals(SafeInteger.fromNumber(-5.5, op), -6);
+  assertStrictEquals(SafeInteger.fromNumber(-4.5, op), -5);
+  assertStrictEquals(SafeInteger.fromNumber(-3.5, op), -4);
+  assertStrictEquals(SafeInteger.fromNumber(-2.5, op), -3);
+
   assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -2);
   assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -2);
   assertStrictEquals(SafeInteger.fromNumber(-1.55, op), -2);
@@ -464,6 +582,92 @@ Deno.test("SafeInteger.fromNumber() - roundingMode:DOWN", () => {
   assertStrictEquals(SafeInteger.fromNumber(1.6, op), 1);
   assertStrictEquals(SafeInteger.fromNumber(1.9, op), 1);
 
+  assertStrictEquals(SafeInteger.fromNumber(2.5, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(3.5, op), 3);
+  assertStrictEquals(SafeInteger.fromNumber(4.5, op), 4);
+  assertStrictEquals(SafeInteger.fromNumber(5.5, op), 5);
+  assertStrictEquals(SafeInteger.fromNumber(6.5, op), 6);
+  assertStrictEquals(SafeInteger.fromNumber(7.5, op), 7);
+  assertStrictEquals(SafeInteger.fromNumber(8.5, op), 8);
+
+  // ずれるのはNumber型の問題なので関知しない >>>
+  assertStrictEquals(SafeInteger.fromNumber(MAX - 0.9, op), MAX - 1);
+  assertStrictEquals(SafeInteger.fromNumber(MAX - 0.1, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MAX + 0.1, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MAX + 0.9, op), MAX);
+  // <<<
+});
+
+Deno.test("SafeInteger.fromNumber() - roundingMode:FLOOR", () => {
+  const op = { roundingMode: Integer.RoundingMode.FLOOR };
+
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+
+  assertStrictEquals(SafeInteger.fromNumber(Number.POSITIVE_INFINITY, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MAX + 1, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MAX, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MIN, op), MIN);
+  assertStrictEquals(SafeInteger.fromNumber(MIN - 1, op), MIN);
+  assertStrictEquals(SafeInteger.fromNumber(Number.NEGATIVE_INFINITY, op), MIN);
+
+  // ずれるのはNumber型の問題なので関知しない >>>
+  assertStrictEquals(SafeInteger.fromNumber(MIN + 0.9, op), MIN + 1);
+  assertStrictEquals(SafeInteger.fromNumber(MIN + 0.1, op), MIN);
+  assertStrictEquals(SafeInteger.fromNumber(MIN - 0.1, op), MIN);
+  assertStrictEquals(SafeInteger.fromNumber(MIN - 0.9, op), MIN);
+  // <<<
+
+  assertStrictEquals(SafeInteger.fromNumber(-8.5, op), -9);
+  assertStrictEquals(SafeInteger.fromNumber(-7.5, op), -8);
+  assertStrictEquals(SafeInteger.fromNumber(-6.5, op), -7);
+  assertStrictEquals(SafeInteger.fromNumber(-5.5, op), -6);
+  assertStrictEquals(SafeInteger.fromNumber(-4.5, op), -5);
+  assertStrictEquals(SafeInteger.fromNumber(-3.5, op), -4);
+  assertStrictEquals(SafeInteger.fromNumber(-2.5, op), -3);
+
+  assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.55, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.5, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.45, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.4, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.1, op), -2);
+
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), -1);
+
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 0);
+
+  assertStrictEquals(SafeInteger.fromNumber(1.1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.4, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.45, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.5, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.55, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.6, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.9, op), 1);
+
+  assertStrictEquals(SafeInteger.fromNumber(2.5, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(3.5, op), 3);
+  assertStrictEquals(SafeInteger.fromNumber(4.5, op), 4);
+  assertStrictEquals(SafeInteger.fromNumber(5.5, op), 5);
+  assertStrictEquals(SafeInteger.fromNumber(6.5, op), 6);
+  assertStrictEquals(SafeInteger.fromNumber(7.5, op), 7);
+  assertStrictEquals(SafeInteger.fromNumber(8.5, op), 8);
+
   // ずれるのはNumber型の問題なので関知しない >>>
   assertStrictEquals(SafeInteger.fromNumber(MAX - 0.9, op), MAX - 1);
   assertStrictEquals(SafeInteger.fromNumber(MAX - 0.1, op), MAX);
@@ -493,6 +697,14 @@ Deno.test("SafeInteger.fromNumber() - roundingMode:TOWARD_ZERO", () => {
   assertStrictEquals(SafeInteger.fromNumber(MIN - 0.1, op), MIN);
   assertStrictEquals(SafeInteger.fromNumber(MIN - 0.9, op), MIN);
   // <<<
+
+  assertStrictEquals(SafeInteger.fromNumber(-8.5, op), -8);
+  assertStrictEquals(SafeInteger.fromNumber(-7.5, op), -7);
+  assertStrictEquals(SafeInteger.fromNumber(-6.5, op), -6);
+  assertStrictEquals(SafeInteger.fromNumber(-5.5, op), -5);
+  assertStrictEquals(SafeInteger.fromNumber(-4.5, op), -4);
+  assertStrictEquals(SafeInteger.fromNumber(-3.5, op), -3);
+  assertStrictEquals(SafeInteger.fromNumber(-2.5, op), -2);
 
   assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -1);
   assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -1);
@@ -526,6 +738,14 @@ Deno.test("SafeInteger.fromNumber() - roundingMode:TOWARD_ZERO", () => {
   assertStrictEquals(SafeInteger.fromNumber(1.6, op), 1);
   assertStrictEquals(SafeInteger.fromNumber(1.9, op), 1);
 
+  assertStrictEquals(SafeInteger.fromNumber(2.5, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(3.5, op), 3);
+  assertStrictEquals(SafeInteger.fromNumber(4.5, op), 4);
+  assertStrictEquals(SafeInteger.fromNumber(5.5, op), 5);
+  assertStrictEquals(SafeInteger.fromNumber(6.5, op), 6);
+  assertStrictEquals(SafeInteger.fromNumber(7.5, op), 7);
+  assertStrictEquals(SafeInteger.fromNumber(8.5, op), 8);
+
   // ずれるのはNumber型の問題なので関知しない >>>
   assertStrictEquals(SafeInteger.fromNumber(MAX - 0.9, op), MAX - 1);
   assertStrictEquals(SafeInteger.fromNumber(MAX - 0.1, op), MAX);
@@ -555,6 +775,14 @@ Deno.test("SafeInteger.fromNumber() - roundingMode:AWAY_FROM_ZERO", () => {
   assertStrictEquals(SafeInteger.fromNumber(MIN - 0.1, op), MIN);
   assertStrictEquals(SafeInteger.fromNumber(MIN - 0.9, op), MIN);
   // <<<
+
+  assertStrictEquals(SafeInteger.fromNumber(-8.5, op), -9);
+  assertStrictEquals(SafeInteger.fromNumber(-7.5, op), -8);
+  assertStrictEquals(SafeInteger.fromNumber(-6.5, op), -7);
+  assertStrictEquals(SafeInteger.fromNumber(-5.5, op), -6);
+  assertStrictEquals(SafeInteger.fromNumber(-4.5, op), -5);
+  assertStrictEquals(SafeInteger.fromNumber(-3.5, op), -4);
+  assertStrictEquals(SafeInteger.fromNumber(-2.5, op), -3);
 
   assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -2);
   assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -2);
@@ -588,6 +816,14 @@ Deno.test("SafeInteger.fromNumber() - roundingMode:AWAY_FROM_ZERO", () => {
   assertStrictEquals(SafeInteger.fromNumber(1.6, op), 2);
   assertStrictEquals(SafeInteger.fromNumber(1.9, op), 2);
 
+  assertStrictEquals(SafeInteger.fromNumber(2.5, op), 3);
+  assertStrictEquals(SafeInteger.fromNumber(3.5, op), 4);
+  assertStrictEquals(SafeInteger.fromNumber(4.5, op), 5);
+  assertStrictEquals(SafeInteger.fromNumber(5.5, op), 6);
+  assertStrictEquals(SafeInteger.fromNumber(6.5, op), 7);
+  assertStrictEquals(SafeInteger.fromNumber(7.5, op), 8);
+  assertStrictEquals(SafeInteger.fromNumber(8.5, op), 9);
+
   // ずれるのはNumber型の問題なので関知しない >>>
   assertStrictEquals(SafeInteger.fromNumber(MAX - 0.9, op), MAX - 1);
   assertStrictEquals(SafeInteger.fromNumber(MAX - 0.1, op), MAX);
@@ -617,6 +853,14 @@ Deno.test("SafeInteger.fromNumber() - roundingMode:HALF_UP", () => {
   assertStrictEquals(SafeInteger.fromNumber(MIN - 0.1, op), MIN);
   assertStrictEquals(SafeInteger.fromNumber(MIN - 0.9, op), MIN);
   // <<<
+
+  assertStrictEquals(SafeInteger.fromNumber(-8.5, op), -8);
+  assertStrictEquals(SafeInteger.fromNumber(-7.5, op), -7);
+  assertStrictEquals(SafeInteger.fromNumber(-6.5, op), -6);
+  assertStrictEquals(SafeInteger.fromNumber(-5.5, op), -5);
+  assertStrictEquals(SafeInteger.fromNumber(-4.5, op), -4);
+  assertStrictEquals(SafeInteger.fromNumber(-3.5, op), -3);
+  assertStrictEquals(SafeInteger.fromNumber(-2.5, op), -2);
 
   assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -2);
   assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -2);
@@ -649,6 +893,14 @@ Deno.test("SafeInteger.fromNumber() - roundingMode:HALF_UP", () => {
   assertStrictEquals(SafeInteger.fromNumber(1.55, op), 2);
   assertStrictEquals(SafeInteger.fromNumber(1.6, op), 2);
   assertStrictEquals(SafeInteger.fromNumber(1.9, op), 2);
+
+  assertStrictEquals(SafeInteger.fromNumber(2.5, op), 3);
+  assertStrictEquals(SafeInteger.fromNumber(3.5, op), 4);
+  assertStrictEquals(SafeInteger.fromNumber(4.5, op), 5);
+  assertStrictEquals(SafeInteger.fromNumber(5.5, op), 6);
+  assertStrictEquals(SafeInteger.fromNumber(6.5, op), 7);
+  assertStrictEquals(SafeInteger.fromNumber(7.5, op), 8);
+  assertStrictEquals(SafeInteger.fromNumber(8.5, op), 9);
 
   // ずれるのはNumber型の問題なので関知しない >>>
   assertStrictEquals(SafeInteger.fromNumber(MAX - 0.9, op), MAX - 1);
@@ -680,6 +932,14 @@ Deno.test("SafeInteger.fromNumber() - roundingMode:HALF_DOWN", () => {
   assertStrictEquals(SafeInteger.fromNumber(MIN - 0.9, op), MIN);
   // <<<
 
+  assertStrictEquals(SafeInteger.fromNumber(-8.5, op), -9);
+  assertStrictEquals(SafeInteger.fromNumber(-7.5, op), -8);
+  assertStrictEquals(SafeInteger.fromNumber(-6.5, op), -7);
+  assertStrictEquals(SafeInteger.fromNumber(-5.5, op), -6);
+  assertStrictEquals(SafeInteger.fromNumber(-4.5, op), -5);
+  assertStrictEquals(SafeInteger.fromNumber(-3.5, op), -4);
+  assertStrictEquals(SafeInteger.fromNumber(-2.5, op), -3);
+
   assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -2);
   assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -2);
   assertStrictEquals(SafeInteger.fromNumber(-1.55, op), -2);
@@ -712,6 +972,14 @@ Deno.test("SafeInteger.fromNumber() - roundingMode:HALF_DOWN", () => {
   assertStrictEquals(SafeInteger.fromNumber(1.6, op), 2);
   assertStrictEquals(SafeInteger.fromNumber(1.9, op), 2);
 
+  assertStrictEquals(SafeInteger.fromNumber(2.5, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(3.5, op), 3);
+  assertStrictEquals(SafeInteger.fromNumber(4.5, op), 4);
+  assertStrictEquals(SafeInteger.fromNumber(5.5, op), 5);
+  assertStrictEquals(SafeInteger.fromNumber(6.5, op), 6);
+  assertStrictEquals(SafeInteger.fromNumber(7.5, op), 7);
+  assertStrictEquals(SafeInteger.fromNumber(8.5, op), 8);
+
   // ずれるのはNumber型の問題なので関知しない >>>
   assertStrictEquals(SafeInteger.fromNumber(MAX - 0.9, op), MAX - 1);
   assertStrictEquals(SafeInteger.fromNumber(MAX - 0.1, op), MAX);
@@ -741,6 +1009,14 @@ Deno.test("SafeInteger.fromNumber() - roundingMode:HALF_TOWARD_ZERO", () => {
   assertStrictEquals(SafeInteger.fromNumber(MIN - 0.1, op), MIN);
   assertStrictEquals(SafeInteger.fromNumber(MIN - 0.9, op), MIN);
   // <<<
+
+  assertStrictEquals(SafeInteger.fromNumber(-8.5, op), -8);
+  assertStrictEquals(SafeInteger.fromNumber(-7.5, op), -7);
+  assertStrictEquals(SafeInteger.fromNumber(-6.5, op), -6);
+  assertStrictEquals(SafeInteger.fromNumber(-5.5, op), -5);
+  assertStrictEquals(SafeInteger.fromNumber(-4.5, op), -4);
+  assertStrictEquals(SafeInteger.fromNumber(-3.5, op), -3);
+  assertStrictEquals(SafeInteger.fromNumber(-2.5, op), -2);
 
   assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -2);
   assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -2);
@@ -774,6 +1050,14 @@ Deno.test("SafeInteger.fromNumber() - roundingMode:HALF_TOWARD_ZERO", () => {
   assertStrictEquals(SafeInteger.fromNumber(1.6, op), 2);
   assertStrictEquals(SafeInteger.fromNumber(1.9, op), 2);
 
+  assertStrictEquals(SafeInteger.fromNumber(2.5, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(3.5, op), 3);
+  assertStrictEquals(SafeInteger.fromNumber(4.5, op), 4);
+  assertStrictEquals(SafeInteger.fromNumber(5.5, op), 5);
+  assertStrictEquals(SafeInteger.fromNumber(6.5, op), 6);
+  assertStrictEquals(SafeInteger.fromNumber(7.5, op), 7);
+  assertStrictEquals(SafeInteger.fromNumber(8.5, op), 8);
+
   // ずれるのはNumber型の問題なので関知しない >>>
   assertStrictEquals(SafeInteger.fromNumber(MAX - 0.9, op), MAX - 1);
   assertStrictEquals(SafeInteger.fromNumber(MAX - 0.1, op), MAX);
@@ -803,6 +1087,14 @@ Deno.test("SafeInteger.fromNumber() - roundingMode:HALF_AWAY_FROM_ZERO", () => {
   assertStrictEquals(SafeInteger.fromNumber(MIN - 0.1, op), MIN);
   assertStrictEquals(SafeInteger.fromNumber(MIN - 0.9, op), MIN);
   // <<<
+
+  assertStrictEquals(SafeInteger.fromNumber(-8.5, op), -9);
+  assertStrictEquals(SafeInteger.fromNumber(-7.5, op), -8);
+  assertStrictEquals(SafeInteger.fromNumber(-6.5, op), -7);
+  assertStrictEquals(SafeInteger.fromNumber(-5.5, op), -6);
+  assertStrictEquals(SafeInteger.fromNumber(-4.5, op), -5);
+  assertStrictEquals(SafeInteger.fromNumber(-3.5, op), -4);
+  assertStrictEquals(SafeInteger.fromNumber(-2.5, op), -3);
 
   assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -2);
   assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -2);
@@ -836,6 +1128,14 @@ Deno.test("SafeInteger.fromNumber() - roundingMode:HALF_AWAY_FROM_ZERO", () => {
   assertStrictEquals(SafeInteger.fromNumber(1.6, op), 2);
   assertStrictEquals(SafeInteger.fromNumber(1.9, op), 2);
 
+  assertStrictEquals(SafeInteger.fromNumber(2.5, op), 3);
+  assertStrictEquals(SafeInteger.fromNumber(3.5, op), 4);
+  assertStrictEquals(SafeInteger.fromNumber(4.5, op), 5);
+  assertStrictEquals(SafeInteger.fromNumber(5.5, op), 6);
+  assertStrictEquals(SafeInteger.fromNumber(6.5, op), 7);
+  assertStrictEquals(SafeInteger.fromNumber(7.5, op), 8);
+  assertStrictEquals(SafeInteger.fromNumber(8.5, op), 9);
+
   // ずれるのはNumber型の問題なので関知しない >>>
   assertStrictEquals(SafeInteger.fromNumber(MAX - 0.9, op), MAX - 1);
   assertStrictEquals(SafeInteger.fromNumber(MAX - 0.1, op), MAX);
@@ -844,7 +1144,163 @@ Deno.test("SafeInteger.fromNumber() - roundingMode:HALF_AWAY_FROM_ZERO", () => {
   // <<<
 });
 
-//TODO fromNumber HALF_TO_EVEN,CEILING,FLOOR,TRUNCATE,ROUND,CONVERGENT
+Deno.test("SafeInteger.fromNumber() - roundingMode:HALF_TO_EVEN", () => {
+  const op = { roundingMode: Integer.RoundingMode.HALF_TO_EVEN };
+
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+
+  assertStrictEquals(SafeInteger.fromNumber(Number.POSITIVE_INFINITY, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MAX + 1, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MAX, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MIN, op), MIN);
+  assertStrictEquals(SafeInteger.fromNumber(MIN - 1, op), MIN);
+  assertStrictEquals(SafeInteger.fromNumber(Number.NEGATIVE_INFINITY, op), MIN);
+
+  // ずれるのはNumber型の問題なので関知しない >>>
+  assertStrictEquals(SafeInteger.fromNumber(MIN + 0.9, op), MIN + 1);
+  assertStrictEquals(SafeInteger.fromNumber(MIN + 0.1, op), MIN);
+  assertStrictEquals(SafeInteger.fromNumber(MIN - 0.1, op), MIN);
+  assertStrictEquals(SafeInteger.fromNumber(MIN - 0.9, op), MIN);
+  // <<<
+
+  assertStrictEquals(SafeInteger.fromNumber(-8.5, op), -8);
+  assertStrictEquals(SafeInteger.fromNumber(-7.5, op), -8);
+  assertStrictEquals(SafeInteger.fromNumber(-6.5, op), -6);
+  assertStrictEquals(SafeInteger.fromNumber(-5.5, op), -6);
+  assertStrictEquals(SafeInteger.fromNumber(-4.5, op), -4);
+  assertStrictEquals(SafeInteger.fromNumber(-3.5, op), -4);
+  assertStrictEquals(SafeInteger.fromNumber(-2.5, op), -2);
+
+  assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.55, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.5, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.45, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.4, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.1, op), -1);
+
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), 0);
+
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 1);
+
+  assertStrictEquals(SafeInteger.fromNumber(1.1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.4, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.45, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.5, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.55, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.6, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.9, op), 2);
+
+  assertStrictEquals(SafeInteger.fromNumber(2.5, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(3.5, op), 4);
+  assertStrictEquals(SafeInteger.fromNumber(4.5, op), 4);
+  assertStrictEquals(SafeInteger.fromNumber(5.5, op), 6);
+  assertStrictEquals(SafeInteger.fromNumber(6.5, op), 6);
+  assertStrictEquals(SafeInteger.fromNumber(7.5, op), 8);
+  assertStrictEquals(SafeInteger.fromNumber(8.5, op), 8);
+
+  // ずれるのはNumber型の問題なので関知しない >>>
+  assertStrictEquals(SafeInteger.fromNumber(MAX - 0.9, op), MAX - 1);
+  assertStrictEquals(SafeInteger.fromNumber(MAX - 0.1, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MAX + 0.1, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MAX + 0.9, op), MAX);
+  // <<<
+});
+
+Deno.test("SafeInteger.fromNumber() - roundingMode:CONVERGENT", () => {
+  const op = { roundingMode: Integer.RoundingMode.CONVERGENT };
+
+  assertStrictEquals(SafeInteger.fromNumber(-1, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1, op), 1);
+
+  assertStrictEquals(SafeInteger.fromNumber(Number.POSITIVE_INFINITY, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MAX + 1, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MAX, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MIN, op), MIN);
+  assertStrictEquals(SafeInteger.fromNumber(MIN - 1, op), MIN);
+  assertStrictEquals(SafeInteger.fromNumber(Number.NEGATIVE_INFINITY, op), MIN);
+
+  // ずれるのはNumber型の問題なので関知しない >>>
+  assertStrictEquals(SafeInteger.fromNumber(MIN + 0.9, op), MIN + 1);
+  assertStrictEquals(SafeInteger.fromNumber(MIN + 0.1, op), MIN);
+  assertStrictEquals(SafeInteger.fromNumber(MIN - 0.1, op), MIN);
+  assertStrictEquals(SafeInteger.fromNumber(MIN - 0.9, op), MIN);
+  // <<<
+
+  assertStrictEquals(SafeInteger.fromNumber(-8.5, op), -8);
+  assertStrictEquals(SafeInteger.fromNumber(-7.5, op), -8);
+  assertStrictEquals(SafeInteger.fromNumber(-6.5, op), -6);
+  assertStrictEquals(SafeInteger.fromNumber(-5.5, op), -6);
+  assertStrictEquals(SafeInteger.fromNumber(-4.5, op), -4);
+  assertStrictEquals(SafeInteger.fromNumber(-3.5, op), -4);
+  assertStrictEquals(SafeInteger.fromNumber(-2.5, op), -2);
+
+  assertStrictEquals(SafeInteger.fromNumber(-1.9, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.6, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.55, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.5, op), -2);
+  assertStrictEquals(SafeInteger.fromNumber(-1.45, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.4, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.1, op), -1);
+
+  assertStrictEquals(SafeInteger.fromNumber(-0.9, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55, op), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.1, op), 0);
+
+  assertStrictEquals(SafeInteger.fromNumber(0.1, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.4, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.45, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.5, op), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.55, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.6, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(0.9, op), 1);
+
+  assertStrictEquals(SafeInteger.fromNumber(1.1, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.4, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.45, op), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.5, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.55, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.6, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(1.9, op), 2);
+
+  assertStrictEquals(SafeInteger.fromNumber(2.5, op), 2);
+  assertStrictEquals(SafeInteger.fromNumber(3.5, op), 4);
+  assertStrictEquals(SafeInteger.fromNumber(4.5, op), 4);
+  assertStrictEquals(SafeInteger.fromNumber(5.5, op), 6);
+  assertStrictEquals(SafeInteger.fromNumber(6.5, op), 6);
+  assertStrictEquals(SafeInteger.fromNumber(7.5, op), 8);
+  assertStrictEquals(SafeInteger.fromNumber(8.5, op), 8);
+
+  // ずれるのはNumber型の問題なので関知しない >>>
+  assertStrictEquals(SafeInteger.fromNumber(MAX - 0.9, op), MAX - 1);
+  assertStrictEquals(SafeInteger.fromNumber(MAX - 0.1, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MAX + 0.1, op), MAX);
+  assertStrictEquals(SafeInteger.fromNumber(MAX + 0.9, op), MAX);
+  // <<<
+});
+
+//TODO fromNumber ,,,TRUNCATE,ROUND,
 
 //TODO fromBigInt
 
