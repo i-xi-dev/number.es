@@ -146,7 +146,7 @@ Deno.test("Numeric.clampToSafeInteger()", () => {
     () => {
       Numeric.clampToSafeInteger(Number.NaN);
     },
-    TypeError,
+    RangeError,
     e2,
   );
 

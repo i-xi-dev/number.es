@@ -28,7 +28,7 @@ export function clampToSafeInteger(input: number): number {
     throw new TypeError("`input` is must be a `number`.");
   }
   if (Number.isNaN(input)) {
-    throw new TypeError("`input` is must not be `Number.NaN`.");
+    throw new RangeError("`input` is must not be `Number.NaN`.");
   }
 
   if (input <= Number.MIN_SAFE_INTEGER) {

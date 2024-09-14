@@ -46,16 +46,21 @@ export function fromNumber(
   source: number,
   options?: FromNumberOptions,
 ): number {
-  if ((isNumber(source) !== true) || Number.isNaN(source)) {
-    throw new TypeError("TODO");
+  if (isNumber(source) !== true) {
+    throw new TypeError("`source` is must be a `number`.");
   }
-
-  if (inSafeIntegerRange(source) !== true) {
-    throw new RangeError("TODO");
+  if (Number.isNaN(source)) {
+    throw new RangeError("`source` is must not be `Number.NaN`.");
   }
 
   if (Number.isSafeInteger(source)) {
     return normalizeNumber(source);
+  }
+  else if (source > Number.MAX_SAFE_INTEGER) {
+    return Number.MAX_SAFE_INTEGER;
+  }
+  else if (source < Number.MIN_SAFE_INTEGER) {
+    return Number.MIN_SAFE_INTEGER;
   }
 
   const rounded = _roundToSafeInteger(source, options?.roundingMode);
