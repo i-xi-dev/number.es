@@ -142,16 +142,18 @@ function _roundToSafeInteger(
   }
 }
 
-// toNumber は不要
+// toNumber は無意味なので不要
 
 export function fromBigInt(
   source: bigint, /* , options?: FromBigIntOptions */
 ): number {
   if (isBigInt(source) !== true) {
-    throw new TypeError("`source` must be a bigint.");
+    throw new TypeError("`source` is must be a `bigint`.");
   }
   if (inSafeIntegerRange(source) !== true) {
-    throw new RangeError("`source` must be within the range of safe integer.");
+    throw new RangeError(
+      "`source` is must be within the range of safe integer.",
+    );
   }
 
   return Number(source);
@@ -159,7 +161,7 @@ export function fromBigInt(
 
 export function toBigInt(source: number): bigint {
   if (Number.isSafeInteger(source) !== true) {
-    throw new TypeError("TODO");
+    throw new TypeError("`source` is must be a safe integer.");
   }
   return BigInt(source);
 }

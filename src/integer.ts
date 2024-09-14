@@ -42,12 +42,12 @@ export type FromNumberOptions = {
 };
 
 //export type FromBigIntOptions = {
-//TODO
+//XXX 範囲外の場合のフォールバック
 //};
 
 export type FromStringOptions = {
   radix: Radix;
-  //TODO 整数以外も受け付ける、trimするかどうか、パース出来ない場合のフォールバック
+  //XXX 整数以外も受け付けるか、trimするかどうか、パース出来ない場合のフォールバック
 };
 
 export type ToStringOptions = {
