@@ -1,5 +1,5 @@
 import { isString } from "./utils.ts";
-import { Radix } from "./radix.ts";
+import { Radix } from "./numeric.ts";
 
 const UP = "up"; // TOWARD_POSITIVE_INFINITY
 const DOWN = "down"; // TOWARD_NEGATIVE_INFINITY
@@ -52,6 +52,8 @@ export type FromStringOptions = {
 
 export type ToStringOptions = {
   radix: Radix;
+  //XXX upperCase
+  //XXX leadZero or padStart
 };
 
 export function resolveRadix(radix?: Radix): Radix {

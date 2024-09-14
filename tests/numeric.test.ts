@@ -471,3 +471,10 @@ Deno.test("Numeric.inSafeIntegerRange()", () => {
     false,
   );
 });
+
+Deno.test("Numeric.Radix", () => {
+  assertStrictEquals(Numeric.Radix.BINARY, 2);
+  assertStrictEquals(Numeric.Radix.OCTAL, 8);
+  assertStrictEquals(Numeric.Radix.DECIMAL, 10);
+  assertStrictEquals(Numeric.Radix.HEXADECIMAL, 16);
+});

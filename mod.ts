@@ -1,8 +1,9 @@
 export * as BigInteger from "./src/big_integer.ts";
+export * from "./src/big_integer_range.ts";
+export * as Integer from "./src/integer.ts";
 export * as Numeric from "./src/numeric.ts";
-export * from "./src/radix.ts";
-export * from "./src/rounding_mode.ts";
 export * as SafeInteger from "./src/safe_integer.ts";
+export * from "./src/safe_integer_range.ts";
 
 // export * from "./src/big_uint64.ts";
 // export * from "./src/bigint_range.ts";

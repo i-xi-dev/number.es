@@ -1,4 +1,4 @@
-import { BIGINT_ZERO, inSafeIntegerRange, isBigInt } from "./numeric.ts";
+import { BIGINT_ZERO, inSafeIntegerRange, isBigInt, Radix } from "./numeric.ts";
 import { isString } from "./utils.ts";
 import { fromNumber as safeIntegerFromNumber } from "./safe_integer.ts";
 import {
@@ -8,7 +8,6 @@ import {
   resolveRadix,
   ToStringOptions,
 } from "./integer.ts";
-import { Radix } from "./radix.ts";
 
 export const ZERO = BIGINT_ZERO;
 
