@@ -92,7 +92,7 @@ Deno.test("Numeric.normalizeNumber()", () => {
     Number.NEGATIVE_INFINITY,
   );
 
-  const e1 = "`input` is must be a `number`.";
+  const e1 = "`input` must be a `number`.";
   assertThrows(
     () => {
       Numeric.normalizeNumber(undefined as unknown as number);
@@ -141,7 +141,7 @@ Deno.test("Numeric.clampToSafeInteger()", () => {
   assertStrictEquals(Numeric.clampToSafeInteger(9.9), 9.9);
   assertStrictEquals(Numeric.clampToSafeInteger(10.1), 10.1);
 
-  const e2 = "`input` is must not be `Number.NaN`.";
+  const e2 = "`input` must not be `Number.NaN`.";
   assertThrows(
     () => {
       Numeric.clampToSafeInteger(Number.NaN);
@@ -159,7 +159,7 @@ Deno.test("Numeric.clampToSafeInteger()", () => {
     Number.MIN_SAFE_INTEGER,
   );
 
-  const e1 = "`input` is must be a `number`.";
+  const e1 = "`input` must be a `number`.";
   assertThrows(
     () => {
       Numeric.clampToSafeInteger(undefined as unknown as number);

@@ -47,10 +47,10 @@ export function fromNumber(
   options?: FromNumberOptions,
 ): number {
   if (isNumber(source) !== true) {
-    throw new TypeError("`source` is must be a `number`.");
+    throw new TypeError("`source` must be a `number`.");
   }
   if (Number.isNaN(source)) {
-    throw new RangeError("`source` is must not be `Number.NaN`.");
+    throw new RangeError("`source` must not be `Number.NaN`.");
   }
 
   if (Number.isSafeInteger(source)) {
@@ -148,11 +148,11 @@ export function fromBigInt(
   source: bigint, /* , options?: FromBigIntOptions */
 ): number {
   if (isBigInt(source) !== true) {
-    throw new TypeError("`source` is must be a `bigint`.");
+    throw new TypeError("`source` must be a `bigint`.");
   }
   if (inSafeIntegerRange(source) !== true) {
     throw new RangeError(
-      "`source` is must be within the range of safe integer.",
+      "`source` must be within the range of safe integer.",
     );
   }
 
@@ -161,7 +161,7 @@ export function fromBigInt(
 
 export function toBigInt(source: number): bigint {
   if (Number.isSafeInteger(source) !== true) {
-    throw new TypeError("`source` is must be a safe integer.");
+    throw new TypeError("`source` must be a safe integer.");
   }
   return BigInt(source);
 }
@@ -171,7 +171,7 @@ export function fromString(
   options?: FromStringOptions,
 ): number {
   if (isString(source) !== true) {
-    throw new TypeError("`source` must be a string.");
+    throw new TypeError("`source` must be a `string`.");
   }
 
   const radix = resolveRadix(options?.radix);
@@ -180,7 +180,7 @@ export function fromString(
     throw new RangeError("`source` must be a representation of a integer.");
   }
 
-  return Number.parseInt(source, radix);
+  return normalizeNumber(Number.parseInt(source, radix));
 }
 
 export function toString(source: number, options?: ToStringOptions): string {

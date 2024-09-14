@@ -1,20 +1,20 @@
 import { isString } from "./utils.ts";
 import { Radix } from "./radix.ts";
 
-const UP = Symbol("UP"); // TOWARD_POSITIVE_INFINITY
-const DOWN = Symbol("DOWN"); // TOWARD_NEGATIVE_INFINITY
-const TOWARD_ZERO = Symbol("TOWARD_ZERO");
-const HALF_AWAY_FROM_ZERO = Symbol("HALF_AWAY_FROM_ZERO");
-const HALF_TO_EVEN = Symbol("HALF_TO_EVEN");
+const UP = "up"; // TOWARD_POSITIVE_INFINITY
+const DOWN = "down"; // TOWARD_NEGATIVE_INFINITY
+const TOWARD_ZERO = "toward-zero";
+const HALF_AWAY_FROM_ZERO = "half-away-from-zero";
+const HALF_TO_EVEN = "half-to-even";
 
 export const RoundingMode = {
   UP,
   DOWN,
   TOWARD_ZERO,
-  AWAY_FROM_ZERO: Symbol("AWAY_FROM_ZERO"),
-  HALF_UP: Symbol("HALF_UP"),
-  HALF_DOWN: Symbol("HALF_DOWN"),
-  HALF_TOWARD_ZERO: Symbol("HALF_TOWARD_ZERO"),
+  AWAY_FROM_ZERO: "away-from-zero",
+  HALF_UP: "half-up",
+  HALF_DOWN: "half-down",
+  HALF_TOWARD_ZERO: "half-toward-zero",
   HALF_AWAY_FROM_ZERO,
   HALF_TO_EVEN,
 

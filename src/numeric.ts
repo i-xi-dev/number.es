@@ -12,7 +12,7 @@ export function isBigInt(test: unknown): test is bigint {
 
 export function normalizeNumber<T extends number>(input: T): T {
   if (isNumber(input) !== true) {
-    throw new TypeError("`input` is must be a `number`.");
+    throw new TypeError("`input` must be a `number`.");
   }
   if (Number.isFinite(input) !== true) {
     return input;
@@ -25,10 +25,10 @@ export function normalizeNumber<T extends number>(input: T): T {
 
 export function clampToSafeInteger(input: number): number {
   if (isNumber(input) !== true) {
-    throw new TypeError("`input` is must be a `number`.");
+    throw new TypeError("`input` must be a `number`.");
   }
   if (Number.isNaN(input)) {
-    throw new RangeError("`input` is must not be `Number.NaN`.");
+    throw new RangeError("`input` must not be `Number.NaN`.");
   }
 
   if (input <= Number.MIN_SAFE_INTEGER) {
