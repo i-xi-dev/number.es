@@ -282,4 +282,95 @@ Deno.test("SafeInteger.isEven(number)", () => {
   assertStrictEquals(SafeInteger.isEven("0" as unknown as number), false);
 });
 
+const rfe1 = "`source` is must be a `number`.";
+const rfe2 = "`source` is must not be `Number.NaN`.";
+
+Deno.test("SafeInteger.fromNumber()", () => {
+  assertThrows(
+    () => {
+      SafeInteger.fromNumber(undefined as unknown as number);
+    },
+    TypeError,
+    rfe1,
+  );
+
+  assertThrows(
+    () => {
+      SafeInteger.fromNumber(0n as unknown as number);
+    },
+    TypeError,
+    rfe1,
+  );
+
+  assertThrows(
+    () => {
+      SafeInteger.fromNumber(Number.NaN);
+    },
+    RangeError,
+    rfe2,
+  );
+
+  assertStrictEquals(SafeInteger.fromNumber(-1), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-0), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0), 0);
+  assertStrictEquals(SafeInteger.fromNumber(1), 1);
+
+  assertStrictEquals(
+    SafeInteger.fromNumber(Number.POSITIVE_INFINITY),
+    Number.MAX_SAFE_INTEGER,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(Number.MAX_SAFE_INTEGER + 1),
+    Number.MAX_SAFE_INTEGER,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(Number.MAX_SAFE_INTEGER),
+    Number.MAX_SAFE_INTEGER,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(Number.MIN_SAFE_INTEGER),
+    Number.MIN_SAFE_INTEGER,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(Number.MIN_SAFE_INTEGER - 1),
+    Number.MIN_SAFE_INTEGER,
+  );
+  assertStrictEquals(
+    SafeInteger.fromNumber(Number.NEGATIVE_INFINITY),
+    Number.MIN_SAFE_INTEGER,
+  );
+
+  assertStrictEquals(SafeInteger.fromNumber(-1.9), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.6), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.55), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.5), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.45), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.4), -1);
+  assertStrictEquals(SafeInteger.fromNumber(-1.1), -1);
+
+  assertStrictEquals(SafeInteger.fromNumber(-0.9), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.6), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.55), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.5), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.45), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.4), 0);
+  assertStrictEquals(SafeInteger.fromNumber(-0.1), 0);
+
+  assertStrictEquals(SafeInteger.fromNumber(0.1), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.4), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.45), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.5), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.55), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.6), 0);
+  assertStrictEquals(SafeInteger.fromNumber(0.9), 0);
+
+  assertStrictEquals(SafeInteger.fromNumber(1.1), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.4), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.45), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.5), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.55), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.6), 1);
+  assertStrictEquals(SafeInteger.fromNumber(1.9), 1);
+});
+
 //TODO fromNumber

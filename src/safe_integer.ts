@@ -11,10 +11,10 @@ import {
   FromStringOptions,
   REGEX,
   resolveRadix,
+  RoundingMode,
   ToStringOptions,
 } from "./integer.ts";
 import { isString } from "./utils.ts";
-import { RoundingMode } from "./rounding_mode.ts";
 
 export const ZERO = NUMBER_ZERO;
 
@@ -55,11 +55,9 @@ export function fromNumber(
 
   if (Number.isSafeInteger(source)) {
     return normalizeNumber(source);
-  }
-  else if (source > Number.MAX_SAFE_INTEGER) {
+  } else if (source > Number.MAX_SAFE_INTEGER) {
     return Number.MAX_SAFE_INTEGER;
-  }
-  else if (source < Number.MIN_SAFE_INTEGER) {
+  } else if (source < Number.MIN_SAFE_INTEGER) {
     return Number.MIN_SAFE_INTEGER;
   }
 
