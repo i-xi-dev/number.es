@@ -1,4 +1,3 @@
-import { isString } from "./utils.ts";
 import { Radix } from "./numeric.ts";
 
 const UP = "up"; // TOWARD_POSITIVE_INFINITY
@@ -68,16 +67,3 @@ export const REGEX = {
   [Radix.DECIMAL]: /^[-+]?[0-9]+$/,
   [Radix.HEXADECIMAL]: /^[-+]?[0-9a-fA-F]+$/,
 } as const;
-
-export function parse(input: string, radix: Radix): number {
-  if (isString(input) !== true) {
-    throw new TypeError("TODO");
-  }
-
-  const regex = REGEX[radix];
-  if (regex.test(input) !== true) {
-    throw new RangeError("TODO");
-  }
-
-  return Number.parseInt(input, radix);
-}
