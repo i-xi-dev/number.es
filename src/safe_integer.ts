@@ -62,11 +62,10 @@ export function fromNumber(
   }
 
   const rounded = _roundToSafeInteger(source, options?.roundingMode);
-
   return clampToSafeInteger(rounded);
 }
 
-export function _roundToSafeInteger(
+function _roundToSafeInteger(
   source: number,
   roundingMode?: RoundingMode,
 ): number {
@@ -88,7 +87,7 @@ export function _roundToSafeInteger(
 
   const nearestP = normalizeNumber(Math.ceil(source));
   const nearestN = normalizeNumber(Math.floor(source));
-  const sourceIsNegative = isNegative(source);
+  const sourceIsNegative = source < 0;
   const nearestPH = nearestP - 0.5;
   const nearestNH = nearestN + 0.5;
 
