@@ -37,7 +37,7 @@ export function clampToSafeInteger(input: number): number {
   if (input >= Number.MAX_SAFE_INTEGER) {
     return Number.MAX_SAFE_INTEGER;
   }
-  return input;
+  return normalizeNumber(input);
 }
 
 export type numeric = number | bigint;

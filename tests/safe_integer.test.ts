@@ -395,6 +395,7 @@ Deno.test("SafeInteger.fromString()", () => {
 
   assertStrictEquals(SafeInteger.fromString("-1"), -1);
   assertStrictEquals(SafeInteger.fromString("-0"), 0);
+  assertStrictEquals(Object.is(SafeInteger.fromString("-0"), 0), true);
   assertStrictEquals(SafeInteger.fromString("0"), 0);
   assertStrictEquals(SafeInteger.fromString("1"), 1);
   assertStrictEquals(SafeInteger.fromString("1111"), 1111);

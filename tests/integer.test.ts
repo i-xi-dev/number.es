@@ -129,6 +129,7 @@ Deno.test("Integer.roundNumber()", () => {
 
   assertStrictEquals(Integer.roundNumber(-1), -1);
   assertStrictEquals(Integer.roundNumber(-0), 0);
+  assertStrictEquals(Object.is(Integer.roundNumber(-0), 0), true);
   assertStrictEquals(Integer.roundNumber(0), 0);
   assertStrictEquals(Integer.roundNumber(1), 1);
 

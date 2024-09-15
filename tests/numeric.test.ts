@@ -74,6 +74,7 @@ Deno.test("Numeric.isBigInt()", () => {
 Deno.test("Numeric.normalizeNumber()", () => {
   assertStrictEquals(Numeric.normalizeNumber(0), 0);
   assertStrictEquals(Numeric.normalizeNumber(-0), 0);
+  assertStrictEquals(Object.is(Numeric.normalizeNumber(-0), 0), true);
   assertStrictEquals(Numeric.normalizeNumber(1), 1);
   assertStrictEquals(Numeric.normalizeNumber(-1), -1);
 
@@ -132,7 +133,8 @@ Deno.test("Numeric.normalizeNumber()", () => {
 
 Deno.test("Numeric.clampToSafeInteger()", () => {
   assertStrictEquals(Numeric.clampToSafeInteger(0), 0);
-  assertStrictEquals(Numeric.clampToSafeInteger(-0), -0);
+  assertStrictEquals(Numeric.clampToSafeInteger(-0), 0);
+  assertStrictEquals(Object.is(Numeric.clampToSafeInteger(-0), 0), true);
   assertStrictEquals(Numeric.clampToSafeInteger(1), 1);
   assertStrictEquals(Numeric.clampToSafeInteger(-1), -1);
 

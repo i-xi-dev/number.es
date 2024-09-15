@@ -401,8 +401,8 @@ Deno.test("BigInteger.toNumber()", () => {
 
   assertStrictEquals(BigInteger.toNumber(-1n), -1);
   assertStrictEquals(BigInteger.toNumber(-0n), 0);
+  assertStrictEquals(BigInteger.toNumber(-0n).toString(), "0");
   assertStrictEquals(BigInteger.toNumber(0n), 0);
-  assertStrictEquals(BigInteger.toNumber(0n).toString(), "0");
   assertStrictEquals(BigInteger.toNumber(1n), 1);
 
   assertStrictEquals(BigInteger.toNumber(BigInt(SIMAX)), SIMAX);
@@ -448,7 +448,8 @@ Deno.test("BigInteger.fromString()", () => {
 
   assertStrictEquals(BigInteger.fromString("-1"), -1n);
   assertStrictEquals(BigInteger.fromString("-0"), 0n);
-  assertStrictEquals(BigInteger.fromString("-0").toString(), "0");
+  assertStrictEquals(Object.is(BigInteger.fromString("-0"), 0n), true);
+  assertStrictEquals(BigInteger.fromString("0"), 0n);
   assertStrictEquals(BigInteger.fromString("1"), 1n);
 
   assertStrictEquals(BigInteger.fromString("2"), 2n);
@@ -465,4 +466,181 @@ Deno.test("BigInteger.fromString()", () => {
   assertStrictEquals(BigInteger.fromString(SIMIN.toString()), BigInt(SIMIN));
 });
 
-//TODO toString
+Deno.test("BigInteger.toString()", () => {
+  const rfe1 = "`source` must be a `bigint`.";
+
+  assertThrows(
+    () => {
+      BigInteger.toString(undefined as unknown as bigint);
+    },
+    TypeError,
+    rfe1,
+  );
+
+  assertThrows(
+    () => {
+      BigInteger.toString(0 as unknown as bigint);
+    },
+    TypeError,
+    rfe1,
+  );
+
+  assertStrictEquals(BigInteger.toString(-1n), "-1");
+  assertStrictEquals(BigInteger.toString(-0n), "0");
+  assertStrictEquals(BigInteger.toString(0n), "0");
+  assertStrictEquals(BigInteger.toString(1n), "1");
+
+  assertStrictEquals(BigInteger.toString(1111n), "1111");
+
+  assertStrictEquals(BigInteger.toString(2n), "2");
+  assertStrictEquals(BigInteger.toString(3n), "3");
+  assertStrictEquals(BigInteger.toString(4n), "4");
+  assertStrictEquals(BigInteger.toString(5n), "5");
+  assertStrictEquals(BigInteger.toString(6n), "6");
+  assertStrictEquals(BigInteger.toString(7n), "7");
+  assertStrictEquals(BigInteger.toString(8n), "8");
+  assertStrictEquals(BigInteger.toString(9n), "9");
+  assertStrictEquals(BigInteger.toString(10n), "10");
+  assertStrictEquals(BigInteger.toString(11n), "11");
+  assertStrictEquals(BigInteger.toString(12n), "12");
+  assertStrictEquals(BigInteger.toString(13n), "13");
+  assertStrictEquals(BigInteger.toString(14n), "14");
+  assertStrictEquals(BigInteger.toString(15n), "15");
+  assertStrictEquals(BigInteger.toString(16n), "16");
+});
+
+Deno.test("BigInteger.toString() - radix:2", () => {
+  const op = { radix: 2 } as const;
+
+  assertStrictEquals(BigInteger.toString(-1n, op), "-1");
+  assertStrictEquals(BigInteger.toString(-0n, op), "0");
+  assertStrictEquals(BigInteger.toString(0n, op), "0");
+  assertStrictEquals(BigInteger.toString(1n, op), "1");
+
+  assertStrictEquals(BigInteger.toString(1111n, op), "10001010111");
+
+  assertStrictEquals(BigInteger.toString(2n, op), "10");
+  assertStrictEquals(BigInteger.toString(3n, op), "11");
+  assertStrictEquals(BigInteger.toString(4n, op), "100");
+  assertStrictEquals(BigInteger.toString(5n, op), "101");
+  assertStrictEquals(BigInteger.toString(6n, op), "110");
+  assertStrictEquals(BigInteger.toString(7n, op), "111");
+  assertStrictEquals(BigInteger.toString(8n, op), "1000");
+  assertStrictEquals(BigInteger.toString(9n, op), "1001");
+  assertStrictEquals(BigInteger.toString(10n, op), "1010");
+  assertStrictEquals(BigInteger.toString(11n, op), "1011");
+  assertStrictEquals(BigInteger.toString(12n, op), "1100");
+  assertStrictEquals(BigInteger.toString(13n, op), "1101");
+  assertStrictEquals(BigInteger.toString(14n, op), "1110");
+  assertStrictEquals(BigInteger.toString(15n, op), "1111");
+  assertStrictEquals(BigInteger.toString(16n, op), "10000");
+});
+
+Deno.test("BigInteger.toString() - radix:8", () => {
+  const op = { radix: 8 } as const;
+
+  assertStrictEquals(BigInteger.toString(-1n, op), "-1");
+  assertStrictEquals(BigInteger.toString(-0n, op), "0");
+  assertStrictEquals(BigInteger.toString(0n, op), "0");
+  assertStrictEquals(BigInteger.toString(1n, op), "1");
+
+  assertStrictEquals(BigInteger.toString(1111n, op), "2127");
+
+  assertStrictEquals(BigInteger.toString(2n, op), "2");
+  assertStrictEquals(BigInteger.toString(3n, op), "3");
+  assertStrictEquals(BigInteger.toString(4n, op), "4");
+  assertStrictEquals(BigInteger.toString(5n, op), "5");
+  assertStrictEquals(BigInteger.toString(6n, op), "6");
+  assertStrictEquals(BigInteger.toString(7n, op), "7");
+  assertStrictEquals(BigInteger.toString(8n, op), "10");
+  assertStrictEquals(BigInteger.toString(9n, op), "11");
+  assertStrictEquals(BigInteger.toString(10n, op), "12");
+  assertStrictEquals(BigInteger.toString(11n, op), "13");
+  assertStrictEquals(BigInteger.toString(12n, op), "14");
+  assertStrictEquals(BigInteger.toString(13n, op), "15");
+  assertStrictEquals(BigInteger.toString(14n, op), "16");
+  assertStrictEquals(BigInteger.toString(15n, op), "17");
+  assertStrictEquals(BigInteger.toString(16n, op), "20");
+});
+
+Deno.test("BigInteger.toString() - radix:10", () => {
+  const op = { radix: 10 } as const;
+
+  assertStrictEquals(BigInteger.toString(-1n, op), "-1");
+  assertStrictEquals(BigInteger.toString(-0n, op), "0");
+  assertStrictEquals(BigInteger.toString(0n, op), "0");
+  assertStrictEquals(BigInteger.toString(1n, op), "1");
+
+  assertStrictEquals(BigInteger.toString(1111n, op), "1111");
+
+  assertStrictEquals(BigInteger.toString(2n, op), "2");
+  assertStrictEquals(BigInteger.toString(3n, op), "3");
+  assertStrictEquals(BigInteger.toString(4n, op), "4");
+  assertStrictEquals(BigInteger.toString(5n, op), "5");
+  assertStrictEquals(BigInteger.toString(6n, op), "6");
+  assertStrictEquals(BigInteger.toString(7n, op), "7");
+  assertStrictEquals(BigInteger.toString(8n, op), "8");
+  assertStrictEquals(BigInteger.toString(9n, op), "9");
+  assertStrictEquals(BigInteger.toString(10n, op), "10");
+  assertStrictEquals(BigInteger.toString(11n, op), "11");
+  assertStrictEquals(BigInteger.toString(12n, op), "12");
+  assertStrictEquals(BigInteger.toString(13n, op), "13");
+  assertStrictEquals(BigInteger.toString(14n, op), "14");
+  assertStrictEquals(BigInteger.toString(15n, op), "15");
+  assertStrictEquals(BigInteger.toString(16n, op), "16");
+});
+
+Deno.test("BigInteger.toString() - radix:16", () => {
+  const op = { radix: 16 } as const;
+
+  assertStrictEquals(BigInteger.toString(-1n, op), "-1");
+  assertStrictEquals(BigInteger.toString(-0n, op), "0");
+  assertStrictEquals(BigInteger.toString(0n, op), "0");
+  assertStrictEquals(BigInteger.toString(1n, op), "1");
+
+  assertStrictEquals(BigInteger.toString(1111n, op), "457");
+
+  assertStrictEquals(BigInteger.toString(2n, op), "2");
+  assertStrictEquals(BigInteger.toString(3n, op), "3");
+  assertStrictEquals(BigInteger.toString(4n, op), "4");
+  assertStrictEquals(BigInteger.toString(5n, op), "5");
+  assertStrictEquals(BigInteger.toString(6n, op), "6");
+  assertStrictEquals(BigInteger.toString(7n, op), "7");
+  assertStrictEquals(BigInteger.toString(8n, op), "8");
+  assertStrictEquals(BigInteger.toString(9n, op), "9");
+  assertStrictEquals(BigInteger.toString(10n, op), "a");
+  assertStrictEquals(BigInteger.toString(11n, op), "b");
+  assertStrictEquals(BigInteger.toString(12n, op), "c");
+  assertStrictEquals(BigInteger.toString(13n, op), "d");
+  assertStrictEquals(BigInteger.toString(14n, op), "e");
+  assertStrictEquals(BigInteger.toString(15n, op), "f");
+  assertStrictEquals(BigInteger.toString(16n, op), "10");
+});
+
+Deno.test("BigInteger.toString() - radix:unknown", () => {
+  // radix:10 として処理する
+  const op = { radix: 3 as 2 } as const;
+
+  assertStrictEquals(BigInteger.toString(-1n, op), "-1");
+  assertStrictEquals(BigInteger.toString(-0n, op), "0");
+  assertStrictEquals(BigInteger.toString(0n, op), "0");
+  assertStrictEquals(BigInteger.toString(1n, op), "1");
+
+  assertStrictEquals(BigInteger.toString(1111n, op), "1111");
+
+  assertStrictEquals(BigInteger.toString(2n, op), "2");
+  assertStrictEquals(BigInteger.toString(3n, op), "3");
+  assertStrictEquals(BigInteger.toString(4n, op), "4");
+  assertStrictEquals(BigInteger.toString(5n, op), "5");
+  assertStrictEquals(BigInteger.toString(6n, op), "6");
+  assertStrictEquals(BigInteger.toString(7n, op), "7");
+  assertStrictEquals(BigInteger.toString(8n, op), "8");
+  assertStrictEquals(BigInteger.toString(9n, op), "9");
+  assertStrictEquals(BigInteger.toString(10n, op), "10");
+  assertStrictEquals(BigInteger.toString(11n, op), "11");
+  assertStrictEquals(BigInteger.toString(12n, op), "12");
+  assertStrictEquals(BigInteger.toString(13n, op), "13");
+  assertStrictEquals(BigInteger.toString(14n, op), "14");
+  assertStrictEquals(BigInteger.toString(15n, op), "15");
+  assertStrictEquals(BigInteger.toString(16n, op), "16");
+});
