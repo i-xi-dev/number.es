@@ -40,7 +40,7 @@ export class BigIntegerRange<T extends bigint> implements IntegerRange<T> {
   rangeEquals(otherRangeLike: BigIntegerRange.Like<T>): boolean {
     try {
       const otherRange = IntegerRange.Struct.fromRangeLike(otherRangeLike);
-      return IntegerRange.aEqualsB(this, otherRange);
+      return IntegerRange.equals(this, otherRange);
     } catch {
       return false;
     }
@@ -88,7 +88,7 @@ export class BigIntegerRange<T extends bigint> implements IntegerRange<T> {
 
   equals(other: unknown): boolean {
     if (other instanceof BigIntegerRange) {
-      return IntegerRange.aEqualsB(this, other);
+      return IntegerRange.equals(this, other);
     }
     return false;
   }

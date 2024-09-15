@@ -35,8 +35,8 @@ export namespace IntegerRange {
 
   export type Like<T extends numeric> = Tuple<T> | Struct<T>;
 
-  export function aEqualsB<T extends numeric>(a: Struct<T>, b: Struct<T>) {
-    return (a.min === b.min) && (a.max === b.max);
+  export function equals<T extends numeric>(self: Struct<T>, other: Struct<T>) {
+    return (self.min === other.min) && (self.max === other.max);
   }
 
   export function aOverlapsB<T extends numeric>(a: Struct<T>, b: Struct<T>) {

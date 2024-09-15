@@ -35,7 +35,7 @@ export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
   rangeEquals(otherRangeLike: SafeIntegerRange.Like<T>): boolean {
     try {
       const otherRange = IntegerRange.Struct.fromRangeLike(otherRangeLike);
-      return IntegerRange.aEqualsB(this, otherRange);
+      return IntegerRange.equals(this, otherRange);
     } catch {
       return false;
     }
@@ -84,7 +84,7 @@ export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
 
   equals(other: unknown): boolean {
     if (other instanceof SafeIntegerRange) {
-      return IntegerRange.aEqualsB(this, other);
+      return IntegerRange.equals(this, other);
     }
     return false;
   }
