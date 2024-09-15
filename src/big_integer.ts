@@ -1,8 +1,6 @@
 import { BIGINT_ZERO, inSafeIntegerRange, isBigInt, Radix } from "./numeric.ts";
 import { isString } from "./utils.ts";
-import { fromNumber as safeIntegerFromNumber } from "./safe_integer.ts";
 import {
-  FromNumberOptions,
   FromStringOptions,
   REGEX,
   resolveRadix,
@@ -73,21 +71,22 @@ export function max<T extends bigint>(...args: T[]): T {
   return max;
 }
 
-export function fromNumber(
-  source: number,
-  options?: FromNumberOptions,
-): bigint {
-  return BigInt(safeIntegerFromNumber(source, options));
+export function fromNumber(source: number): bigint {
+  if (Number.isSafeInteger(source) !== true) {
+    throw new TypeError("`source` must be a safe integer.");
+  }
+
+  return BigInt(source);
 }
 
-export function toNumber(input: bigint): number {
-  if (isBigInt(input) !== true) {
+export function toNumber(source: bigint): number {
+  if (isBigInt(source) !== true) {
     throw new TypeError("TODO");
   }
-  if (inSafeIntegerRange(input) !== true) {
+  if (inSafeIntegerRange(source) !== true) {
     throw new RangeError("TODO");
   }
-  return Number(input);
+  return Number(source);
 }
 
 export function fromString(

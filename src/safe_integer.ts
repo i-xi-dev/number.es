@@ -1,17 +1,13 @@
 import {
-  clampToSafeInteger,
   inSafeIntegerRange,
   isBigInt,
-  isNumber,
   normalizeNumber,
   NUMBER_ZERO,
 } from "./numeric.ts";
 import {
-  FromNumberOptions,
   FromStringOptions,
   REGEX,
   resolveRadix,
-  RoundingMode,
   ToStringOptions,
 } from "./integer.ts";
 import { isString } from "./utils.ts";
@@ -42,107 +38,7 @@ export function isEven(test: number): boolean {
   return Number.isSafeInteger(test) && ((test % 2) === ZERO);
 }
 
-export function fromNumber(
-  source: number,
-  options?: FromNumberOptions,
-): number {
-  if (isNumber(source) !== true) {
-    throw new TypeError("`source` must be a `number`.");
-  }
-  if (Number.isNaN(source)) {
-    throw new RangeError("`source` must not be `Number.NaN`.");
-  }
-
-  if (Number.isSafeInteger(source)) {
-    return normalizeNumber(source);
-  } else if (source > Number.MAX_SAFE_INTEGER) {
-    return Number.MAX_SAFE_INTEGER;
-  } else if (source < Number.MIN_SAFE_INTEGER) {
-    return Number.MIN_SAFE_INTEGER;
-  }
-
-  const rounded = _roundToSafeInteger(source, options?.roundingMode);
-  return clampToSafeInteger(rounded);
-}
-
-function _roundToSafeInteger(
-  source: number,
-  roundingMode?: RoundingMode,
-): number {
-  if (Number.isFinite(source) !== true) {
-    throw new Error("TODO");
-  }
-
-  const integralPart = normalizeNumber(Math.trunc(source));
-  const integralPartIsEven = isEven(integralPart);
-
-  const resolvedRoundingMode =
-    Object.values(RoundingMode).includes(roundingMode as RoundingMode)
-      ? roundingMode
-      : RoundingMode.TRUNCATE;
-
-  if (Number.isInteger(source)) {
-    return normalizeNumber(source);
-  }
-
-  const nearestP = normalizeNumber(Math.ceil(source));
-  const nearestN = normalizeNumber(Math.floor(source));
-  const sourceIsNegative = source < 0;
-  const nearestPH = nearestP - 0.5;
-  const nearestNH = nearestN + 0.5;
-
-  const halfUp = (): number => {
-    return (source >= nearestPH) ? nearestP : nearestN;
-  };
-
-  const halfDown = (): number => {
-    return (source <= nearestNH) ? nearestN : nearestP;
-  };
-
-  switch (resolvedRoundingMode) {
-    case RoundingMode.UP:
-      return nearestP;
-
-    case RoundingMode.DOWN:
-      return nearestN;
-
-    case RoundingMode.TOWARD_ZERO:
-      return integralPart;
-
-    case RoundingMode.AWAY_FROM_ZERO:
-      return sourceIsNegative ? nearestN : nearestP;
-
-    case RoundingMode.HALF_UP:
-      return halfUp();
-
-    case RoundingMode.HALF_DOWN:
-      return halfDown();
-
-    case RoundingMode.HALF_TOWARD_ZERO:
-      return sourceIsNegative ? halfUp() : halfDown();
-
-    case RoundingMode.HALF_AWAY_FROM_ZERO:
-      return sourceIsNegative ? halfDown() : halfUp();
-
-    case RoundingMode.HALF_TO_EVEN:
-      if (sourceIsNegative) {
-        if (source === nearestPH) {
-          return integralPartIsEven ? integralPart : nearestN;
-        }
-        return halfDown();
-      }
-
-      if (source === nearestNH) {
-        return integralPartIsEven ? integralPart : nearestP;
-      }
-      return halfUp();
-
-    default:
-      return ZERO as never;
-  }
-}
-
-// toNumber は無意味なので不要
+//XXX fromNumber
 
 export function fromBigInt(
   source: bigint, /* , options?: FromBigIntOptions */

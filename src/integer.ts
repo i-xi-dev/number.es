@@ -1,4 +1,29 @@
-import { Radix } from "./numeric.ts";
+import {
+  BIGINT_ZERO,
+  isBigInt,
+  normalizeNumber,
+  NUMBER_ZERO,
+  numeric,
+  Radix,
+} from "./numeric.ts";
+
+export function isOdd(test: numeric): boolean {
+  if (Number.isSafeInteger(test)) {
+    return (((test as number) % 2) !== NUMBER_ZERO);
+  } else if (isBigInt(test)) {
+    return ((test % 2n) !== BIGINT_ZERO);
+  }
+  return false;
+}
+
+export function isEven(test: numeric): boolean {
+  if (Number.isSafeInteger(test)) {
+    return (((test as number) % 2) === NUMBER_ZERO);
+  } else if (isBigInt(test)) {
+    return ((test % 2n) === BIGINT_ZERO);
+  }
+  return false;
+}
 
 const UP = "up"; // TOWARD_POSITIVE_INFINITY
 const DOWN = "down"; // TOWARD_NEGATIVE_INFINITY
@@ -35,18 +60,98 @@ export const RoundingMode = {
 
 export type RoundingMode = typeof RoundingMode[keyof typeof RoundingMode];
 
-export type FromNumberOptions = {
-  roundingMode?: RoundingMode;
-  //XXX 範囲外の場合のフォールバック
-};
+export function roundNumber(
+  input: number,
+  roundingMode?: RoundingMode,
+): number {
+  if (Number.isFinite(input) !== true) {
+    throw new TypeError("`input` must be a finite number.");
+  }
 
-//export type FromBigIntOptions = {
-//XXX 範囲外の場合のフォールバック
-//};
+  const integralPart = normalizeNumber(Math.trunc(input));
+  const integralPartIsEven = isEven(integralPart);
+
+  const resolvedRoundingMode =
+    Object.values(RoundingMode).includes(roundingMode as RoundingMode)
+      ? roundingMode
+      : RoundingMode.TRUNCATE;
+
+  if (Number.isInteger(input)) {
+    return normalizeNumber(input);
+  }
+
+  const nearestP = normalizeNumber(Math.ceil(input));
+  const nearestN = normalizeNumber(Math.floor(input));
+  const sourceIsNegative = input < 0;
+  const nearestPH = nearestP - 0.5;
+  const nearestNH = nearestN + 0.5;
+
+  const halfUp = (): number => {
+    return (input >= nearestPH) ? nearestP : nearestN;
+  };
+
+  const halfDown = (): number => {
+    return (input <= nearestNH) ? nearestN : nearestP;
+  };
+
+  switch (resolvedRoundingMode) {
+    case RoundingMode.UP:
+      return nearestP;
+
+    case RoundingMode.DOWN:
+      return nearestN;
+
+    case RoundingMode.TOWARD_ZERO:
+      return integralPart;
+
+    case RoundingMode.AWAY_FROM_ZERO:
+      return sourceIsNegative ? nearestN : nearestP;
+
+    case RoundingMode.HALF_UP:
+      return halfUp();
+
+    case RoundingMode.HALF_DOWN:
+      return halfDown();
+
+    case RoundingMode.HALF_TOWARD_ZERO:
+      return sourceIsNegative ? halfUp() : halfDown();
+
+    case RoundingMode.HALF_AWAY_FROM_ZERO:
+      return sourceIsNegative ? halfDown() : halfUp();
+
+    case RoundingMode.HALF_TO_EVEN:
+      if (sourceIsNegative) {
+        if (input === nearestPH) {
+          return integralPartIsEven ? integralPart : nearestN;
+        }
+        return halfDown();
+      }
+
+      if (input === nearestNH) {
+        return integralPartIsEven ? integralPart : nearestP;
+      }
+      return halfUp();
+
+    default:
+      return NUMBER_ZERO as never;
+  }
+}
+
+// export type FromNumberOptions = {
+//   //XXX 整数以外も受け付けるか否か
+//   roundingMode?: RoundingMode;
+//   //XXX 範囲外の場合のフォールバック
+// };
+
+// export type FromBigIntOptions = {
+//   //XXX 範囲外の場合のフォールバック
+// };
 
 export type FromStringOptions = {
+  //XXX & FromNumberOptions
+  //XXX trimするか否か
   radix: Radix;
-  //XXX 整数以外も受け付けるか、trimするかどうか、パース出来ない場合のフォールバック
+  //XXX パース出来ない場合のフォールバック
 };
 
 export type ToStringOptions = {
