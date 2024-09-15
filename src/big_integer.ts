@@ -1,11 +1,6 @@
 import { BIGINT_ZERO, inSafeIntegerRange, isBigInt, Radix } from "./numeric.ts";
 import { isString } from "./utils.ts";
-import {
-  FromStringOptions,
-  REGEX,
-  resolveRadix,
-  ToStringOptions,
-} from "./integer.ts";
+import { REGEX, resolveRadix, ToStringOptions } from "./integer.ts";
 
 export const ZERO = BIGINT_ZERO;
 
@@ -81,33 +76,34 @@ export function fromNumber(source: number): bigint {
 
 export function toNumber(source: bigint): number {
   if (isBigInt(source) !== true) {
-    throw new TypeError("TODO");
+    throw new TypeError("`source` must be a `bigint`.");
   }
   if (inSafeIntegerRange(source) !== true) {
-    throw new RangeError("TODO");
+    throw new RangeError("`source` must be within the range of safe integer.");
   }
   return Number(source);
 }
 
 export function fromString(
   source: string,
-  options?: FromStringOptions,
+  //XXX options?: FromStringOptions, 依存ゼロの方針で行くなら10進以外のパーサの自作が必要
 ): bigint {
   if (isString(source) !== true) {
-    throw new TypeError("`source` must be a string.");
+    throw new TypeError("`source` must be a `string`.");
   }
 
-  const radix = resolveRadix(options?.radix);
-  const regex = REGEX[radix];
+  // const radix = resolveRadix(options?.radix);
+  // const regex = REGEX[radix];
+  const regex = REGEX[Radix.DECIMAL];
   if (regex.test(source) !== true) {
     throw new RangeError("`source` must be a representation of a integer.");
   }
 
-  if (radix === Radix.DECIMAL) {
-    return BigInt(source);
-  } else {
-    throw new Error("not implemented"); //TODO 10進に変換しないと
-  }
+  // if (radix === Radix.DECIMAL) {
+  return BigInt(source);
+  // } else {
+  //   //XXX
+  // }
 }
 
 export function toString(source: bigint, options?: ToStringOptions): string {

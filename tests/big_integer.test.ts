@@ -362,8 +362,107 @@ Deno.test("BigInteger.fromNumber()", () => {
   assertStrictEquals(BigInteger.fromNumber(SIMIN), BigInt(SIMIN));
 });
 
-//TODO toNumber
+Deno.test("BigInteger.toNumber()", () => {
+  const rfe1 = "`source` must be a `bigint`.";
 
-//TODO fromString
+  assertThrows(
+    () => {
+      BigInteger.toNumber(undefined as unknown as bigint);
+    },
+    TypeError,
+    rfe1,
+  );
+
+  assertThrows(
+    () => {
+      BigInteger.toNumber(0 as unknown as bigint);
+    },
+    TypeError,
+    rfe1,
+  );
+
+  const rfe2 = "`source` must be within the range of safe integer.";
+
+  assertThrows(
+    () => {
+      BigInteger.toNumber(BigInt(Number.MAX_SAFE_INTEGER) + 1n);
+    },
+    RangeError,
+    rfe2,
+  );
+
+  assertThrows(
+    () => {
+      BigInteger.toNumber(BigInt(Number.MIN_SAFE_INTEGER) - 1n);
+    },
+    RangeError,
+    rfe2,
+  );
+
+  assertStrictEquals(BigInteger.toNumber(-1n), -1);
+  assertStrictEquals(BigInteger.toNumber(-0n), 0);
+  assertStrictEquals(BigInteger.toNumber(0n), 0);
+  assertStrictEquals(BigInteger.toNumber(0n).toString(), "0");
+  assertStrictEquals(BigInteger.toNumber(1n), 1);
+
+  assertStrictEquals(BigInteger.toNumber(BigInt(SIMAX)), SIMAX);
+  assertStrictEquals(BigInteger.toNumber(BigInt(SIMIN)), SIMIN);
+});
+
+Deno.test("BigInteger.fromString()", () => {
+  const rfe1 = "`source` must be a `string`.";
+
+  assertThrows(
+    () => {
+      BigInteger.fromString(undefined as unknown as string);
+    },
+    TypeError,
+    rfe1,
+  );
+
+  assertThrows(
+    () => {
+      BigInteger.fromString(0 as unknown as string);
+    },
+    TypeError,
+    rfe1,
+  );
+
+  const rfe2 = "`source` must be a representation of a integer.";
+
+  assertThrows(
+    () => {
+      BigInteger.fromString("");
+    },
+    RangeError,
+    rfe2,
+  );
+
+  assertThrows(
+    () => {
+      BigInteger.fromString("g");
+    },
+    RangeError,
+    rfe2,
+  );
+
+  assertStrictEquals(BigInteger.fromString("-1"), -1n);
+  assertStrictEquals(BigInteger.fromString("-0"), 0n);
+  assertStrictEquals(BigInteger.fromString("-0").toString(), "0");
+  assertStrictEquals(BigInteger.fromString("1"), 1n);
+
+  assertStrictEquals(BigInteger.fromString("2"), 2n);
+  assertStrictEquals(BigInteger.fromString("3"), 3n);
+  assertStrictEquals(BigInteger.fromString("4"), 4n);
+  assertStrictEquals(BigInteger.fromString("5"), 5n);
+  assertStrictEquals(BigInteger.fromString("6"), 6n);
+  assertStrictEquals(BigInteger.fromString("7"), 7n);
+  assertStrictEquals(BigInteger.fromString("8"), 8n);
+  assertStrictEquals(BigInteger.fromString("9"), 9n);
+  assertStrictEquals(BigInteger.fromString("10"), 10n);
+
+  assertStrictEquals(BigInteger.fromString(SIMAX.toString()), BigInt(SIMAX));
+  assertStrictEquals(BigInteger.fromString(SIMIN.toString()), BigInt(SIMIN));
+});
 
 //TODO toString
