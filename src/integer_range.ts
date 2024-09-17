@@ -6,10 +6,11 @@ export interface IntegerRange<T extends numeric> {
   get size(): number;
   rangeEquals(otherRange: IntegerRange.Like<T>): boolean;
   overlaps(otherRange: IntegerRange.Like<T>): boolean;
-  isSuperrangeOf(otherRange: IntegerRange.Like<T>): boolean;
-  // isSubrangeOf(otherRange: IntegerRange.Like<T>): boolean;
-  // touches(otherRange: IntegerRange.Like<T>): boolean;
-  // disjoint(otherRange: IntegerRange.Like<T>): boolean;
+
+  isSuperrangeOf(otherRange: IntegerRange.Like<T>): boolean; //covers
+  // isSubrangeOf(otherRange: IntegerRange.Like<T>): boolean;//isCoveredBy
+  // isAdjacentTo(otherRange: IntegerRange.Like<T>): boolean;
+  // isDisjointFrom(otherRange: IntegerRange.Like<T>): boolean;
   // exceptWith(otherRange: IntegerRange.Like): IntegerRange;
   // intersectWith(otherRange: IntegerRange.Like): IntegerRange;
   // unionWith(otherRange: IntegerRange.Like): IntegerRange;
@@ -21,7 +22,6 @@ export interface IntegerRange<T extends numeric> {
   toArray(): Array<T>;
   toSet(): Set<T>;
 }
-//TODO 命名をSetのメソッド名に寄せる
 
 export namespace IntegerRange {
   export type Tuple<T extends numeric> = [min: T, max: T] | [
@@ -35,16 +35,51 @@ export namespace IntegerRange {
 
   export type Like<T extends numeric> = Tuple<T> | Struct<T>;
 
-  export function equals<T extends numeric>(self: Struct<T>, other: Struct<T>) {
+  export function rangeEquals<T extends numeric>(
+    self: Struct<T>,
+    other: Struct<T>,
+  ) {
     return (self.min === other.min) && (self.max === other.max);
   }
 
-  export function aOverlapsB<T extends numeric>(a: Struct<T>, b: Struct<T>) {
-    return (a.min <= b.max) || (a.max >= b.min);
+  export function rangeOverlaps<T extends numeric>(
+    self: Struct<T>,
+    other: Struct<T>,
+  ) {
+    return (self.min <= other.max) && (self.max >= other.min);
   }
 
-  export function aContainsB<T extends numeric>(a: Struct<T>, b: Struct<T>) {
-    return (a.min <= b.min) && (a.max >= b.max);
+  export function rangeCovers<T extends numeric>(
+    self: Struct<T>,
+    other: Struct<T>,
+  ) {
+    return (self.min <= other.min) && (self.max >= other.max);
+  }
+
+  export function rangeIsDisjointFrom<T extends numeric>(
+    self: Struct<T>,
+    other: Struct<T>,
+  ) {
+    return (rangeOverlaps(self, other) !== true);
+  }
+
+  // 図形のtouchesとは意味が異なる。disjointかつ隣接
+  export function rangeIsAdjacentTo<T extends numeric>(
+    self: Struct<T>,
+    other: Struct<T>,
+  ) {
+    if (rangeIsDisjointFrom(self, other) !== true) {
+      return false;
+    }
+
+    const one = (isBigInt(self.min) ? 1n : 1) as T;
+    if ((other.min - self.max) === one) {
+      return true;
+    } else if ((self.min - other.max) === one) {
+      return true;
+    }
+
+    return false;
   }
 
   export namespace Struct {

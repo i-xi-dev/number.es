@@ -40,7 +40,7 @@ export class BigIntegerRange<T extends bigint> implements IntegerRange<T> {
   rangeEquals(otherRangeLike: BigIntegerRange.Like<T>): boolean {
     try {
       const otherRange = IntegerRange.Struct.fromRangeLike(otherRangeLike);
-      return IntegerRange.equals(this, otherRange);
+      return IntegerRange.rangeEquals(this, otherRange);
     } catch {
       return false;
     }
@@ -49,7 +49,7 @@ export class BigIntegerRange<T extends bigint> implements IntegerRange<T> {
   overlaps(otherRangeLike: BigIntegerRange.Like<T>): boolean {
     try {
       const otherRange = IntegerRange.Struct.fromRangeLike(otherRangeLike);
-      return IntegerRange.aOverlapsB(this, otherRange);
+      return IntegerRange.rangeOverlaps(this, otherRange);
     } catch {
       return false;
     }
@@ -58,7 +58,7 @@ export class BigIntegerRange<T extends bigint> implements IntegerRange<T> {
   isSuperrangeOf(otherRangeLike: BigIntegerRange.Like<T>): boolean {
     try {
       const otherRange = IntegerRange.Struct.fromRangeLike(otherRangeLike);
-      return IntegerRange.aContainsB(this, otherRange);
+      return IntegerRange.rangeCovers(this, otherRange);
     } catch {
       return false;
     }
@@ -88,7 +88,7 @@ export class BigIntegerRange<T extends bigint> implements IntegerRange<T> {
 
   equals(other: unknown): boolean {
     if (other instanceof BigIntegerRange) {
-      return IntegerRange.equals(this, other);
+      return IntegerRange.rangeEquals(this, other);
     }
     return false;
   }
