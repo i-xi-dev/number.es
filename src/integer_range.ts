@@ -114,12 +114,14 @@ export namespace IntegerRange {
       } else if (isBigInt(parsedMin) && isBigInt(parsedMax)) {
         // ok
       } else {
-        throw new TypeError("TODO");
+        throw new TypeError(
+          "`rangeLike` must have the integers `min` and `max`.",
+        );
       }
 
       if ((parsedMin as T) > (parsedMax as T)) {
         throw new RangeError(
-          "`rangeLike[0]` must be less than or equal to `rangeLike[1]`",
+          "`min` must be less than or equal to `max`.",
         );
       }
 
