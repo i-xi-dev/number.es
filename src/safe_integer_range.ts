@@ -9,6 +9,7 @@ export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
     this.#min = min;
     this.#max = max;
   }
+
   get min(): T {
     return this.#min;
   }
@@ -32,7 +33,9 @@ export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
     return this.from(args as SafeIntegerRange.Tuple<T>);
   }
 
-  rangeEquals(otherRangeLike: SafeIntegerRange.Like<T>): boolean {
+  rangeEquals<U extends number>(
+    otherRangeLike: SafeIntegerRange.Like<U>,
+  ): boolean {
     try {
       const otherRange = IntegerRange.Struct.fromRangeLike(otherRangeLike);
       return IntegerRange.rangeEquals(this, otherRange);

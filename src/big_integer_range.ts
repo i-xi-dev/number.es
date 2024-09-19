@@ -37,7 +37,9 @@ export class BigIntegerRange<T extends bigint> implements IntegerRange<T> {
     return this.from(args as BigIntegerRange.Tuple<T>);
   }
 
-  rangeEquals(otherRangeLike: BigIntegerRange.Like<T>): boolean {
+  rangeEquals<U extends bigint>(
+    otherRangeLike: BigIntegerRange.Like<U>,
+  ): boolean {
     try {
       const otherRange = IntegerRange.Struct.fromRangeLike(otherRangeLike);
       return IntegerRange.rangeEquals(this, otherRange);

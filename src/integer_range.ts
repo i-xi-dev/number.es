@@ -35,38 +35,41 @@ export namespace IntegerRange {
 
   export type Like<T extends numeric> = Tuple<T> | Struct<T>;
 
-  export function rangeEquals<T extends numeric>(
+  export function rangeEquals<T extends numeric, U extends numeric>(
     self: Struct<T>,
-    other: Struct<T>,
+    other: Struct<U>,
   ) {
-    return (self.min === other.min) && (self.max === other.max);
+    return ((self.min as numeric) === (other.min as numeric)) &&
+      ((self.max as numeric) === (other.max as numeric));
   }
 
-  export function rangeOverlaps<T extends numeric>(
+  export function rangeOverlaps<T extends numeric, U extends numeric>(
     self: Struct<T>,
-    other: Struct<T>,
+    other: Struct<U>,
   ) {
-    return (self.min <= other.max) && (self.max >= other.min);
+    return ((typeof self.min) === (typeof self.max)) &&
+      (self.min <= other.max) && (self.max >= other.min);
   }
 
-  export function rangeCovers<T extends numeric>(
+  export function rangeCovers<T extends numeric, U extends numeric>(
     self: Struct<T>,
-    other: Struct<T>,
+    other: Struct<U>,
   ) {
-    return (self.min <= other.min) && (self.max >= other.max);
+    return ((typeof self.min) === (typeof self.max)) &&
+      (self.min <= other.min) && (self.max >= other.max);
   }
 
-  export function rangeIsDisjointFrom<T extends numeric>(
+  export function rangeIsDisjointFrom<T extends numeric, U extends numeric>(
     self: Struct<T>,
-    other: Struct<T>,
+    other: Struct<U>,
   ) {
     return (rangeOverlaps(self, other) !== true);
   }
 
   // 図形のtouchesとは意味が異なる。disjointかつ隣接
-  export function rangeIsAdjacentTo<T extends numeric>(
+  export function rangeIsAdjacentTo<T extends numeric, U extends numeric>(
     self: Struct<T>,
-    other: Struct<T>,
+    other: Struct<U>,
   ) {
     if (rangeIsDisjointFrom(self, other) !== true) {
       return false;
