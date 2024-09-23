@@ -71,6 +71,9 @@ Deno.test("SafeIntegerRange.of()", () => {
 
 Deno.test("SafeIntegerRange.prototype.rangeEquals()", () => {
   assertStrictEquals(range00.rangeEquals(range00), true);
+  assertStrictEquals(range00.rangeEquals([0]), true);
+  assertStrictEquals(range00.rangeEquals([0, 0]), true);
+  assertStrictEquals(range00.rangeEquals({ min: 0, max: 0 }), true);
   assertStrictEquals(range00.rangeEquals(range01), false);
   assertStrictEquals(range00.rangeEquals(range10), false);
 
@@ -79,6 +82,8 @@ Deno.test("SafeIntegerRange.prototype.rangeEquals()", () => {
   assertStrictEquals(range00.rangeEquals(range10b), false);
 
   assertStrictEquals(range01.rangeEquals(range00), false);
+  assertStrictEquals(range01.rangeEquals([0, 1]), true);
+  assertStrictEquals(range01.rangeEquals({ min: 0, max: 1 }), true);
   assertStrictEquals(range01.rangeEquals(range01), true);
   assertStrictEquals(range01.rangeEquals(range10), false);
 
@@ -113,6 +118,9 @@ Deno.test("SafeIntegerRange.prototype.rangeEquals()", () => {
 
 Deno.test("SafeIntegerRange.prototype.overlaps()", () => {
   assertStrictEquals(range00.overlaps(range00), true);
+  assertStrictEquals(range00.overlaps([0]), true);
+  assertStrictEquals(range00.overlaps([0, 0]), true);
+  assertStrictEquals(range00.overlaps({ min: 0, max: 0 }), true);
   assertStrictEquals(range00.overlaps(range01), true);
   assertStrictEquals(range00.overlaps(range10), true);
 
@@ -121,6 +129,8 @@ Deno.test("SafeIntegerRange.prototype.overlaps()", () => {
   assertStrictEquals(range00.overlaps(range10b), true);
 
   assertStrictEquals(range01.overlaps(range00), true);
+  assertStrictEquals(range01.overlaps([0, 1]), true);
+  assertStrictEquals(range01.overlaps({ min: 0, max: 1 }), true);
   assertStrictEquals(range01.overlaps(range01), true);
   assertStrictEquals(range01.overlaps(range10), true);
 
@@ -155,6 +165,9 @@ Deno.test("SafeIntegerRange.prototype.overlaps()", () => {
 
 Deno.test("SafeIntegerRange.prototype.covers()", () => {
   assertStrictEquals(range00.covers(range00), true);
+  assertStrictEquals(range00.covers([0]), true);
+  assertStrictEquals(range00.covers([0, 0]), true);
+  assertStrictEquals(range00.covers({ min: 0, max: 0 }), true);
   assertStrictEquals(range00.covers(range01), false);
   assertStrictEquals(range00.covers(range10), false);
 
@@ -163,6 +176,8 @@ Deno.test("SafeIntegerRange.prototype.covers()", () => {
   assertStrictEquals(range00.covers(range10b), false);
 
   assertStrictEquals(range01.covers(range00), true);
+  assertStrictEquals(range01.covers([0, 1]), true);
+  assertStrictEquals(range01.covers({ min: 0, max: 1 }), true);
   assertStrictEquals(range01.covers(range01), true);
   assertStrictEquals(range01.covers(range10), false);
 
@@ -197,6 +212,9 @@ Deno.test("SafeIntegerRange.prototype.covers()", () => {
 
 Deno.test("SafeIntegerRange.prototype.isDisjointFrom()", () => {
   assertStrictEquals(range00.isDisjointFrom(range00), false);
+  assertStrictEquals(range00.isDisjointFrom([0]), false);
+  assertStrictEquals(range00.isDisjointFrom([0, 0]), false);
+  assertStrictEquals(range00.isDisjointFrom({ min: 0, max: 0 }), false);
   assertStrictEquals(range00.isDisjointFrom(range01), false);
   assertStrictEquals(range00.isDisjointFrom(range10), false);
 
@@ -205,6 +223,8 @@ Deno.test("SafeIntegerRange.prototype.isDisjointFrom()", () => {
   assertStrictEquals(range00.isDisjointFrom(range10b), false);
 
   assertStrictEquals(range01.isDisjointFrom(range00), false);
+  assertStrictEquals(range01.isDisjointFrom([0, 1]), false);
+  assertStrictEquals(range01.isDisjointFrom({ min: 0, max: 1 }), false);
   assertStrictEquals(range01.isDisjointFrom(range01), false);
   assertStrictEquals(range01.isDisjointFrom(range10), false);
 
@@ -239,6 +259,9 @@ Deno.test("SafeIntegerRange.prototype.isDisjointFrom()", () => {
 
 Deno.test("SafeIntegerRange.prototype.isAdjacentTo()", () => {
   assertStrictEquals(range00.isAdjacentTo(range00), false);
+  assertStrictEquals(range00.isAdjacentTo([0]), false);
+  assertStrictEquals(range00.isAdjacentTo([0, 0]), false);
+  assertStrictEquals(range00.isAdjacentTo({ min: 0, max: 0 }), false);
   assertStrictEquals(range00.isAdjacentTo(range01), false);
   assertStrictEquals(range00.isAdjacentTo(range10), false);
 
@@ -247,6 +270,8 @@ Deno.test("SafeIntegerRange.prototype.isAdjacentTo()", () => {
   assertStrictEquals(range00.isAdjacentTo(range10b), false);
 
   assertStrictEquals(range01.isAdjacentTo(range00), false);
+  assertStrictEquals(range01.isAdjacentTo([0, 1]), false);
+  assertStrictEquals(range01.isAdjacentTo({ min: 0, max: 1 }), false);
   assertStrictEquals(range01.isAdjacentTo(range01), false);
   assertStrictEquals(range01.isAdjacentTo(range10), false);
 
@@ -312,7 +337,7 @@ Deno.test("SafeIntegerRange.prototype.includes()", () => {
 
 Deno.test("SafeIntegerRange.prototype.clamp()", () => {
   const em1 = "The type of `input` does not match the type of range.";
-  
+
   assertThrows(
     () => {
       range00.clamp(undefined as unknown as number);
@@ -334,13 +359,13 @@ Deno.test("SafeIntegerRange.prototype.clamp()", () => {
   assertStrictEquals(Object.is(range00.clamp(-0), 0), true);
   assertStrictEquals(range00.clamp(0), 0);
   assertStrictEquals(range00.clamp(1), 0);
-  
+
   assertStrictEquals(range01.clamp(-2), 0);
   assertStrictEquals(range01.clamp(-1), 0);
   assertStrictEquals(range01.clamp(0), 0);
   assertStrictEquals(range01.clamp(1), 1);
   assertStrictEquals(range01.clamp(2), 1);
-  
+
   assertStrictEquals(range10.clamp(-2), -1);
   assertStrictEquals(range10.clamp(-1), -1);
   assertStrictEquals(range10.clamp(0), 0);
@@ -349,6 +374,28 @@ Deno.test("SafeIntegerRange.prototype.clamp()", () => {
 });
 
 Deno.test("SafeIntegerRange.prototype.equals()", () => {
+  assertStrictEquals(range00.equals(range00), true);
+  assertStrictEquals(range00.equals([0]), false);
+  assertStrictEquals(range00.equals([0, 0]), false);
+  assertStrictEquals(range00.equals({ min: 0, max: 0 }), false);
+  assertStrictEquals(range00.equals(range00b), true);
+  assertStrictEquals(range00.equals(range01), false);
 });
 
-//TODO
+Deno.test("SafeIntegerRange.prototype[Symbol.iterator]()", () => {
+  assertStrictEquals(JSON.stringify([...range00[Symbol.iterator]()]), "[0]");
+  assertStrictEquals(JSON.stringify([...range01[Symbol.iterator]()]), "[0,1]");
+  assertStrictEquals(JSON.stringify([...range10[Symbol.iterator]()]), "[-1,0]");
+});
+
+Deno.test("SafeIntegerRange.prototype.toArray()", () => {
+  assertStrictEquals(JSON.stringify(range00.toArray()), "[0]");
+  assertStrictEquals(JSON.stringify(range01.toArray()), "[0,1]");
+  assertStrictEquals(JSON.stringify(range10.toArray()), "[-1,0]");
+});
+
+Deno.test("SafeIntegerRange.prototype.toSet()", () => {
+  assertStrictEquals(JSON.stringify([...range00.toSet()]), "[0]");
+  assertStrictEquals(JSON.stringify([...range01.toSet()]), "[0,1]");
+  assertStrictEquals(JSON.stringify([...range10.toSet()]), "[-1,0]");
+});
