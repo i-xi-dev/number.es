@@ -44,7 +44,9 @@ export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
     }
   }
 
-  overlaps(otherRangeLike: SafeIntegerRange.Like<T>): boolean {
+  overlaps<U extends number>(
+    otherRangeLike: SafeIntegerRange.Like<U>,
+  ): boolean {
     try {
       const otherRange = IntegerRange.Struct.fromRangeLike(otherRangeLike);
       return IntegerRange.rangeOverlaps(this, otherRange);
@@ -53,10 +55,32 @@ export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
     }
   }
 
-  isSuperrangeOf(otherRangeLike: SafeIntegerRange.Like<T>): boolean {
+  covers<U extends number>(otherRangeLike: SafeIntegerRange.Like<U>): boolean {
     try {
       const otherRange = IntegerRange.Struct.fromRangeLike(otherRangeLike);
       return IntegerRange.rangeCovers(this, otherRange);
+    } catch {
+      return false;
+    }
+  }
+
+  isDisjointFrom<U extends number>(
+    otherRangeLike: SafeIntegerRange.Like<U>,
+  ): boolean {
+    try {
+      const otherRange = IntegerRange.Struct.fromRangeLike(otherRangeLike);
+      return IntegerRange.rangeIsDisjointFrom(this, otherRange);
+    } catch {
+      return false;
+    }
+  }
+
+  isAdjacentTo<U extends number>(
+    otherRangeLike: SafeIntegerRange.Like<U>,
+  ): boolean {
+    try {
+      const otherRange = IntegerRange.Struct.fromRangeLike(otherRangeLike);
+      return IntegerRange.rangeIsAdjacentTo(this, otherRange);
     } catch {
       return false;
     }

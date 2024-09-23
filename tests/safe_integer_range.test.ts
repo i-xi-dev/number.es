@@ -77,7 +77,7 @@ Deno.test("SafeIntegerRange.rangeEquals()", () => {
   assertStrictEquals(range00.rangeEquals(range00b), true);
   assertStrictEquals(range00.rangeEquals(range01b), false);
   assertStrictEquals(range00.rangeEquals(range10b), false);
-  
+
   assertStrictEquals(range01.rangeEquals(range00), false);
   assertStrictEquals(range01.rangeEquals(range01), true);
   assertStrictEquals(range01.rangeEquals(range10), false);
@@ -85,7 +85,7 @@ Deno.test("SafeIntegerRange.rangeEquals()", () => {
   assertStrictEquals(range01.rangeEquals(range00b), false);
   assertStrictEquals(range01.rangeEquals(range01b), true);
   assertStrictEquals(range01.rangeEquals(range10b), false);
-  
+
   assertStrictEquals(range10.rangeEquals(range00), false);
   assertStrictEquals(range10.rangeEquals(range01), false);
   assertStrictEquals(range10.rangeEquals(range10), true);
@@ -93,7 +93,7 @@ Deno.test("SafeIntegerRange.rangeEquals()", () => {
   assertStrictEquals(range10.rangeEquals(range00b), false);
   assertStrictEquals(range10.rangeEquals(range01b), false);
   assertStrictEquals(range10.rangeEquals(range10b), true);
-  
+
   assertStrictEquals(range23.rangeEquals(range00), false);
   assertStrictEquals(range23.rangeEquals(range01), false);
   assertStrictEquals(range23.rangeEquals(range10), false);
@@ -101,7 +101,7 @@ Deno.test("SafeIntegerRange.rangeEquals()", () => {
   assertStrictEquals(range23.rangeEquals(range00b), false);
   assertStrictEquals(range23.rangeEquals(range01b), false);
   assertStrictEquals(range23.rangeEquals(range10b), false);
-  
+
   assertStrictEquals(range32.rangeEquals(range00), false);
   assertStrictEquals(range32.rangeEquals(range01), false);
   assertStrictEquals(range32.rangeEquals(range10), false);
@@ -112,6 +112,206 @@ Deno.test("SafeIntegerRange.rangeEquals()", () => {
 });
 
 Deno.test("SafeIntegerRange.overlaps()", () => {
+  assertStrictEquals(range00.overlaps(range00), true);
+  assertStrictEquals(range00.overlaps(range01), true);
+  assertStrictEquals(range00.overlaps(range10), true);
+
+  assertStrictEquals(range00.overlaps(range00b), true);
+  assertStrictEquals(range00.overlaps(range01b), true);
+  assertStrictEquals(range00.overlaps(range10b), true);
+
+  assertStrictEquals(range01.overlaps(range00), true);
+  assertStrictEquals(range01.overlaps(range01), true);
+  assertStrictEquals(range01.overlaps(range10), true);
+
+  assertStrictEquals(range01.overlaps(range00b), true);
+  assertStrictEquals(range01.overlaps(range01b), true);
+  assertStrictEquals(range01.overlaps(range10b), true);
+
+  assertStrictEquals(range10.overlaps(range00), true);
+  assertStrictEquals(range10.overlaps(range01), true);
+  assertStrictEquals(range10.overlaps(range10), true);
+
+  assertStrictEquals(range10.overlaps(range00b), true);
+  assertStrictEquals(range10.overlaps(range01b), true);
+  assertStrictEquals(range10.overlaps(range10b), true);
+
+  assertStrictEquals(range23.overlaps(range00), false);
+  assertStrictEquals(range23.overlaps(range01), false);
+  assertStrictEquals(range23.overlaps(range10), false);
+
+  assertStrictEquals(range23.overlaps(range00b), false);
+  assertStrictEquals(range23.overlaps(range01b), false);
+  assertStrictEquals(range23.overlaps(range10b), false);
+
+  assertStrictEquals(range32.overlaps(range00), false);
+  assertStrictEquals(range32.overlaps(range01), false);
+  assertStrictEquals(range32.overlaps(range10), false);
+
+  assertStrictEquals(range32.overlaps(range00b), false);
+  assertStrictEquals(range32.overlaps(range01b), false);
+  assertStrictEquals(range32.overlaps(range10b), false);
+});
+
+Deno.test("SafeIntegerRange.covers()", () => {
+  assertStrictEquals(range00.covers(range00), true);
+  assertStrictEquals(range00.covers(range01), false);
+  assertStrictEquals(range00.covers(range10), false);
+
+  assertStrictEquals(range00.covers(range00b), true);
+  assertStrictEquals(range00.covers(range01b), false);
+  assertStrictEquals(range00.covers(range10b), false);
+
+  assertStrictEquals(range01.covers(range00), true);
+  assertStrictEquals(range01.covers(range01), true);
+  assertStrictEquals(range01.covers(range10), false);
+
+  assertStrictEquals(range01.covers(range00b), true);
+  assertStrictEquals(range01.covers(range01b), true);
+  assertStrictEquals(range01.covers(range10b), false);
+
+  assertStrictEquals(range10.covers(range00), true);
+  assertStrictEquals(range10.covers(range01), false);
+  assertStrictEquals(range10.covers(range10), true);
+
+  assertStrictEquals(range10.covers(range00b), true);
+  assertStrictEquals(range10.covers(range01b), false);
+  assertStrictEquals(range10.covers(range10b), true);
+
+  assertStrictEquals(range23.covers(range00), false);
+  assertStrictEquals(range23.covers(range01), false);
+  assertStrictEquals(range23.covers(range10), false);
+
+  assertStrictEquals(range23.covers(range00b), false);
+  assertStrictEquals(range23.covers(range01b), false);
+  assertStrictEquals(range23.covers(range10b), false);
+
+  assertStrictEquals(range32.covers(range00), false);
+  assertStrictEquals(range32.covers(range01), false);
+  assertStrictEquals(range32.covers(range10), false);
+
+  assertStrictEquals(range32.covers(range00b), false);
+  assertStrictEquals(range32.covers(range01b), false);
+  assertStrictEquals(range32.covers(range10b), false);
+});
+
+Deno.test("SafeIntegerRange.isDisjointFrom()", () => {
+  assertStrictEquals(range00.isDisjointFrom(range00), false);
+  assertStrictEquals(range00.isDisjointFrom(range01), false);
+  assertStrictEquals(range00.isDisjointFrom(range10), false);
+
+  assertStrictEquals(range00.isDisjointFrom(range00b), false);
+  assertStrictEquals(range00.isDisjointFrom(range01b), false);
+  assertStrictEquals(range00.isDisjointFrom(range10b), false);
+
+  assertStrictEquals(range01.isDisjointFrom(range00), false);
+  assertStrictEquals(range01.isDisjointFrom(range01), false);
+  assertStrictEquals(range01.isDisjointFrom(range10), false);
+
+  assertStrictEquals(range01.isDisjointFrom(range00b), false);
+  assertStrictEquals(range01.isDisjointFrom(range01b), false);
+  assertStrictEquals(range01.isDisjointFrom(range10b), false);
+
+  assertStrictEquals(range10.isDisjointFrom(range00), false);
+  assertStrictEquals(range10.isDisjointFrom(range01), false);
+  assertStrictEquals(range10.isDisjointFrom(range10), false);
+
+  assertStrictEquals(range10.isDisjointFrom(range00b), false);
+  assertStrictEquals(range10.isDisjointFrom(range01b), false);
+  assertStrictEquals(range10.isDisjointFrom(range10b), false);
+
+  assertStrictEquals(range23.isDisjointFrom(range00), true);
+  assertStrictEquals(range23.isDisjointFrom(range01), true);
+  assertStrictEquals(range23.isDisjointFrom(range10), true);
+
+  assertStrictEquals(range23.isDisjointFrom(range00b), true);
+  assertStrictEquals(range23.isDisjointFrom(range01b), true);
+  assertStrictEquals(range23.isDisjointFrom(range10b), true);
+
+  assertStrictEquals(range32.isDisjointFrom(range00), true);
+  assertStrictEquals(range32.isDisjointFrom(range01), true);
+  assertStrictEquals(range32.isDisjointFrom(range10), true);
+
+  assertStrictEquals(range32.isDisjointFrom(range00b), true);
+  assertStrictEquals(range32.isDisjointFrom(range01b), true);
+  assertStrictEquals(range32.isDisjointFrom(range10b), true);
+});
+
+Deno.test("SafeIntegerRange.isAdjacentTo()", () => {
+  assertStrictEquals(range00.isAdjacentTo(range00), false);
+  assertStrictEquals(range00.isAdjacentTo(range01), false);
+  assertStrictEquals(range00.isAdjacentTo(range10), false);
+
+  assertStrictEquals(range00.isAdjacentTo(range00b), false);
+  assertStrictEquals(range00.isAdjacentTo(range01b), false);
+  assertStrictEquals(range00.isAdjacentTo(range10b), false);
+
+  assertStrictEquals(range01.isAdjacentTo(range00), false);
+  assertStrictEquals(range01.isAdjacentTo(range01), false);
+  assertStrictEquals(range01.isAdjacentTo(range10), false);
+
+  assertStrictEquals(range01.isAdjacentTo(range00b), false);
+  assertStrictEquals(range01.isAdjacentTo(range01b), false);
+  assertStrictEquals(range01.isAdjacentTo(range10b), false);
+
+  assertStrictEquals(range10.isAdjacentTo(range00), false);
+  assertStrictEquals(range10.isAdjacentTo(range01), false);
+  assertStrictEquals(range10.isAdjacentTo(range10), false);
+
+  assertStrictEquals(range10.isAdjacentTo(range00b), false);
+  assertStrictEquals(range10.isAdjacentTo(range01b), false);
+  assertStrictEquals(range10.isAdjacentTo(range10b), false);
+
+  assertStrictEquals(range23.isAdjacentTo(range00), false);
+  assertStrictEquals(range23.isAdjacentTo(range01), true);
+  assertStrictEquals(range23.isAdjacentTo(range10), false);
+
+  assertStrictEquals(range23.isAdjacentTo(range00b), false);
+  assertStrictEquals(range23.isAdjacentTo(range01b), true);
+  assertStrictEquals(range23.isAdjacentTo(range10b), false);
+
+  assertStrictEquals(range32.isAdjacentTo(range00), false);
+  assertStrictEquals(range32.isAdjacentTo(range01), false);
+  assertStrictEquals(range32.isAdjacentTo(range10), true);
+
+  assertStrictEquals(range32.isAdjacentTo(range00b), false);
+  assertStrictEquals(range32.isAdjacentTo(range01b), false);
+  assertStrictEquals(range32.isAdjacentTo(range10b), true);
+});
+
+Deno.test("SafeIntegerRange.includes()", () => {
+  assertStrictEquals(range00.includes(-1), false);
+  assertStrictEquals(range00.includes(-0), true);
+  assertStrictEquals(range00.includes(0), true);
+  assertStrictEquals(range00.includes(1), false);
+
+  assertStrictEquals(range01.includes(-1), false);
+  assertStrictEquals(range01.includes(-0), true);
+  assertStrictEquals(range01.includes(0), true);
+  assertStrictEquals(range01.includes(1), true);
+  assertStrictEquals(range01.includes(2), false);
+
+  assertStrictEquals(range10.includes(-2), false);
+  assertStrictEquals(range10.includes(-1), true);
+  assertStrictEquals(range10.includes(-0), true);
+  assertStrictEquals(range10.includes(0), true);
+  assertStrictEquals(range10.includes(1), false);
+
+  assertStrictEquals(range23.includes(0), false);
+  assertStrictEquals(range23.includes(1), false);
+  assertStrictEquals(range23.includes(2), true);
+  assertStrictEquals(range23.includes(3), true);
+  assertStrictEquals(range23.includes(4), false);
+
+  assertStrictEquals(range32.includes(-4), false);
+  assertStrictEquals(range32.includes(-3), true);
+  assertStrictEquals(range32.includes(-2), true);
+  assertStrictEquals(range32.includes(-1), false);
+  assertStrictEquals(range32.includes(0), false);
+});
+
+Deno.test("SafeIntegerRange.clamp()", () => {
+  const em1 = "The type of `input` does not match the type of range.";
 });
 
 //TODO
