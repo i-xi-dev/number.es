@@ -13,6 +13,29 @@ const range10b = SafeIntegerRange.from({ min: -1, max: 0 });
 
 const rangeX01 = SafeIntegerRange.of(-20, 280);
 
+Deno.test("new SafeIntegerRange()", () => {
+  const em1 = "Range size exceeds upper limit.";
+
+  assertThrows(
+    () => {
+      SafeIntegerRange.from([0, Number.MAX_SAFE_INTEGER]);
+    },
+    RangeError,
+    em1,
+  );
+
+  assertThrows(
+    () => {
+      SafeIntegerRange.from([-1, Number.MAX_SAFE_INTEGER]);
+    },
+    RangeError,
+    em1,
+  );
+
+  const x0 = SafeIntegerRange.from([1, Number.MAX_SAFE_INTEGER]);
+  assertStrictEquals(x0.size, Number.MAX_SAFE_INTEGER);
+});
+
 Deno.test("SafeIntegerRange.prototype.min", () => {
   assertStrictEquals(range00.min, 0);
   assertStrictEquals(range01.min, 0);

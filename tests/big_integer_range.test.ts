@@ -13,6 +13,29 @@ const range10b = BigIntegerRange.from({ min: -1n, max: 0n });
 
 const rangeX01 = BigIntegerRange.of(-20n, 280n);
 
+Deno.test("new BigIntegerRange()", () => {
+  const em1 = "Range size exceeds upper limit.";
+
+  assertThrows(
+    () => {
+      BigIntegerRange.from([0n, BigInt(Number.MAX_SAFE_INTEGER)]);
+    },
+    RangeError,
+    em1,
+  );
+
+  assertThrows(
+    () => {
+      BigIntegerRange.from([-1n, BigInt(Number.MAX_SAFE_INTEGER)]);
+    },
+    RangeError,
+    em1,
+  );
+
+  const x0 = BigIntegerRange.from([1n, BigInt(Number.MAX_SAFE_INTEGER)]);
+  assertStrictEquals(x0.size, Number.MAX_SAFE_INTEGER);
+});
+
 Deno.test("BigIntegerRange.prototype.min", () => {
   assertStrictEquals(range00.min, 0n);
   assertStrictEquals(range01.min, 0n);
@@ -383,19 +406,46 @@ Deno.test("BigIntegerRange.prototype.equals()", () => {
 });
 
 Deno.test("BigIntegerRange.prototype[Symbol.iterator]()", () => {
-  assertStrictEquals(JSON.stringify([...range00[Symbol.iterator]()].map(b=> b.toString(10))), '["0"]');
-  assertStrictEquals(JSON.stringify([...range01[Symbol.iterator]()].map(b=> b.toString(10))), '["0","1"]');
-  assertStrictEquals(JSON.stringify([...range10[Symbol.iterator]()].map(b=> b.toString(10))), '["-1","0"]');
+  assertStrictEquals(
+    JSON.stringify([...range00[Symbol.iterator]()].map((b) => b.toString(10))),
+    '["0"]',
+  );
+  assertStrictEquals(
+    JSON.stringify([...range01[Symbol.iterator]()].map((b) => b.toString(10))),
+    '["0","1"]',
+  );
+  assertStrictEquals(
+    JSON.stringify([...range10[Symbol.iterator]()].map((b) => b.toString(10))),
+    '["-1","0"]',
+  );
 });
 
 Deno.test("BigIntegerRange.prototype.toArray()", () => {
-  assertStrictEquals(JSON.stringify(range00.toArray().map(b=> b.toString(10))), '["0"]');
-  assertStrictEquals(JSON.stringify(range01.toArray().map(b=> b.toString(10))), '["0","1"]');
-  assertStrictEquals(JSON.stringify(range10.toArray().map(b=> b.toString(10))), '["-1","0"]');
+  assertStrictEquals(
+    JSON.stringify(range00.toArray().map((b) => b.toString(10))),
+    '["0"]',
+  );
+  assertStrictEquals(
+    JSON.stringify(range01.toArray().map((b) => b.toString(10))),
+    '["0","1"]',
+  );
+  assertStrictEquals(
+    JSON.stringify(range10.toArray().map((b) => b.toString(10))),
+    '["-1","0"]',
+  );
 });
 
 Deno.test("BigIntegerRange.prototype.toSet()", () => {
-  assertStrictEquals(JSON.stringify([...range00.toSet()].map(b=> b.toString(10))), '["0"]');
-  assertStrictEquals(JSON.stringify([...range01.toSet()].map(b=> b.toString(10))), '["0","1"]');
-  assertStrictEquals(JSON.stringify([...range10.toSet()].map(b=> b.toString(10))), '["-1","0"]');
+  assertStrictEquals(
+    JSON.stringify([...range00.toSet()].map((b) => b.toString(10))),
+    '["0"]',
+  );
+  assertStrictEquals(
+    JSON.stringify([...range01.toSet()].map((b) => b.toString(10))),
+    '["0","1"]',
+  );
+  assertStrictEquals(
+    JSON.stringify([...range10.toSet()].map((b) => b.toString(10))),
+    '["-1","0"]',
+  );
 });

@@ -6,6 +6,11 @@ export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
   readonly #max: T;
 
   private constructor(min: T, max: T) {
+    const size = max - min;
+    if ((size + 1) > Number.MAX_SAFE_INTEGER) {
+      throw new RangeError("Range size exceeds upper limit.");
+    }
+
     this.#min = min;
     this.#max = max;
   }
@@ -116,6 +121,7 @@ export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
     return false;
   }
 
+  // もし超巨大なレンジでも特に警告等しないので注意
   [Symbol.iterator](): IterableIterator<T> {
     const min = this.min;
     const max = this.max;
@@ -126,10 +132,12 @@ export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
     })();
   }
 
+  // もし超巨大なレンジでも特に警告等しないので注意
   toArray(): Array<T> {
     return [...this[Symbol.iterator]()];
   }
 
+  // もし超巨大なレンジでも特に警告等しないので注意
   toSet(): Set<T> {
     return new Set(this[Symbol.iterator]());
   }

@@ -6,6 +6,11 @@ export class BigIntegerRange<T extends bigint> implements IntegerRange<T> {
   readonly #max: T;
 
   private constructor(min: T, max: T) {
+    const size = (max as bigint) - (min as bigint); // なぜかsizeがnumber型とみなされる
+    if ((size + 1n) > Number.MAX_SAFE_INTEGER) {
+      throw new RangeError("Range size exceeds upper limit.");
+    }
+
     this.#min = min;
     this.#max = max;
   }
@@ -20,9 +25,9 @@ export class BigIntegerRange<T extends bigint> implements IntegerRange<T> {
 
   get size(): number {
     const d = this.#max - this.#min;
-    if (d > Number.MAX_SAFE_INTEGER) {
-      throw new Error("TODO");
-    }
+    // if (d > Number.MAX_SAFE_INTEGER) {
+    //   throw new Error("");
+    // }
     return Number(d) + 1;
   }
 
@@ -117,6 +122,7 @@ export class BigIntegerRange<T extends bigint> implements IntegerRange<T> {
     return false;
   }
 
+  // もし超巨大なレンジでも特に警告等しないので注意
   [Symbol.iterator](): IterableIterator<T> {
     const min = this.min;
     const max = this.max;
@@ -127,10 +133,12 @@ export class BigIntegerRange<T extends bigint> implements IntegerRange<T> {
     })();
   }
 
+  // もし超巨大なレンジでも特に警告等しないので注意
   toArray(): Array<T> {
     return [...this[Symbol.iterator]()];
   }
 
+  // もし超巨大なレンジでも特に警告等しないので注意
   toSet(): Set<T> {
     return new Set(this[Symbol.iterator]());
   }
