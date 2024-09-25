@@ -1,5 +1,5 @@
 import { assertStrictEquals, assertThrows } from "./deps.ts";
-import { uint8, Uint8 } from "../mod.ts";
+import { Uint8, uint8 } from "../mod.ts";
 
 Deno.test("Uint8.bitLength", () => {
   assertStrictEquals(Uint8.bitLength, 8);
@@ -101,7 +101,7 @@ Deno.test("Uint8.bitwiseOr()", () => {
     TypeError,
     e1,
   );
-  
+
   const e2 = "The type of `other` does not match the type of `uint8`.";
   assertThrows(
     () => {
@@ -230,5 +230,36 @@ Deno.test("Uint8.rotateLeft()", () => {
     },
     TypeError,
     e2,
+  );
+});
+
+Deno.test("Uint8.byteLength", () => {
+  assertStrictEquals(Uint8.byteLength, 1);
+});
+
+Deno.test("Uint8.toBytes()", () => {
+  assertStrictEquals(
+    [...Uint8.toBytes(0)].map((i) => i.toString()).join(","),
+    "0",
+  );
+  assertStrictEquals(
+    [...Uint8.toBytes(0, false)].map((i) => i.toString()).join(","),
+    "0",
+  );
+  assertStrictEquals(
+    [...Uint8.toBytes(0, true)].map((i) => i.toString()).join(","),
+    "0",
+  );
+  assertStrictEquals(
+    [...Uint8.toBytes(0xFF)].map((i) => i.toString()).join(","),
+    "255",
+  );
+  assertStrictEquals(
+    [...Uint8.toBytes(0xFF, false)].map((i) => i.toString()).join(","),
+    "255",
+  );
+  assertStrictEquals(
+    [...Uint8.toBytes(0xFF, true)].map((i) => i.toString()).join(","),
+    "255",
   );
 });

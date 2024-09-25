@@ -1,5 +1,5 @@
 import { assertStrictEquals, assertThrows } from "./deps.ts";
-import { uint6, Uint6 } from "../mod.ts";
+import { Uint6, uint6 } from "../mod.ts";
 
 Deno.test("Uint6.bitLength", () => {
   assertStrictEquals(Uint6.bitLength, 6);
@@ -101,7 +101,7 @@ Deno.test("Uint6.bitwiseOr()", () => {
     TypeError,
     e1,
   );
-  
+
   const e2 = "The type of `other` does not match the type of `uint6`.";
   assertThrows(
     () => {
