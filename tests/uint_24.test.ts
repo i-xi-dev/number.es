@@ -18,6 +18,7 @@ Deno.test("Uint24.inRange()", () => {
   assertStrictEquals(Uint24.inRange(65535), true);
   assertStrictEquals(Uint24.inRange(65536), true);
   assertStrictEquals(Uint24.inRange(0xFFFFFF), true);
+  assertStrictEquals(Uint24.inRange(0x1000000), false);
   assertStrictEquals(Uint24.inRange(0xFFFFFFFF), false);
   assertStrictEquals(Uint24.inRange(0x100000000), false);
 

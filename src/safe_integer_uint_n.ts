@@ -1,5 +1,6 @@
 import { BITS_PER_BYTE, Uint8xOperations, UintNOperations } from "./uint_n.ts";
-import { SafeIntegerRange, ZERO } from "./safe_integer.ts";
+import { ZERO } from "./safe_integer.ts";
+import { SafeIntegerRange } from "./safe_integer_range.ts";
 import { uint6, uint7, uint8 } from "./uint_n_type.ts";
 
 class _UinNOperations<T extends number> implements UintNOperations<T> {
@@ -11,7 +12,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   readonly #bufferUint16View: Uint16Array;
 
   constructor(bitLength: number) {
-    if (bitLength > 32) {
+    if ((Number.isSafeInteger(bitLength) !== true) || (bitLength > 32)) {
       throw new Error("not implemented"); //TODO
     }
 
@@ -33,10 +34,16 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
 
   bitwiseAnd(self: T, other: T): T {
     if (this.inRange(self) !== true) {
-      throw new Error("TODO");
+      throw new TypeError(
+        "The type of `self` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
     }
     if (this.inRange(other) !== true) {
-      throw new Error("TODO");
+      throw new TypeError(
+        "The type of `other` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
     }
 
     if (this.#bitLength === 32) {
@@ -56,10 +63,16 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
 
   bitwiseOr(self: T, other: T): T {
     if (this.inRange(self) !== true) {
-      throw new Error("TODO");
+      throw new TypeError(
+        "The type of `self` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
     }
     if (this.inRange(other) !== true) {
-      throw new Error("TODO");
+      throw new TypeError(
+        "The type of `other` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
     }
 
     if (this.#bitLength === 32) {
@@ -79,10 +92,16 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
 
   bitwiseXOr(self: T, other: T): T {
     if (this.inRange(self) !== true) {
-      throw new Error("TODO");
+      throw new TypeError(
+        "The type of `self` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
     }
     if (this.inRange(other) !== true) {
-      throw new Error("TODO");
+      throw new TypeError(
+        "The type of `other` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
     }
 
     if (this.#bitLength === 32) {
@@ -102,10 +121,13 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
 
   rotateLeft(self: T, offset: number): T {
     if (this.inRange(self) !== true) {
-      throw new Error("TODO");
+      throw new TypeError(
+        "The type of `self` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
     }
     if (Number.isSafeInteger(offset) !== true) {
-      throw new TypeError("TODO");
+      throw new TypeError("`offset` must be a safe integer.");
     }
 
     let normalizedOffset = offset % this.#bitLength;
@@ -148,7 +170,7 @@ class _Uint8xOperations<T extends number> extends _UinNOperations<T>
     return this.bitLength / BITS_PER_BYTE;
   }
 
-  toBytes(self: T, littleEndian: boolean): Uint8Array {
+  toBytes(self: T, littleEndian: boolean = false): Uint8Array {
     if (this.inRange(self) !== true) {
       throw new Error("TODO");
     }

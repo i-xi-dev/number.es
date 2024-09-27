@@ -1,4 +1,4 @@
-import { BigIntegerRange } from "./big_integer.ts";
+import { BigIntegerRange } from "./big_integer_range.ts";
 import { BITS_PER_BYTE, Uint8xOperations, UintNOperations } from "./uint_n.ts";
 import { NUMBER_ZERO } from "./numeric.ts";
 
@@ -28,10 +28,16 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
 
   bitwiseAnd(self: T, other: T): T {
     if (this.inRange(self) !== true) {
-      throw new Error("TODO");
+      throw new TypeError(
+        "The type of `self` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
     }
     if (this.inRange(other) !== true) {
-      throw new Error("TODO");
+      throw new TypeError(
+        "The type of `other` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
     }
 
     const aAndB = (self as bigint) & (other as bigint); //XXX 何故かtypescriptにbigintでなくnumberだと言われる
@@ -40,10 +46,16 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
 
   bitwiseOr(self: T, other: T): T {
     if (this.inRange(self) !== true) {
-      throw new Error("TODO");
+      throw new TypeError(
+        "The type of `self` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
     }
     if (this.inRange(other) !== true) {
-      throw new Error("TODO");
+      throw new TypeError(
+        "The type of `other` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
     }
 
     const aOrB = (self as bigint) | (other as bigint); //XXX 何故かtypescriptにbigintでなくnumberだと言われる
@@ -52,10 +64,16 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
 
   bitwiseXOr(self: T, other: T): T {
     if (this.inRange(self) !== true) {
-      throw new Error("TODO");
+      throw new TypeError(
+        "The type of `self` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
     }
     if (this.inRange(other) !== true) {
-      throw new Error("TODO");
+      throw new TypeError(
+        "The type of `other` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
     }
 
     const aXOrB = (self as bigint) ^ (other as bigint); //XXX 何故かtypescriptにbigintでなくnumberだと言われる
@@ -64,10 +82,13 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
 
   rotateLeft(self: T, offset: number): T {
     if (this.inRange(self) !== true) {
-      throw new Error("TODO");
+      throw new TypeError(
+        "The type of `self` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
     }
     if (Number.isSafeInteger(offset) !== true) {
-      throw new TypeError("TODO");
+      throw new TypeError("`offset` must be a safe integer.");
     }
 
     let normalizedOffset = offset % this.#bitLength;
@@ -102,7 +123,7 @@ class _Uint8xOperations<T extends bigint> extends _UinNOperations<T>
     return this.bitLength / BITS_PER_BYTE;
   }
 
-  toBytes(self: T, littleEndian: boolean): Uint8Array {
+  toBytes(self: T, littleEndian: boolean = false): Uint8Array {
     if (this.inRange(self) !== true) {
       throw new Error("TODO");
     }
@@ -113,4 +134,4 @@ class _Uint8xOperations<T extends bigint> extends _UinNOperations<T>
 }
 
 export const BigUint64 = new _Uint8xOperations<bigint>(64);
-export const BigUint128 = new _Uint8xOperations<bigint>(128);
+// export const BigUint128 = new _Uint8xOperations<bigint>(128);
