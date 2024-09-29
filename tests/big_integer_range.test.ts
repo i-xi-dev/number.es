@@ -18,7 +18,7 @@ Deno.test("new BigIntegerRange()", () => {
 
   assertThrows(
     () => {
-      BigIntegerRange.from([0n, BigInt(Number.MAX_SAFE_INTEGER)]);
+      BigIntegerRange.from([0n, 0x1_0000_0000_0000_0000n]);
     },
     RangeError,
     em1,
@@ -26,7 +26,7 @@ Deno.test("new BigIntegerRange()", () => {
 
   assertThrows(
     () => {
-      BigIntegerRange.from([-1n, BigInt(Number.MAX_SAFE_INTEGER)]);
+      BigIntegerRange.from([-1n, 0xFFFF_FFFF_FFFF_FFFFn]);
     },
     RangeError,
     em1,

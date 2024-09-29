@@ -7,7 +7,7 @@ export class BigIntegerRange<T extends bigint> implements IntegerRange<T> {
 
   private constructor(min: T, max: T) {
     const size = (max as bigint) - (min as bigint); // なぜかsizeがnumber型とみなされる
-    if ((size + 1n) > Number.MAX_SAFE_INTEGER) {
+    if ((size + 1n) > 0x1_0000_0000_0000_0000n) { //TODO 暫定でuint64まで
       throw new RangeError("Range size exceeds upper limit.");
     }
 
