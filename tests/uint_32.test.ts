@@ -826,6 +826,65 @@ Deno.test("Uint32.rotateLeft()", () => {
   );
 });
 
+Deno.test("Uint32.toNumber()", () => {
+  assertStrictEquals(Uint32.toNumber(0), 0);
+  assertStrictEquals(Uint32.toNumber(-0), 0);
+  assertStrictEquals(Object.is(Uint32.toNumber(-0), 0), true);
+  assertStrictEquals(Uint32.toNumber(0xFFFFFFFF), 0xFFFFFFFF);
+
+  const e1 = "The type of `self` does not match the type of `uint32`.";
+  assertThrows(
+    () => {
+      Uint32.toNumber(0x100000000);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint32.toNumber(-1);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint32.toNumber(undefined as unknown as number);
+    },
+    TypeError,
+    e1,
+  );
+});
+
+Deno.test("Uint32.toBigInt()", () => {
+  assertStrictEquals(Uint32.toBigInt(0), 0n);
+  assertStrictEquals(Uint32.toBigInt(-0), 0n);
+  assertStrictEquals(Uint32.toBigInt(0xFFFFFFFF), 0xFFFFFFFFn);
+
+  const e1 = "The type of `self` does not match the type of `uint32`.";
+  assertThrows(
+    () => {
+      Uint32.toBigInt(0x100000000 as number);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint32.toBigInt(-1 as number);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint32.toBigInt(undefined as unknown as number);
+    },
+    TypeError,
+    e1,
+  );
+});
+
 Deno.test("Uint32.byteLength", () => {
   assertStrictEquals(Uint32.byteLength, 4);
 });

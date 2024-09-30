@@ -1,8 +1,9 @@
 import { BITS_PER_BYTE, Uint8xOperations, UintNOperations } from "./uint_n.ts";
 import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
-import { ZERO } from "./safe_integer.ts";
+import { normalizeNumber } from "./numeric.ts";
 import { SafeIntegerRange } from "./safe_integer_range.ts";
 import { uint6, uint7, uint8 } from "./uint_n_type.ts";
+import { ZERO } from "./safe_integer.ts";
 
 class _UinNOperations<T extends number> implements UintNOperations<T> {
   readonly #bitLength: number;
@@ -151,6 +152,28 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
       return (((self << normalizedOffset) |
         (self >> (this.#bitLength - normalizedOffset))) & this.#range.max) as T;
     }
+  }
+
+  toNumber(self: T): number {
+    if (this.inRange(self) !== true) {
+      throw new TypeError(
+        "The type of `self` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
+    }
+
+    return normalizeNumber(self);
+  }
+
+  toBigInt(self: T): bigint {
+    if (this.inRange(self) !== true) {
+      throw new TypeError(
+        "The type of `self` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
+    }
+
+    return BigInt(self);
   }
 }
 

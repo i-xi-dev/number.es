@@ -673,6 +673,65 @@ Deno.test("Uint24.rotateLeft()", () => {
   );
 });
 
+Deno.test("Uint24.toNumber()", () => {
+  assertStrictEquals(Uint24.toNumber(0), 0);
+  assertStrictEquals(Uint24.toNumber(-0), 0);
+  assertStrictEquals(Object.is(Uint24.toNumber(-0), 0), true);
+  assertStrictEquals(Uint24.toNumber(0xFFFFFF), 0xFFFFFF);
+
+  const e1 = "The type of `self` does not match the type of `uint24`.";
+  assertThrows(
+    () => {
+      Uint24.toNumber(0x1000000);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint24.toNumber(-1);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint24.toNumber(undefined as unknown as number);
+    },
+    TypeError,
+    e1,
+  );
+});
+
+Deno.test("Uint24.toBigInt()", () => {
+  assertStrictEquals(Uint24.toBigInt(0), 0n);
+  assertStrictEquals(Uint24.toBigInt(-0), 0n);
+  assertStrictEquals(Uint24.toBigInt(0xFFFFFF), 0xFFFFFFn);
+
+  const e1 = "The type of `self` does not match the type of `uint24`.";
+  assertThrows(
+    () => {
+      Uint24.toBigInt(0x1000000 as number);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint24.toBigInt(-1 as number);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint24.toBigInt(undefined as unknown as number);
+    },
+    TypeError,
+    e1,
+  );
+});
+
 Deno.test("Uint24.byteLength", () => {
   assertStrictEquals(Uint24.byteLength, 3);
 });

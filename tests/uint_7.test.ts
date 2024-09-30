@@ -225,3 +225,62 @@ Deno.test("Uint7.rotateLeft()", () => {
     e2,
   );
 });
+
+Deno.test("Uint7.toNumber()", () => {
+  assertStrictEquals(Uint7.toNumber(0), 0);
+  assertStrictEquals(Uint7.toNumber(-0), 0);
+  assertStrictEquals(Object.is(Uint7.toNumber(-0), 0), true);
+  assertStrictEquals(Uint7.toNumber(0x7F), 0x7F);
+
+  const e1 = "The type of `self` does not match the type of `uint7`.";
+  assertThrows(
+    () => {
+      Uint7.toNumber(0x80 as uint7);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint7.toNumber(-1 as uint7);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint7.toNumber(undefined as unknown as uint7);
+    },
+    TypeError,
+    e1,
+  );
+});
+
+Deno.test("Uint7.toBigInt()", () => {
+  assertStrictEquals(Uint7.toBigInt(0), 0n);
+  assertStrictEquals(Uint7.toBigInt(-0), 0n);
+  assertStrictEquals(Uint7.toBigInt(0x7F), 0x7Fn);
+
+  const e1 = "The type of `self` does not match the type of `uint7`.";
+  assertThrows(
+    () => {
+      Uint7.toBigInt(0x80 as uint7);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint7.toBigInt(-1 as uint7);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint7.toBigInt(undefined as unknown as uint7);
+    },
+    TypeError,
+    e1,
+  );
+});

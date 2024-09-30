@@ -6,9 +6,11 @@ export interface UintNOperations<T extends numeric> {
   bitwiseAnd(self: T, other: T): T;
   bitwiseOr(self: T, other: T): T;
   bitwiseXOr(self: T, other: T): T;
-  //bitwiseNot(self: T): T;
+  //TODO bitwiseNot(self: T): T;
   rotateLeft(self: T, offset: number): T;
-  //rotateRight(self: T, offset: number): T;
+  //TODO rotateRight(self: T, offset: number): T;
+  toNumber(self: T): number;
+  toBigInt(self: T): bigint;
 }
 
 export const BITS_PER_BYTE = 8;
@@ -24,4 +26,3 @@ export interface Uint8xOperations<T extends numeric>
 //TODO fromString(value: string, options: TODO): T;
 //TODO toString(self: T, options: TODO): string;
 //TODO fromBigInt(value: bigint, options: TODO): T;
-//TODO toBigInt(self: T, options: TODO): bigint;

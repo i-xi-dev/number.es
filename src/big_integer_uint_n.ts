@@ -1,7 +1,7 @@
 import { BigIntegerRange } from "./big_integer_range.ts";
 import { BITS_PER_BYTE, Uint8xOperations, UintNOperations } from "./uint_n.ts";
+import { inSafeIntegerRange, NUMBER_ZERO } from "./numeric.ts";
 // import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
-import { NUMBER_ZERO } from "./numeric.ts";
 
 class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   readonly #bitLength: number;
@@ -104,6 +104,31 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
     return (((self << bigIntOffset) |
       (self >> (BigInt(this.#bitLength) - bigIntOffset))) &
       this.#range.max) as T;
+  }
+
+  toNumber(self: T): number {
+    if (this.inRange(self) !== true) {
+      throw new TypeError(
+        "The type of `self` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
+    }
+
+    if (inSafeIntegerRange(self)) {
+      return Number(self);
+    }
+    throw new RangeError("`self` must be within the range of safe integer.");
+  }
+
+  toBigInt(self: T): bigint {
+    if (this.inRange(self) !== true) {
+      throw new TypeError(
+        "The type of `self` does not match the type of `uint" +
+          this.#bitLength + "`.",
+      );
+    }
+
+    return self;
   }
 }
 

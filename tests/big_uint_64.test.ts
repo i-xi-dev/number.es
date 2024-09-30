@@ -813,6 +813,88 @@ Deno.test("BigUint64.rotateLeft()", () => {
   );
 });
 
+Deno.test("BigUint64.toNumber()", () => {
+  assertStrictEquals(BigUint64.toNumber(0n), 0);
+  assertStrictEquals(BigUint64.toNumber(-0n), 0);
+  assertStrictEquals(Object.is(BigUint64.toNumber(-0n), 0), true);
+  // assertStrictEquals(BigUint64.toNumber(0xFFFFFFFFFFFFFFFFn), 0xFFFFFFFFFFFFFFFF);
+  assertStrictEquals(
+    BigUint64.toNumber(BigInt(Number.MAX_SAFE_INTEGER)),
+    Number.MAX_SAFE_INTEGER,
+  );
+
+  const e1 = "The type of `self` does not match the type of `uint64`.";
+  assertThrows(
+    () => {
+      BigUint64.toNumber(0x10000000000000000n);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      BigUint64.toNumber(-1n);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      BigUint64.toNumber(undefined as unknown as bigint);
+    },
+    TypeError,
+    e1,
+  );
+
+  const e2 = "`self` must be within the range of safe integer.";
+  assertThrows(
+    () => {
+      BigUint64.toNumber(0xFFFFFFFFFFFFFFFFn);
+    },
+    RangeError,
+    e2,
+  );
+  assertThrows(
+    () => {
+      BigUint64.toNumber(BigInt(Number.MAX_SAFE_INTEGER) + 1n);
+    },
+    RangeError,
+    e2,
+  );
+});
+
+Deno.test("BigUint64.toBigInt()", () => {
+  assertStrictEquals(BigUint64.toBigInt(0n), 0n);
+  assertStrictEquals(BigUint64.toBigInt(-0n), 0n);
+  assertStrictEquals(
+    BigUint64.toBigInt(0xFFFFFFFFFFFFFFFFn),
+    0xFFFFFFFFFFFFFFFFn,
+  );
+
+  const e1 = "The type of `self` does not match the type of `uint64`.";
+  assertThrows(
+    () => {
+      BigUint64.toBigInt(0x10000000000000000n);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      BigUint64.toBigInt(-1n);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      BigUint64.toBigInt(undefined as unknown as bigint);
+    },
+    TypeError,
+    e1,
+  );
+});
+
 Deno.test("BigUint64.byteLength", () => {
   assertStrictEquals(BigUint64.byteLength, 8);
 });

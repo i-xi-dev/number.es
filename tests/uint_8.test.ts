@@ -233,6 +233,65 @@ Deno.test("Uint8.rotateLeft()", () => {
   );
 });
 
+Deno.test("Uint8.toNumber()", () => {
+  assertStrictEquals(Uint8.toNumber(0), 0);
+  assertStrictEquals(Uint8.toNumber(-0), 0);
+  assertStrictEquals(Object.is(Uint8.toNumber(-0), 0), true);
+  assertStrictEquals(Uint8.toNumber(0xFF), 0xFF);
+
+  const e1 = "The type of `self` does not match the type of `uint8`.";
+  assertThrows(
+    () => {
+      Uint8.toNumber(0x100 as uint8);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint8.toNumber(-1 as uint8);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint8.toNumber(undefined as unknown as uint8);
+    },
+    TypeError,
+    e1,
+  );
+});
+
+Deno.test("Uint8.toBigInt()", () => {
+  assertStrictEquals(Uint8.toBigInt(0), 0n);
+  assertStrictEquals(Uint8.toBigInt(-0), 0n);
+  assertStrictEquals(Uint8.toBigInt(0xFF), 0xFFn);
+
+  const e1 = "The type of `self` does not match the type of `uint8`.";
+  assertThrows(
+    () => {
+      Uint8.toBigInt(0x100 as uint8);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint8.toBigInt(-1 as uint8);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint8.toBigInt(undefined as unknown as uint8);
+    },
+    TypeError,
+    e1,
+  );
+});
+
 Deno.test("Uint8.byteLength", () => {
   assertStrictEquals(Uint8.byteLength, 1);
 });
