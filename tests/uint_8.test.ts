@@ -262,4 +262,27 @@ Deno.test("Uint8.toBytes()", () => {
     [...Uint8.toBytes(0xFF, true)].map((i) => i.toString()).join(","),
     "255",
   );
+
+  const e1 = "The type of `self` does not match the type of `uint8`.";
+  assertThrows(
+    () => {
+      Uint8.toBytes(0x100 as unknown as uint8);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint8.toBytes(-1 as unknown as uint8);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint8.toBytes(undefined as unknown as uint8);
+    },
+    TypeError,
+    e1,
+  );
 });

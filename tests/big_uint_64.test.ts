@@ -900,7 +900,9 @@ Deno.test("BigUint64.toBytes()", () => {
     "0,0,0,0,1,0,0,0",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0x1000000n, false)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0x1000000n, false)].map((i) => i.toString()).join(
+      ",",
+    ),
     "0,0,0,0,1,0,0,0",
   );
   assertStrictEquals(
@@ -913,11 +915,15 @@ Deno.test("BigUint64.toBytes()", () => {
     "0,0,0,0,255,255,255,255",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0xFFFFFFFFn, false)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0xFFFFFFFFn, false)].map((i) => i.toString()).join(
+      ",",
+    ),
     "0,0,0,0,255,255,255,255",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0xFFFFFFFFn, true)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0xFFFFFFFFn, true)].map((i) => i.toString()).join(
+      ",",
+    ),
     "255,255,255,255,0,0,0,0",
   );
 
@@ -926,11 +932,15 @@ Deno.test("BigUint64.toBytes()", () => {
     "0,0,0,1,0,0,0,0",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0x100000000n, false)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0x100000000n, false)].map((i) => i.toString()).join(
+      ",",
+    ),
     "0,0,0,1,0,0,0,0",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0x100000000n, true)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0x100000000n, true)].map((i) => i.toString()).join(
+      ",",
+    ),
     "0,0,0,0,1,0,0,0",
   );
 
@@ -939,11 +949,15 @@ Deno.test("BigUint64.toBytes()", () => {
     "0,0,0,255,255,255,255,255",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0xFFFFFFFFFFn, false)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0xFFFFFFFFFFn, false)].map((i) => i.toString()).join(
+      ",",
+    ),
     "0,0,0,255,255,255,255,255",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0xFFFFFFFFFFn, true)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0xFFFFFFFFFFn, true)].map((i) => i.toString()).join(
+      ",",
+    ),
     "255,255,255,255,255,0,0,0",
   );
 
@@ -952,11 +966,15 @@ Deno.test("BigUint64.toBytes()", () => {
     "0,0,1,0,0,0,0,0",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0x10000000000n, false)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0x10000000000n, false)].map((i) => i.toString()).join(
+      ",",
+    ),
     "0,0,1,0,0,0,0,0",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0x10000000000n, true)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0x10000000000n, true)].map((i) => i.toString()).join(
+      ",",
+    ),
     "0,0,0,0,0,1,0,0",
   );
 
@@ -965,11 +983,14 @@ Deno.test("BigUint64.toBytes()", () => {
     "0,0,255,255,255,255,255,255",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0xFFFFFFFFFFFFn, false)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0xFFFFFFFFFFFFn, false)].map((i) => i.toString())
+      .join(","),
     "0,0,255,255,255,255,255,255",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0xFFFFFFFFFFFFn, true)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0xFFFFFFFFFFFFn, true)].map((i) => i.toString()).join(
+      ",",
+    ),
     "255,255,255,255,255,255,0,0",
   );
 
@@ -978,50 +999,87 @@ Deno.test("BigUint64.toBytes()", () => {
     "0,1,0,0,0,0,0,0",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0x1000000000000n, false)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0x1000000000000n, false)].map((i) => i.toString())
+      .join(","),
     "0,1,0,0,0,0,0,0",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0x1000000000000n, true)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0x1000000000000n, true)].map((i) => i.toString())
+      .join(","),
     "0,0,0,0,0,0,1,0",
   );
 
   assertStrictEquals(
-    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFn)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFn)].map((i) => i.toString()).join(
+      ",",
+    ),
     "0,255,255,255,255,255,255,255",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFn, false)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFn, false)].map((i) => i.toString())
+      .join(","),
     "0,255,255,255,255,255,255,255",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFn, true)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFn, true)].map((i) => i.toString())
+      .join(","),
     "255,255,255,255,255,255,255,0",
   );
 
   assertStrictEquals(
-    [...BigUint64.toBytes(0x100000000000000n)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0x100000000000000n)].map((i) => i.toString()).join(
+      ",",
+    ),
     "1,0,0,0,0,0,0,0",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0x100000000000000n, false)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0x100000000000000n, false)].map((i) => i.toString())
+      .join(","),
     "1,0,0,0,0,0,0,0",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0x100000000000000n, true)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0x100000000000000n, true)].map((i) => i.toString())
+      .join(","),
     "0,0,0,0,0,0,0,1",
   );
 
   assertStrictEquals(
-    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFFFn)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFFFn)].map((i) => i.toString()).join(
+      ",",
+    ),
     "255,255,255,255,255,255,255,255",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFFFn, false)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFFFn, false)].map((i) => i.toString())
+      .join(","),
     "255,255,255,255,255,255,255,255",
   );
   assertStrictEquals(
-    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFFFn, true)].map((i) => i.toString()).join(","),
+    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFFFn, true)].map((i) => i.toString())
+      .join(","),
     "255,255,255,255,255,255,255,255",
+  );
+
+  const e1 = "The type of `self` does not match the type of `uint64`.";
+  assertThrows(
+    () => {
+      BigUint64.toBytes(0x10000000000000000n);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      BigUint64.toBytes(-1n);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      BigUint64.toBytes(undefined as unknown as bigint);
+    },
+    TypeError,
+    e1,
   );
 });

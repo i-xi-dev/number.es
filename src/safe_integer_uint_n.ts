@@ -173,7 +173,10 @@ class _Uint8xOperations<T extends number> extends _UinNOperations<T>
 
   toBytes(self: T, littleEndian: boolean = false): Uint8Array {
     if (this.inRange(self) !== true) {
-      throw new Error("TODO");
+      throw new TypeError(
+        "The type of `self` does not match the type of `uint" + this.bitLength +
+          "`.",
+      );
     }
 
     if (this.bitLength === 8) {

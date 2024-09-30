@@ -754,4 +754,27 @@ Deno.test("Uint24.toBytes()", () => {
     [...Uint24.toBytes(0xFFFFFF, true)].map((i) => i.toString()).join(","),
     "255,255,255",
   );
+
+  const e1 = "The type of `self` does not match the type of `uint24`.";
+  assertThrows(
+    () => {
+      Uint24.toBytes(0x1000000);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint24.toBytes(-1);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint24.toBytes(undefined as unknown as number);
+    },
+    TypeError,
+    e1,
+  );
 });

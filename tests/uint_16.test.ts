@@ -558,4 +558,27 @@ Deno.test("Uint16.toBytes()", () => {
     [...Uint16.toBytes(0xFFFF, true)].map((i) => i.toString()).join(","),
     "255,255",
   );
+
+  const e1 = "The type of `self` does not match the type of `uint16`.";
+  assertThrows(
+    () => {
+      Uint16.toBytes(0x10000);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint16.toBytes(-1);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint16.toBytes(undefined as unknown as number);
+    },
+    TypeError,
+    e1,
+  );
 });

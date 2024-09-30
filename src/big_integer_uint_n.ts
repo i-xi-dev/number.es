@@ -112,7 +112,6 @@ type _BITS = typeof _BITS[number];
 
 class _Uint8xOperations<T extends bigint> extends _UinNOperations<T>
   implements Uint8xOperations<T> {
-    
   readonly #buffer: ArrayBuffer;
   readonly #bufferView: DataView;
   readonly #bufferUint8View: Uint8Array;
@@ -123,7 +122,7 @@ class _Uint8xOperations<T extends bigint> extends _UinNOperations<T>
     if (_BITS.includes(bitLength) !== true) {
       throw new Error("TODO");
     }
-    
+
     this.#buffer = new ArrayBuffer(bitLength / BITS_PER_BYTE);
     this.#bufferView = new DataView(this.#buffer);
     this.#bufferUint8View = new Uint8Array(this.#buffer);
@@ -135,7 +134,10 @@ class _Uint8xOperations<T extends bigint> extends _UinNOperations<T>
 
   toBytes(self: T, littleEndian: boolean = false): Uint8Array {
     if (this.inRange(self) !== true) {
-      throw new Error("TODO");
+      throw new TypeError(
+        "The type of `self` does not match the type of `uint" + this.bitLength +
+          "`.",
+      );
     }
 
     this.#bufferView.setBigUint64(0, self, littleEndian);

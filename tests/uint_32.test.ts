@@ -933,4 +933,27 @@ Deno.test("Uint32.toBytes()", () => {
     [...Uint32.toBytes(0xFFFFFFFF, true)].map((i) => i.toString()).join(","),
     "255,255,255,255",
   );
+
+  const e1 = "The type of `self` does not match the type of `uint32`.";
+  assertThrows(
+    () => {
+      Uint32.toBytes(0x100000000);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint32.toBytes(-1);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint32.toBytes(undefined as unknown as number);
+    },
+    TypeError,
+    e1,
+  );
 });
