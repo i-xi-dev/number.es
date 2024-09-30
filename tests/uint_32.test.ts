@@ -907,4 +907,30 @@ Deno.test("Uint32.toBytes()", () => {
     [...Uint32.toBytes(0xFFFFFF, true)].map((i) => i.toString()).join(","),
     "255,255,255,0",
   );
+
+  assertStrictEquals(
+    [...Uint32.toBytes(0x1000000)].map((i) => i.toString()).join(","),
+    "1,0,0,0",
+  );
+  assertStrictEquals(
+    [...Uint32.toBytes(0x1000000, false)].map((i) => i.toString()).join(","),
+    "1,0,0,0",
+  );
+  assertStrictEquals(
+    [...Uint32.toBytes(0x1000000, true)].map((i) => i.toString()).join(","),
+    "0,0,0,1",
+  );
+
+  assertStrictEquals(
+    [...Uint32.toBytes(0xFFFFFFFF)].map((i) => i.toString()).join(","),
+    "255,255,255,255",
+  );
+  assertStrictEquals(
+    [...Uint32.toBytes(0xFFFFFFFF, false)].map((i) => i.toString()).join(","),
+    "255,255,255,255",
+  );
+  assertStrictEquals(
+    [...Uint32.toBytes(0xFFFFFFFF, true)].map((i) => i.toString()).join(","),
+    "255,255,255,255",
+  );
 });

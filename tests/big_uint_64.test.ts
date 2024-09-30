@@ -817,81 +817,211 @@ Deno.test("BigUint64.byteLength", () => {
   assertStrictEquals(BigUint64.byteLength, 8);
 });
 
-// Deno.test("BigUint64.toBytes()", () => {
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0)].map((i) => i.toString()).join(","),
-//     "0,0,0",
-//   );
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0, false)].map((i) => i.toString()).join(","),
-//     "0,0,0",
-//   );
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0, true)].map((i) => i.toString()).join(","),
-//     "0,0,0",
-//   );
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0xFF)].map((i) => i.toString()).join(","),
-//     "0,0,255",
-//   );
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0xFF, false)].map((i) => i.toString()).join(","),
-//     "0,0,255",
-//   );
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0xFF, true)].map((i) => i.toString()).join(","),
-//     "255,0,0",
-//   );
+Deno.test("BigUint64.toBytes()", () => {
+  assertStrictEquals(
+    [...BigUint64.toBytes(0n)].map((i) => i.toString()).join(","),
+    "0,0,0,0,0,0,0,0",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0n, false)].map((i) => i.toString()).join(","),
+    "0,0,0,0,0,0,0,0",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0n, true)].map((i) => i.toString()).join(","),
+    "0,0,0,0,0,0,0,0",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFn)].map((i) => i.toString()).join(","),
+    "0,0,0,0,0,0,0,255",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFn, false)].map((i) => i.toString()).join(","),
+    "0,0,0,0,0,0,0,255",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFn, true)].map((i) => i.toString()).join(","),
+    "255,0,0,0,0,0,0,0",
+  );
 
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0x100)].map((i) => i.toString()).join(","),
-//     "0,1,0",
-//   );
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0x100, false)].map((i) => i.toString()).join(","),
-//     "0,1,0",
-//   );
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0x100, true)].map((i) => i.toString()).join(","),
-//     "0,1,0",
-//   );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x100n)].map((i) => i.toString()).join(","),
+    "0,0,0,0,0,0,1,0",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x100n, false)].map((i) => i.toString()).join(","),
+    "0,0,0,0,0,0,1,0",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x100n, true)].map((i) => i.toString()).join(","),
+    "0,1,0,0,0,0,0,0",
+  );
 
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0xFFFF)].map((i) => i.toString()).join(","),
-//     "0,255,255",
-//   );
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0xFFFF, false)].map((i) => i.toString()).join(","),
-//     "0,255,255",
-//   );
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0xFFFF, true)].map((i) => i.toString()).join(","),
-//     "255,255,0",
-//   );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFn)].map((i) => i.toString()).join(","),
+    "0,0,0,0,0,0,255,255",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFn, false)].map((i) => i.toString()).join(","),
+    "0,0,0,0,0,0,255,255",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFn, true)].map((i) => i.toString()).join(","),
+    "255,255,0,0,0,0,0,0",
+  );
 
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0x10000)].map((i) => i.toString()).join(","),
-//     "1,0,0",
-//   );
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0x10000, false)].map((i) => i.toString()).join(","),
-//     "1,0,0",
-//   );
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0x10000, true)].map((i) => i.toString()).join(","),
-//     "0,0,1",
-//   );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x10000n)].map((i) => i.toString()).join(","),
+    "0,0,0,0,0,1,0,0",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x10000n, false)].map((i) => i.toString()).join(","),
+    "0,0,0,0,0,1,0,0",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x10000n, true)].map((i) => i.toString()).join(","),
+    "0,0,1,0,0,0,0,0",
+  );
 
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0xFFFFFF)].map((i) => i.toString()).join(","),
-//     "255,255,255",
-//   );
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0xFFFFFF, false)].map((i) => i.toString()).join(","),
-//     "255,255,255",
-//   );
-//   assertStrictEquals(
-//     [...BigUint64.toBytes(0xFFFFFF, true)].map((i) => i.toString()).join(","),
-//     "255,255,255",
-//   );
-// });
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFn)].map((i) => i.toString()).join(","),
+    "0,0,0,0,0,255,255,255",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFn, false)].map((i) => i.toString()).join(","),
+    "0,0,0,0,0,255,255,255",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFn, true)].map((i) => i.toString()).join(","),
+    "255,255,255,0,0,0,0,0",
+  );
+
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x1000000n)].map((i) => i.toString()).join(","),
+    "0,0,0,0,1,0,0,0",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x1000000n, false)].map((i) => i.toString()).join(","),
+    "0,0,0,0,1,0,0,0",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x1000000n, true)].map((i) => i.toString()).join(","),
+    "0,0,0,1,0,0,0,0",
+  );
+
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFFFn)].map((i) => i.toString()).join(","),
+    "0,0,0,0,255,255,255,255",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFFFn, false)].map((i) => i.toString()).join(","),
+    "0,0,0,0,255,255,255,255",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFFFn, true)].map((i) => i.toString()).join(","),
+    "255,255,255,255,0,0,0,0",
+  );
+
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x100000000n)].map((i) => i.toString()).join(","),
+    "0,0,0,1,0,0,0,0",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x100000000n, false)].map((i) => i.toString()).join(","),
+    "0,0,0,1,0,0,0,0",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x100000000n, true)].map((i) => i.toString()).join(","),
+    "0,0,0,0,1,0,0,0",
+  );
+
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFFFFFn)].map((i) => i.toString()).join(","),
+    "0,0,0,255,255,255,255,255",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFFFFFn, false)].map((i) => i.toString()).join(","),
+    "0,0,0,255,255,255,255,255",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFFFFFn, true)].map((i) => i.toString()).join(","),
+    "255,255,255,255,255,0,0,0",
+  );
+
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x10000000000n)].map((i) => i.toString()).join(","),
+    "0,0,1,0,0,0,0,0",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x10000000000n, false)].map((i) => i.toString()).join(","),
+    "0,0,1,0,0,0,0,0",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x10000000000n, true)].map((i) => i.toString()).join(","),
+    "0,0,0,0,0,1,0,0",
+  );
+
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFFFFFFFn)].map((i) => i.toString()).join(","),
+    "0,0,255,255,255,255,255,255",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFFFFFFFn, false)].map((i) => i.toString()).join(","),
+    "0,0,255,255,255,255,255,255",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFFFFFFFn, true)].map((i) => i.toString()).join(","),
+    "255,255,255,255,255,255,0,0",
+  );
+
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x1000000000000n)].map((i) => i.toString()).join(","),
+    "0,1,0,0,0,0,0,0",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x1000000000000n, false)].map((i) => i.toString()).join(","),
+    "0,1,0,0,0,0,0,0",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x1000000000000n, true)].map((i) => i.toString()).join(","),
+    "0,0,0,0,0,0,1,0",
+  );
+
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFn)].map((i) => i.toString()).join(","),
+    "0,255,255,255,255,255,255,255",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFn, false)].map((i) => i.toString()).join(","),
+    "0,255,255,255,255,255,255,255",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFn, true)].map((i) => i.toString()).join(","),
+    "255,255,255,255,255,255,255,0",
+  );
+
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x100000000000000n)].map((i) => i.toString()).join(","),
+    "1,0,0,0,0,0,0,0",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x100000000000000n, false)].map((i) => i.toString()).join(","),
+    "1,0,0,0,0,0,0,0",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0x100000000000000n, true)].map((i) => i.toString()).join(","),
+    "0,0,0,0,0,0,0,1",
+  );
+
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFFFn)].map((i) => i.toString()).join(","),
+    "255,255,255,255,255,255,255,255",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFFFn, false)].map((i) => i.toString()).join(","),
+    "255,255,255,255,255,255,255,255",
+  );
+  assertStrictEquals(
+    [...BigUint64.toBytes(0xFFFFFFFFFFFFFFFFn, true)].map((i) => i.toString()).join(","),
+    "255,255,255,255,255,255,255,255",
+  );
+});

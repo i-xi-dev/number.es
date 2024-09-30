@@ -1,5 +1,6 @@
 import { BigIntegerRange } from "./big_integer_range.ts";
 import { BITS_PER_BYTE, Uint8xOperations, UintNOperations } from "./uint_n.ts";
+// import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
 import { NUMBER_ZERO } from "./numeric.ts";
 
 class _UinNOperations<T extends bigint> implements UintNOperations<T> {
@@ -8,7 +9,7 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
 
   constructor(bitLength: number) {
     if (bitLength !== 64) {
-      throw new Error("not implemented"); //TODO
+      throw new Error("not implemented"); //TODO 対応するとしても1～128まで？
     }
 
     this.#bitLength = bitLength;
@@ -106,17 +107,26 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   }
 }
 
-const _BITS = [64, 128] as const;
+const _BITS = [/* 56, */ 64, /* 72, 80, 88, 96, 104, 112, 120, */ 128] as const;
 type _BITS = typeof _BITS[number];
 
 class _Uint8xOperations<T extends bigint> extends _UinNOperations<T>
   implements Uint8xOperations<T> {
+    
+  readonly #buffer: ArrayBuffer;
+  readonly #bufferView: DataView;
+  readonly #bufferUint8View: Uint8Array;
+
   constructor(bitLength: _BITS) {
     super(bitLength);
     //if ((bitLength % BITS_PER_BYTE) !== 0) {
     if (_BITS.includes(bitLength) !== true) {
       throw new Error("TODO");
     }
+    
+    this.#buffer = new ArrayBuffer(bitLength / BITS_PER_BYTE);
+    this.#bufferView = new DataView(this.#buffer);
+    this.#bufferUint8View = new Uint8Array(this.#buffer);
   }
 
   get byteLength(): number {
@@ -128,8 +138,8 @@ class _Uint8xOperations<T extends bigint> extends _UinNOperations<T>
       throw new Error("TODO");
     }
 
-    void littleEndian;
-    throw new Error("not implemented."); //TODO
+    this.#bufferView.setBigUint64(0, self, littleEndian);
+    return Uint8Array.from(this.#bufferUint8View);
   }
 }
 

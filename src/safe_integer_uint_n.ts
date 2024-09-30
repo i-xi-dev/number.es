@@ -1,4 +1,5 @@
 import { BITS_PER_BYTE, Uint8xOperations, UintNOperations } from "./uint_n.ts";
+import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
 import { ZERO } from "./safe_integer.ts";
 import { SafeIntegerRange } from "./safe_integer_range.ts";
 import { uint6, uint7, uint8 } from "./uint_n_type.ts";
@@ -12,8 +13,8 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   readonly #bufferUint16View: Uint16Array;
 
   constructor(bitLength: number) {
-    if ((Number.isSafeInteger(bitLength) !== true) || (bitLength > 32)) {
-      throw new Error("not implemented"); //TODO
+    if ((isPositiveSafeInteger(bitLength) !== true) || (bitLength > 32)) {
+      throw new Error("not implemented"); //TODO 対応するとしても48まで
     }
 
     this.#bitLength = bitLength;
@@ -153,7 +154,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 }
 
-const _BITS = [8, 16, 24, 32] as const;
+const _BITS = [8, 16, 24, 32 /* , 40, 48 */] as const;
 type _BITS = typeof _BITS[number];
 
 class _Uint8xOperations<T extends number> extends _UinNOperations<T>
