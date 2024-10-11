@@ -1,4 +1,25 @@
-import { numeric } from "./numeric.ts";
+import { numeric, Radix } from "./numeric.ts";
+import { OverflowMode, RoundingMode } from "./integer.ts";
+
+export type FromNumberOptions = {
+  roundingMode?: RoundingMode;
+  overflowMode?: OverflowMode;
+};
+
+export type FromBigIntOptions = {
+  overflowMode?: OverflowMode;
+};
+
+export type FromStringOptions = {
+  overflowMode?: OverflowMode;
+  radix?: Radix;
+};
+
+export type ToStringOptions = {
+  minIntegralDigits?: number;
+  radix?: Radix;
+  lowerCase?: boolean;
+};
 
 export interface UintNOperations<T extends numeric> {
   bitLength: number;
@@ -9,8 +30,12 @@ export interface UintNOperations<T extends numeric> {
   //TODO bitwiseNot(self: T): T;
   rotateLeft(self: T, offset: number): T;
   //TODO rotateRight(self: T, offset: number): T;
+  //TODO fromNumber(value: number, options: FromNumberOptions): T;
   toNumber(self: T): number;
+  //TODO fromBigInt(value: bigint, options?: FromBigIntOptions): T;
   toBigInt(self: T): bigint;
+  //TODO fromString(value: string, options?: FromStringOptions): T;
+  //TODO toString(self: T, options: TODO): string;
 }
 
 export const BITS_PER_BYTE = 8;
@@ -20,9 +45,3 @@ export interface Uint8xOperations<T extends numeric>
   byteLength: number;
   toBytes(self: T, littleEndian: boolean): Uint8Array;
 }
-
-//TODO fromNumber(value: number, options: TODO): T;
-//TODO toNumber(self: T, options: TODO): number;
-//TODO fromString(value: string, options: TODO): T;
-//TODO toString(self: T, options: TODO): string;
-//TODO fromBigInt(value: bigint, options: TODO): T;

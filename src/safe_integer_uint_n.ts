@@ -1,6 +1,6 @@
 import { BITS_PER_BYTE, Uint8xOperations, UintNOperations } from "./uint_n.ts";
 import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
-import { normalizeNumber } from "./numeric.ts";
+import { isBigInt, normalizeNumber } from "./numeric.ts";
 import { SafeIntegerRange } from "./safe_integer_range.ts";
 import { uint6, uint7, uint8 } from "./uint_n_type.ts";
 import { ZERO } from "./safe_integer.ts";
@@ -164,6 +164,18 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
 
     return normalizeNumber(self);
   }
+
+  // fromBigInt(value: bigint, options?: FromBigIntOptions): T {
+  //   if (isBigInt(value) !== true) {
+  //     throw new TypeError("");
+  //   }
+  //   const asNumber = Number(value);
+  //   if (this.inRange(asNumber) !== true) {
+  //     throw new RangeError("");
+  //   }
+
+  //   return asNumber;
+  // }
 
   toBigInt(self: T): bigint {
     if (this.inRange(self) !== true) {

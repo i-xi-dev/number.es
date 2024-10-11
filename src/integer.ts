@@ -172,3 +172,11 @@ export const REGEX = {
   [Radix.DECIMAL]: /^[-+]?[0-9]+$/,
   [Radix.HEXADECIMAL]: /^[-+]?[0-9a-fA-F]+$/,
 } as const;
+
+export const OverflowMode = {
+  EXCEPTION: "exception",
+  TRUNCATE: "truncate",
+  SATURATE: "saturate",
+} as const;
+
+export type OverflowMode = typeof OverflowMode[keyof typeof OverflowMode];
