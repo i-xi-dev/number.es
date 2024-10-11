@@ -154,6 +154,34 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
     }
   }
 
+  #saturateFromInteger(value: number): T {
+    if (Number.isSafeInteger(value) !== true) {
+      throw new TypeError("`value` must be a safe integer.");
+    }
+
+    if (value > this.#range.max) {
+      return this.#range.max;
+    } else if (value < this.#range.min) {
+      return this.#range.min;
+    }
+
+    return normalizeNumber(value as T);
+  }
+
+  #truncateFromInteger(value: number): T {
+    if (Number.isSafeInteger(value) !== true) {
+      throw new TypeError("`value` must be a safe integer.");
+    }
+
+    if (value === ZERO) {
+      return ZERO as T;
+    } else if (value > ZERO) {
+      return (value % this.#range.size) as T;
+    } else {
+      return (this.#range.size + (value % this.#range.size)) as T;
+    }
+  }
+
   toNumber(self: T): number {
     if (this.inRange(self) !== true) {
       throw new TypeError(
@@ -167,11 +195,12 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
 
   // fromBigInt(value: bigint, options?: FromBigIntOptions): T {
   //   if (isBigInt(value) !== true) {
-  //     throw new TypeError("");
+  //     throw new TypeError("`value` must be a `bigint`.");
   //   }
   //   const asNumber = Number(value);
   //   if (this.inRange(asNumber) !== true) {
-  //     throw new RangeError("");
+  //     //TODO options?.overflowMode
+  //     throw new RangeError("`value` must be within the range of `uint" + this.#bitLength + "`.");
   //   }
 
   //   return asNumber;
