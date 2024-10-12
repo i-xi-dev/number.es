@@ -55,18 +55,14 @@ export function clampToNegative(value: number): number {
 
 //XXX fromNumber
 
-export function fromBigInt(
-  source: bigint, /* , options?: FromBigIntOptions */
-): number {
-  assertBigInt(source, "source");
+export function fromBigInt(value: bigint): number {
+  assertBigInt(value, "value");
 
-  if (inSafeIntegerRange(source) !== true) {
-    throw new RangeError(
-      "`source` must be within the range of safe integer.",
-    );
+  if (inSafeIntegerRange(value) !== true) {
+    throw new RangeError("`value` must be within the range of safe integer.");
   }
 
-  return Number(source);
+  return Number(value);
 }
 
 export function toBigInt(source: number): bigint {
@@ -76,7 +72,7 @@ export function toBigInt(source: number): bigint {
 
 export function fromString(
   source: string,
-  options?: FromStringOptions,
+  options?: FromStringOptions, //TODO  uintnのと統合する
 ): number {
   if (isString(source) !== true) {
     throw new TypeError("`source` must be a `string`.");
@@ -91,7 +87,7 @@ export function fromString(
   return normalizeNumber(Number.parseInt(source, radix));
 }
 
-export function toString(source: number, options?: ToStringOptions): string {
+export function toString(source: number, options?: ToStringOptions): string { //TODO  uintnのと統合する
   assertSafeInteger(source, "source");
 
   const radix = resolveRadix(options?.radix);

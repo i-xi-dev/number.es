@@ -1,11 +1,12 @@
-import {
-  assertBigInt,
-  assertSafeInteger,
-  isBigInt,
-  isString,
-} from "./utils.ts";
+import { assertBigInt, assertNumber, isBigInt, isString } from "./utils.ts";
 import { BIGINT_ZERO, inSafeIntegerRange, Radix } from "./numeric.ts";
-import { RADIX_REGEX, resolveRadix, ToStringOptions } from "./integer.ts";
+import {
+  FromNumberOptions,
+  RADIX_REGEX,
+  resolveRadix,
+  roundNumber,
+  ToStringOptions,
+} from "./integer.ts";
 
 export const ZERO = BIGINT_ZERO;
 
@@ -99,10 +100,34 @@ export function clampToNegative(value: bigint): bigint {
   return _min(value, -1n);
 }
 
-export function fromNumber(source: number): bigint {
-  assertSafeInteger(source, "source");
+export function fromNumber(
+  value: number,
+  options?: FromNumberOptions,
+): bigint {
+  assertNumber(value, "value");
+  //TODO bigintのときはFiniteでなければエラーで良いのでは
 
-  return BigInt(source);
+  if (Number.isNaN(value)) {
+    throw new TypeError("`value` must not be `NaN`.");
+  }
+
+  let adjustedValue: number;
+  if (value > Number.MAX_SAFE_INTEGER) {
+    adjustedValue = Number.MAX_SAFE_INTEGER;
+  } else if (value < Number.MIN_SAFE_INTEGER) {
+    adjustedValue = Number.MIN_SAFE_INTEGER;
+  } else {
+    adjustedValue = value;
+  }
+
+  let valueAsInt: number;
+  if (Number.isSafeInteger(adjustedValue)) {
+    valueAsInt = adjustedValue;
+  } else {
+    valueAsInt = roundNumber(adjustedValue, options?.roundingMode);
+  }
+
+  return BigInt(valueAsInt);
 }
 
 export function toNumber(source: bigint): number {
@@ -114,7 +139,7 @@ export function toNumber(source: bigint): number {
   return Number(source);
 }
 
-export function fromString(
+export function fromString( //TODO uintnのと統合する
   source: string,
   //TODO options?: FromStringOptions,
 ): bigint {
@@ -136,7 +161,7 @@ export function fromString(
   // }
 }
 
-export function toString(source: bigint, options?: ToStringOptions): string {
+export function toString(source: bigint, options?: ToStringOptions): string { //TODO uintnのと統合する
   assertBigInt(source, "source");
 
   const radix = resolveRadix(options?.radix);

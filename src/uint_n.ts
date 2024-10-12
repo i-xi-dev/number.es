@@ -1,5 +1,5 @@
-import { numeric, Radix } from "./numeric.ts";
 import { OverflowMode, RoundingMode } from "./integer.ts";
+import { numeric, Radix } from "./numeric.ts";
 
 export type FromNumberOptions = {
   roundingMode?: RoundingMode;

@@ -407,7 +407,8 @@ const SIMIN = Number.MIN_SAFE_INTEGER;
 const SIMAX = Number.MAX_SAFE_INTEGER;
 
 Deno.test("BigInteger.fromNumber()", () => {
-  const rfe1 = "`source` must be a safe integer.";
+  const rfe1 = "`value` must be a `number`.";
+  const rfe2 = "`value` must not be `NaN`.";
 
   assertThrows(
     () => {
@@ -430,32 +431,35 @@ Deno.test("BigInteger.fromNumber()", () => {
       BigInteger.fromNumber(Number.NaN);
     },
     TypeError,
-    rfe1,
+    rfe2,
   );
 
-  assertThrows(
-    () => {
-      BigInteger.fromNumber(Number.POSITIVE_INFINITY);
-    },
-    TypeError,
-    rfe1,
+  assertStrictEquals(
+    BigInteger.fromNumber(Number.POSITIVE_INFINITY),
+    BigInt(Number.MAX_SAFE_INTEGER),
+  );
+  assertStrictEquals(
+    BigInteger.fromNumber(Number.NEGATIVE_INFINITY),
+    BigInt(Number.MIN_SAFE_INTEGER),
   );
 
-  assertThrows(
-    () => {
-      BigInteger.fromNumber(Number.NEGATIVE_INFINITY);
-    },
-    TypeError,
-    rfe1,
-  );
+  // assertThrows(
+  //   () => {
+  //     BigInteger.fromNumber(Number.POSITIVE_INFINITY, ope);
+  //   },
+  //   TypeError,
+  //   rfe3,
+  // );
 
-  assertThrows(
-    () => {
-      BigInteger.fromNumber(0.5);
-    },
-    TypeError,
-    rfe1,
-  );
+  // assertThrows(
+  //   () => {
+  //     BigInteger.fromNumber(Number.NEGATIVE_INFINITY, ope);
+  //   },
+  //   TypeError,
+  //   rfe3,
+  // );
+
+  assertStrictEquals(BigInteger.fromNumber(0.5), 0n);
 
   assertStrictEquals(BigInteger.fromNumber(-1), -1n);
   assertStrictEquals(BigInteger.fromNumber(-0), 0n);

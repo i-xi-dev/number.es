@@ -137,14 +137,11 @@ export function roundNumber(
   }
 }
 
-// export type FromNumberOptions = {
-//   //XXX 整数以外も受け付けるか否か
-//   roundingMode?: RoundingMode;
-//   //XXX 範囲外の場合のフォールバック
-// };
+export type FromNumberOptions = {
+  roundingMode?: RoundingMode;
+};
 
 // export type FromBigIntOptions = {
-//   //XXX 範囲外の場合のフォールバック
 // };
 
 export type FromStringOptions = {

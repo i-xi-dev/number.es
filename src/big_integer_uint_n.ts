@@ -1,6 +1,5 @@
 import {
   assertBigInt,
-  assertNumber,
   assertSafeInteger,
   isNumber,
   isString,
@@ -15,16 +14,11 @@ import {
   Uint8xOperations,
   UintNOperations,
 } from "./uint_n.ts";
+import { fromNumber as bigintFromNumber, ZERO } from "./big_integer.ts";
+import { OverflowMode, RADIX_REGEX, resolveRadix } from "./integer.ts";
 import { inSafeIntegerRange, NUMBER_ZERO, RADIX_PREFIX } from "./numeric.ts";
 import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
 // import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
-import {
-  OverflowMode,
-  RADIX_REGEX,
-  resolveRadix,
-  roundNumber,
-} from "./integer.ts";
-import { ZERO } from "./big_integer.ts";
 
 class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   readonly #bitLength: number;
@@ -101,30 +95,7 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   }
 
   fromNumber(value: number, options?: FromNumberOptions): T {
-    assertNumber(value, "value");
-
-    if (Number.isNaN(value)) {
-      throw new TypeError("`value` must not be `NaN`.");
-    }
-
-    let adjustedValue: number;
-    if (value > Number.MAX_SAFE_INTEGER) {
-      adjustedValue = Number.MAX_SAFE_INTEGER;
-    } else if (value < Number.MIN_SAFE_INTEGER) {
-      adjustedValue = Number.MIN_SAFE_INTEGER;
-    } else {
-      //XXX もっと狭めるか？
-      adjustedValue = value;
-    }
-
-    let valueAsInt: number;
-    if (Number.isSafeInteger(adjustedValue)) {
-      valueAsInt = adjustedValue;
-    } else {
-      valueAsInt = roundNumber(adjustedValue, options?.roundingMode);
-    }
-
-    const valueAsBigInt = BigInt(valueAsInt);
+    const valueAsBigInt = bigintFromNumber(value, options);
 
     if (this.inRange(valueAsBigInt)) {
       return valueAsBigInt;
@@ -161,10 +132,10 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   toNumber(self: T): number {
     this._assertInRange(self, "self");
 
-    if (inSafeIntegerRange(self)) {
-      return Number(self);
+    if (inSafeIntegerRange(self) !== true) {
+      throw new RangeError("`self` must be within the range of safe integer.");
     }
-    throw new RangeError("`self` must be within the range of safe integer.");
+    return Number(self);
   }
 
   fromBigInt(value: bigint, options?: FromBigIntOptions): T {

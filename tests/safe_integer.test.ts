@@ -360,8 +360,8 @@ Deno.test("SafeInteger.clampToNegative()", () => {
 });
 
 Deno.test("SafeInteger.fromBigInt()", () => {
-  const rfe1 = "`source` must be a `bigint`.";
-  const rfe2 = "`source` must be within the range of safe integer.";
+  const rfe1 = "`value` must be a `bigint`.";
+  const rfe2 = "`value` must be within the range of safe integer.";
 
   assertThrows(
     () => {

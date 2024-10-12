@@ -1,5 +1,4 @@
 import {
-  assertBigInt,
   assertNumber,
   assertSafeInteger,
   isNumber,
@@ -15,17 +14,17 @@ import {
   UintNOperations,
 } from "./uint_n.ts";
 import {
-  inSafeIntegerRange,
-  normalizeNumber,
-  RADIX_PREFIX,
-} from "./numeric.ts";
-import { isPositive as isPositiveSafeInteger, ZERO } from "./safe_integer.ts";
+  fromBigInt as safeIntegerFromBigInt,
+  isPositive as isPositiveSafeInteger,
+  ZERO,
+} from "./safe_integer.ts";
 import {
   OverflowMode,
   RADIX_REGEX,
   resolveRadix,
   roundNumber,
 } from "./integer.ts";
+import { normalizeNumber, RADIX_PREFIX } from "./numeric.ts";
 import { SafeIntegerRange } from "./safe_integer_range.ts";
 import { uint6, uint7, uint8 } from "./uint_n_type.ts";
 
@@ -223,13 +222,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   fromBigInt(value: bigint, options?: FromBigIntOptions): T {
-    assertBigInt(value, "value");
-
-    if (inSafeIntegerRange(value) !== true) {
-      throw new RangeError("`value` must be within the range of safe integer.");
-    }
-
-    const valueAsNumber = Number(value);
+    const valueAsNumber = safeIntegerFromBigInt(value);
 
     if (this.inRange(valueAsNumber)) {
       return valueAsNumber;
