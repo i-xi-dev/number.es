@@ -34,7 +34,7 @@ export interface UintNOperations<T extends numeric> {
   toNumber(self: T): number;
   fromBigInt(value: bigint, options?: FromBigIntOptions): T;
   toBigInt(self: T): bigint;
-  //TODO fromString(value: string, options?: FromStringOptions): T;
+  fromString(value: string, options?: FromStringOptions): T;
   toString(self: T, options?: ToStringOptions): string;
 }
 
