@@ -2,8 +2,8 @@ import { OverflowMode, RoundingMode } from "./integer.ts";
 import { numeric, Radix } from "./numeric.ts";
 
 export type FromNumberOptions = {
-  roundingMode?: RoundingMode;
   overflowMode?: OverflowMode;
+  roundingMode?: RoundingMode;
 };
 
 export type FromBigIntOptions = {
@@ -16,9 +16,9 @@ export type FromStringOptions = {
 };
 
 export type ToStringOptions = {
+  lowerCase?: boolean;
   minIntegralDigits?: number;
   radix?: Radix;
-  lowerCase?: boolean;
 };
 
 export interface UintNOperations<T extends numeric> {

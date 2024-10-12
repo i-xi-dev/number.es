@@ -145,16 +145,13 @@ export type FromNumberOptions = {
 // };
 
 export type FromStringOptions = {
-  //XXX & FromNumberOptions
-  //XXX trimするか否か
-  radix: Radix;
-  //XXX パース出来ない場合のフォールバック
+  radix?: Radix;
 };
 
 export type ToStringOptions = {
-  radix: Radix;
-  //XXX upperCase
-  //XXX leadZero or padStart
+  lowerCase?: boolean;
+  minIntegralDigits?: number;
+  radix?: Radix;
 };
 
 export function resolveRadix(radix?: Radix): Radix {
