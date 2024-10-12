@@ -54,24 +54,17 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
     return this.#range.includes(value);
   }
 
-  protected _assertSelf(self: T): void {
-    if (this.inRange(self) !== true) {
+  protected _assertInRange(test: T, label: string): void {
+    if (this.inRange(test) !== true) {
       throw new TypeError(
-        "The type of `self` does not match the type of `uint" +
-          this.#bitLength + "`.",
-      );
+        `The type of \`${label}\` does not match the type of \`uint${this.#bitLength}\`.`,
+      ); // 型が期待値でない場合も含むのでRangeErrorでなくTypeErrorとした
     }
   }
 
   bitwiseAnd(self: T, other: T): T {
-    this._assertSelf(self);
-
-    if (this.inRange(other) !== true) {
-      throw new TypeError(
-        "The type of `other` does not match the type of `uint" +
-          this.#bitLength + "`.",
-      );
-    }
+    this._assertInRange(self, "self");
+    this._assertInRange(other, "other");
 
     if (this.#bitLength === 32) {
       // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
@@ -89,14 +82,8 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   bitwiseOr(self: T, other: T): T {
-    this._assertSelf(self);
-
-    if (this.inRange(other) !== true) {
-      throw new TypeError(
-        "The type of `other` does not match the type of `uint" +
-          this.#bitLength + "`.",
-      );
-    }
+    this._assertInRange(self, "self");
+    this._assertInRange(other, "other");
 
     if (this.#bitLength === 32) {
       // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
@@ -114,14 +101,8 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   bitwiseXOr(self: T, other: T): T {
-    this._assertSelf(self);
-
-    if (this.inRange(other) !== true) {
-      throw new TypeError(
-        "The type of `other` does not match the type of `uint" +
-          this.#bitLength + "`.",
-      );
-    }
+    this._assertInRange(self, "self");
+    this._assertInRange(other, "other");
 
     if (this.#bitLength === 32) {
       // ビット演算子はInt32で演算されるので符号を除くと31ビットまでしか演算できない
@@ -139,7 +120,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   rotateLeft(self: T, offset: number): T {
-    this._assertSelf(self);
+    this._assertInRange(self, "self");
 
     if (Number.isSafeInteger(offset) !== true) {
       throw new TypeError("`offset` must be a safe integer.");
@@ -240,7 +221,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   toNumber(self: T): number {
-    this._assertSelf(self);
+    this._assertInRange(self, "self");
 
     return normalizeNumber(self);
   }
@@ -275,7 +256,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   toBigInt(self: T): bigint {
-    this._assertSelf(self);
+    this._assertInRange(self, "self");
     return BigInt(self);
   }
 
@@ -306,7 +287,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   toString(self: T, options?: ToStringOptions): string {
-    this._assertSelf(self);
+    this._assertInRange(self, "self");
 
     const radix = resolveRadix(options?.radix);
     let result = self.toString(radix);
@@ -345,7 +326,7 @@ class _Uint8xOperations<T extends number> extends _UinNOperations<T>
   }
 
   toBytes(self: T, littleEndian: boolean = false): Uint8Array {
-    this._assertSelf(self);
+    this._assertInRange(self, "self");
 
     if (this.bitLength === 8) {
       return Uint8Array.of(self);

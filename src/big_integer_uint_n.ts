@@ -50,59 +50,40 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
     return this.#range.includes(value);
   }
 
-  protected _assertSelf(self: T): void {
-    if (this.inRange(self) !== true) {
+  protected _assertInRange(test: T, label: string): void {
+    if (this.inRange(test) !== true) {
       throw new TypeError(
-        "The type of `self` does not match the type of `uint" +
-          this.#bitLength + "`.",
-      );
+        `The type of \`${label}\` does not match the type of \`uint${this.#bitLength}\`.`,
+      ); // 型が期待値でない場合も含むのでRangeErrorでなくTypeErrorとした
     }
   }
 
   bitwiseAnd(self: T, other: T): T {
-    this._assertSelf(self);
-
-    if (this.inRange(other) !== true) {
-      throw new TypeError(
-        "The type of `other` does not match the type of `uint" +
-          this.#bitLength + "`.",
-      );
-    }
+    this._assertInRange(self, "self");
+    this._assertInRange(other, "other");
 
     const aAndB = (self as bigint) & (other as bigint); //XXX 何故かtypescriptにbigintでなくnumberだと言われる
     return (aAndB & this.#range.max) as T;
   }
 
   bitwiseOr(self: T, other: T): T {
-    this._assertSelf(self);
-
-    if (this.inRange(other) !== true) {
-      throw new TypeError(
-        "The type of `other` does not match the type of `uint" +
-          this.#bitLength + "`.",
-      );
-    }
+    this._assertInRange(self, "self");
+    this._assertInRange(other, "other");
 
     const aOrB = (self as bigint) | (other as bigint); //XXX 何故かtypescriptにbigintでなくnumberだと言われる
     return (aOrB & this.#range.max) as T;
   }
 
   bitwiseXOr(self: T, other: T): T {
-    this._assertSelf(self);
-
-    if (this.inRange(other) !== true) {
-      throw new TypeError(
-        "The type of `other` does not match the type of `uint" +
-          this.#bitLength + "`.",
-      );
-    }
+    this._assertInRange(self, "self");
+    this._assertInRange(other, "other");
 
     const aXOrB = (self as bigint) ^ (other as bigint); //XXX 何故かtypescriptにbigintでなくnumberだと言われる
     return (aXOrB & this.#range.max) as T;
   }
 
   rotateLeft(self: T, offset: number): T {
-    this._assertSelf(self);
+    this._assertInRange(self, "self");
 
     if (Number.isSafeInteger(offset) !== true) {
       throw new TypeError("`offset` must be a safe integer.");
@@ -182,7 +163,7 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   }
 
   toNumber(self: T): number {
-    this._assertSelf(self);
+    this._assertInRange(self, "self");
 
     if (inSafeIntegerRange(self)) {
       return Number(self);
@@ -215,7 +196,7 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   }
 
   toBigInt(self: T): bigint {
-    this._assertSelf(self);
+    this._assertInRange(self, "self");
     return self;
   }
 
@@ -245,7 +226,7 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   }
 
   toString(self: T, options?: ToStringOptions): string {
-    this._assertSelf(self);
+    this._assertInRange(self, "self");
 
     const radix = resolveRadix(options?.radix);
     let result = self.toString(radix);
@@ -292,7 +273,7 @@ class _Uint8xOperations<T extends bigint> extends _UinNOperations<T>
   }
 
   toBytes(self: T, littleEndian: boolean = false): Uint8Array {
-    this._assertSelf(self);
+    this._assertInRange(self, "self");
 
     this.#bufferView.setBigUint64(0, self, littleEndian);
     return Uint8Array.from(this.#bufferUint8View);
