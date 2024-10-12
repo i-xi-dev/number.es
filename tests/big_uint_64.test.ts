@@ -1251,6 +1251,148 @@ Deno.test("BigUint64.toBigInt()", () => {
   );
 });
 
+Deno.test("BigUint64.fromString()", () => {
+  assertStrictEquals(BigUint64.fromString("0"), 0n);
+  assertStrictEquals(BigUint64.fromString("-0"), 0n);
+  assertStrictEquals(BigUint64.fromString("1"), 1n);
+  assertStrictEquals(BigUint64.fromString("-1"), 0n);
+  assertStrictEquals(
+    BigUint64.fromString("18446744073709551615"),
+    18446744073709551615n,
+  );
+  assertStrictEquals(
+    BigUint64.fromString("18446744073709551616"),
+    18446744073709551615n,
+  );
+
+  const e1 = "`value` must be a `string`.";
+  assertThrows(
+    () => {
+      BigUint64.fromString(undefined as unknown as string);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      BigUint64.fromString(0 as unknown as string);
+    },
+    TypeError,
+    e1,
+  );
+
+  const e2 = "`value` must be a representation of a `uint64`.";
+  assertThrows(
+    () => {
+      BigUint64.fromString("");
+    },
+    RangeError,
+    e2,
+  );
+
+  const e3 = "`value` must be within the range of `uint64`.";
+
+  const op2 = { radix: 2 } as const;
+  assertStrictEquals(BigUint64.fromString("0", op2), 0n);
+  assertStrictEquals(
+    BigUint64.fromString(
+      "0000000000000000000000000000000000000000000000000000000000000000",
+      op2,
+    ),
+    0n,
+  );
+  assertStrictEquals(
+    BigUint64.fromString(
+      "1111111111111111111111111111111111111111111111111111111111111111",
+      op2,
+    ),
+    18446744073709551615n,
+  );
+  assertStrictEquals(
+    BigUint64.fromString(
+      "+01111111111111111111111111111111111111111111111111111111111111111",
+      op2,
+    ),
+    18446744073709551615n,
+  );
+  assertThrows(
+    () => {
+      BigUint64.fromString("2", op2);
+    },
+    RangeError,
+    e2,
+  );
+  const op2e = { radix: 2, overflowMode: "exception" } as const;
+  assertThrows(
+    () => {
+      BigUint64.fromString("-1", op2e);
+    },
+    RangeError,
+    e3,
+  );
+
+  const op8 = { radix: 8 } as const;
+  assertStrictEquals(BigUint64.fromString("0", op8), 0n);
+  assertStrictEquals(BigUint64.fromString("0000000000000000000000", op8), 0n);
+  assertStrictEquals(
+    BigUint64.fromString("1777777777777777777777", op8),
+    18446744073709551615n,
+  );
+  assertStrictEquals(
+    BigUint64.fromString("+01777777777777777777777", op8),
+    18446744073709551615n,
+  );
+  assertThrows(
+    () => {
+      BigUint64.fromString("8", op8);
+    },
+    RangeError,
+    e2,
+  );
+
+  const op10 = { radix: 10 } as const;
+  assertStrictEquals(BigUint64.fromString("0", op10), 0n);
+  assertStrictEquals(BigUint64.fromString("00000000000000000000", op10), 0n);
+  assertStrictEquals(
+    BigUint64.fromString("18446744073709551615", op10),
+    18446744073709551615n,
+  );
+  assertStrictEquals(
+    BigUint64.fromString("+018446744073709551615", op10),
+    18446744073709551615n,
+  );
+  assertThrows(
+    () => {
+      BigUint64.fromString("a", op10);
+    },
+    RangeError,
+    e2,
+  );
+
+  const op16 = { radix: 16 } as const;
+  assertStrictEquals(BigUint64.fromString("0", op16), 0n);
+  assertStrictEquals(BigUint64.fromString("0000000000000000", op16), 0n);
+  assertStrictEquals(
+    BigUint64.fromString("ffffffffffffffff", op16),
+    18446744073709551615n,
+  );
+  assertStrictEquals(
+    BigUint64.fromString("FFFFFFFFFFFFFFFF", op16),
+    18446744073709551615n,
+  );
+  assertStrictEquals(
+    BigUint64.fromString("+0FFFFFFFFFFFFFFFF", op16),
+    18446744073709551615n,
+  );
+  assertThrows(
+    () => {
+      BigUint64.fromString("g", op16);
+    },
+    RangeError,
+    e2,
+  );
+});
+
 Deno.test("BigUint64.toString()", () => {
   assertStrictEquals(BigUint64.toString(0n), "0");
   assertStrictEquals(BigUint64.toString(-0n), "0");

@@ -166,7 +166,7 @@ export function resolveRadix(radix?: Radix): Radix {
     : Radix.DECIMAL;
 }
 
-export const REGEX = {
+export const RADIX_REGEX = {
   [Radix.BINARY]: /^[-+]?[01]+$/,
   [Radix.OCTAL]: /^[-+]?[0-7]+$/,
   [Radix.DECIMAL]: /^[-+]?[0-9]+$/,

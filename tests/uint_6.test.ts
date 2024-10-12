@@ -505,6 +505,103 @@ Deno.test("Uint6.toBigInt()", () => {
   );
 });
 
+Deno.test("Uint6.fromString()", () => {
+  assertStrictEquals(Uint6.fromString("0"), 0);
+  assertStrictEquals(Uint6.fromString("-0"), 0);
+  assertStrictEquals(Uint6.fromString("1"), 1);
+  assertStrictEquals(Uint6.fromString("-1"), 0);
+  assertStrictEquals(Uint6.fromString("63"), 63);
+  assertStrictEquals(Uint6.fromString("64"), 63);
+
+  const e1 = "`value` must be a `string`.";
+  assertThrows(
+    () => {
+      Uint6.fromString(undefined as unknown as string);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint6.fromString(0 as unknown as string);
+    },
+    TypeError,
+    e1,
+  );
+
+  const e2 = "`value` must be a representation of a `uint6`.";
+  assertThrows(
+    () => {
+      Uint6.fromString("");
+    },
+    RangeError,
+    e2,
+  );
+
+  const e3 = "`value` must be within the range of `uint6`.";
+
+  const op2 = { radix: 2 } as const;
+  assertStrictEquals(Uint6.fromString("0", op2), 0);
+  assertStrictEquals(Uint6.fromString("000000", op2), 0);
+  assertStrictEquals(Uint6.fromString("111111", op2), 63);
+  assertStrictEquals(Uint6.fromString("+0111111", op2), 63);
+  assertThrows(
+    () => {
+      Uint6.fromString("2", op2);
+    },
+    RangeError,
+    e2,
+  );
+  const op2e = { radix: 2, overflowMode: "exception" } as const;
+  assertThrows(
+    () => {
+      Uint6.fromString("-1", op2e);
+    },
+    RangeError,
+    e3,
+  );
+
+  const op8 = { radix: 8 } as const;
+  assertStrictEquals(Uint6.fromString("0", op8), 0);
+  assertStrictEquals(Uint6.fromString("00", op8), 0);
+  assertStrictEquals(Uint6.fromString("77", op8), 63);
+  assertStrictEquals(Uint6.fromString("+077", op8), 63);
+  assertThrows(
+    () => {
+      Uint6.fromString("8", op8);
+    },
+    RangeError,
+    e2,
+  );
+
+  const op10 = { radix: 10 } as const;
+  assertStrictEquals(Uint6.fromString("0", op10), 0);
+  assertStrictEquals(Uint6.fromString("00", op10), 0);
+  assertStrictEquals(Uint6.fromString("63", op10), 63);
+  assertStrictEquals(Uint6.fromString("+063", op10), 63);
+  assertThrows(
+    () => {
+      Uint6.fromString("a", op10);
+    },
+    RangeError,
+    e2,
+  );
+
+  const op16 = { radix: 16 } as const;
+  assertStrictEquals(Uint6.fromString("0", op16), 0);
+  assertStrictEquals(Uint6.fromString("00", op16), 0);
+  assertStrictEquals(Uint6.fromString("3f", op16), 63);
+  assertStrictEquals(Uint6.fromString("3F", op16), 63);
+  assertStrictEquals(Uint6.fromString("+03F", op16), 63);
+  assertThrows(
+    () => {
+      Uint6.fromString("g", op16);
+    },
+    RangeError,
+    e2,
+  );
+});
+
 Deno.test("Uint6.toString()", () => {
   assertStrictEquals(Uint6.toString(0), "0");
   assertStrictEquals(Uint6.toString(-0), "0");

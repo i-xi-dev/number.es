@@ -2,6 +2,7 @@ import {
   BITS_PER_BYTE,
   FromBigIntOptions,
   FromNumberOptions,
+  FromStringOptions,
   ToStringOptions,
   Uint8xOperations,
   UintNOperations,
@@ -11,9 +12,16 @@ import {
   isBigInt,
   isNumber,
   normalizeNumber,
+  RADIX_PREFIX,
 } from "./numeric.ts";
 import { isPositive as isPositiveSafeInteger, ZERO } from "./safe_integer.ts";
-import { OverflowMode, resolveRadix, roundNumber } from "./integer.ts";
+import { isString } from "./utils.ts";
+import {
+  OverflowMode,
+  RADIX_REGEX,
+  resolveRadix,
+  roundNumber,
+} from "./integer.ts";
 import { SafeIntegerRange } from "./safe_integer_range.ts";
 import { uint6, uint7, uint8 } from "./uint_n_type.ts";
 
@@ -269,6 +277,32 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   toBigInt(self: T): bigint {
     this._assertSelf(self);
     return BigInt(self);
+  }
+
+  //XXX 小数も受け付ける？
+  fromString(value: string, options?: FromStringOptions): T {
+    if (isString(value) !== true) {
+      throw new TypeError("`value` must be a `string`.");
+    }
+
+    const radix = resolveRadix(options?.radix);
+    const regex = RADIX_REGEX[radix];
+    if (regex.test(value) !== true) {
+      throw new RangeError(
+        "`value` must be a representation of a `uint" + this.#bitLength + "`.",
+      );
+    }
+
+    const negative = value.startsWith("-");
+    let adjustedValue = value;
+    adjustedValue = adjustedValue.replace(/^[-+]?/, "");
+    adjustedValue = RADIX_PREFIX[radix] + adjustedValue;
+    let valueAsBigInt = BigInt(adjustedValue);
+    if (negative === true) {
+      valueAsBigInt *= -1n;
+    }
+
+    return this.fromBigInt(valueAsBigInt, options);
   }
 
   toString(self: T, options?: ToStringOptions): string {

@@ -1,6 +1,6 @@
 import { BIGINT_ZERO, inSafeIntegerRange, isBigInt, Radix } from "./numeric.ts";
 import { isString } from "./utils.ts";
-import { REGEX, resolveRadix, ToStringOptions } from "./integer.ts";
+import { RADIX_REGEX, resolveRadix, ToStringOptions } from "./integer.ts";
 
 export const ZERO = BIGINT_ZERO;
 
@@ -94,7 +94,7 @@ export function fromString(
 
   // const radix = resolveRadix(options?.radix);
   // const regex = REGEX[radix];
-  const regex = REGEX[Radix.DECIMAL];
+  const regex = RADIX_REGEX[Radix.DECIMAL];
   if (regex.test(source) !== true) {
     throw new RangeError("`source` must be a representation of a integer.");
   }

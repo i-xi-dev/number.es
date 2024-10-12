@@ -78,3 +78,10 @@ export const Radix = {
 } as const;
 
 export type Radix = typeof Radix[keyof typeof Radix];
+
+export const RADIX_PREFIX = {
+  [Radix.BINARY]: "0b",
+  [Radix.OCTAL]: "0o",
+  [Radix.DECIMAL]: "",
+  [Radix.HEXADECIMAL]: "0x",
+} as const;
