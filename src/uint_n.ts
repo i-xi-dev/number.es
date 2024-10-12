@@ -27,12 +27,12 @@ export interface UintNOperations<T extends numeric> {
   bitwiseAnd(self: T, other: T): T;
   bitwiseOr(self: T, other: T): T;
   bitwiseXOr(self: T, other: T): T;
-  //TODO bitwiseNot(self: T): T;
+  //XXX bitwiseNot(self: T): T;
   rotateLeft(self: T, offset: number): T;
-  //TODO rotateRight(self: T, offset: number): T;
+  //XXX rotateRight(self: T, offset: number): T;
   fromNumber(value: number, options?: FromNumberOptions): T;
   toNumber(self: T): number;
-  //TODO fromBigInt(value: bigint, options?: FromBigIntOptions): T;
+  fromBigInt(value: bigint, options?: FromBigIntOptions): T;
   toBigInt(self: T): bigint;
   //TODO fromString(value: string, options?: FromStringOptions): T;
   //TODO toString(self: T, options: TODO): string;

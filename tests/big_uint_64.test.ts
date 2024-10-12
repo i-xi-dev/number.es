@@ -1125,6 +1125,100 @@ Deno.test("BigUint64.toNumber()", () => {
   );
 });
 
+Deno.test("BigUint64.fromBigInt()", () => {
+  assertStrictEquals(BigUint64.fromBigInt(0n), 0n);
+  assertStrictEquals(Object.is(BigUint64.fromBigInt(-0n), 0n), true);
+  assertStrictEquals(BigUint64.fromBigInt(1n), 1n);
+  assertStrictEquals(BigUint64.fromBigInt(63n), 63n);
+  assertStrictEquals(BigUint64.fromBigInt(64n), 64n);
+  assertStrictEquals(BigUint64.fromBigInt(127n), 127n);
+  assertStrictEquals(BigUint64.fromBigInt(128n), 128n);
+  assertStrictEquals(BigUint64.fromBigInt(255n), 255n);
+  assertStrictEquals(BigUint64.fromBigInt(256n), 256n);
+  assertStrictEquals(BigUint64.fromBigInt(65535n), 65535n);
+  assertStrictEquals(BigUint64.fromBigInt(65536n), 65536n);
+  assertStrictEquals(BigUint64.fromBigInt(16777215n), 16777215n);
+  assertStrictEquals(BigUint64.fromBigInt(16777216n), 16777216n);
+  assertStrictEquals(BigUint64.fromBigInt(4294967295n), 4294967295n);
+  assertStrictEquals(
+    BigUint64.fromBigInt(0xFFFF_FFFF_FFFF_FFFFn),
+    0xFFFF_FFFF_FFFF_FFFFn,
+  );
+  assertStrictEquals(
+    BigUint64.fromBigInt(0x1_0000_0000_0000_0000n),
+    0xFFFF_FFFF_FFFF_FFFFn,
+  );
+  assertStrictEquals(BigUint64.fromBigInt(-1n), 0n);
+
+  assertStrictEquals(BigUint64.fromBigInt(BigInt(Number.MIN_SAFE_INTEGER)), 0n);
+  assertStrictEquals(
+    BigUint64.fromBigInt(BigInt(Number.MAX_SAFE_INTEGER)),
+    BigInt(Number.MAX_SAFE_INTEGER),
+  );
+
+  const e1 = "`value` must be a `bigint`.";
+  assertThrows(
+    () => {
+      BigUint64.fromBigInt(undefined as unknown as bigint);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      BigUint64.fromBigInt("0" as unknown as bigint);
+    },
+    TypeError,
+    e1,
+  );
+});
+
+Deno.test("BigUint64.fromBigInt() - overflowMode", () => {
+  const op = { overflowMode: Integer.OverflowMode.EXCEPTION };
+
+  const e1 = "`value` must be within the range of `uint64`.";
+  assertThrows(
+    () => {
+      BigUint64.fromBigInt(-1n, op);
+    },
+    RangeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      BigUint64.fromBigInt(0x1_0000_0000_0000_0000n, op);
+    },
+    RangeError,
+    e1,
+  );
+
+  const op2 = { overflowMode: Integer.OverflowMode.TRUNCATE };
+
+  assertStrictEquals(BigUint64.fromBigInt(-1n, op2), 0xFFFF_FFFF_FFFF_FFFFn);
+  assertStrictEquals(BigUint64.fromBigInt(64n, op2), 64n);
+  assertStrictEquals(BigUint64.fromBigInt(65n, op2), 65n);
+  assertStrictEquals(BigUint64.fromBigInt(128n, op2), 128n);
+  assertStrictEquals(BigUint64.fromBigInt(129n, op2), 129n);
+  assertStrictEquals(BigUint64.fromBigInt(256n, op2), 256n);
+  assertStrictEquals(BigUint64.fromBigInt(257n, op2), 257n);
+  assertStrictEquals(BigUint64.fromBigInt(512n, op2), 512n);
+  assertStrictEquals(BigUint64.fromBigInt(513n, op2), 513n);
+  assertStrictEquals(BigUint64.fromBigInt(65535n, op2), 65535n);
+  assertStrictEquals(BigUint64.fromBigInt(65536n, op2), 65536n);
+  assertStrictEquals(BigUint64.fromBigInt(65537n, op2), 65537n);
+  assertStrictEquals(BigUint64.fromBigInt(131071n, op2), 131071n);
+  assertStrictEquals(BigUint64.fromBigInt(131072n, op2), 131072n);
+  assertStrictEquals(BigUint64.fromBigInt(16777215n, op2), 16777215n);
+  assertStrictEquals(BigUint64.fromBigInt(16777216n, op2), 16777216n);
+  assertStrictEquals(BigUint64.fromBigInt(4294967295n, op2), 4294967295n);
+  assertStrictEquals(BigUint64.fromBigInt(4294967296n, op2), 4294967296n);
+  assertStrictEquals(
+    BigUint64.fromBigInt(0xFFFF_FFFF_FFFF_FFFFn, op2),
+    0xFFFF_FFFF_FFFF_FFFFn,
+  );
+  assertStrictEquals(BigUint64.fromBigInt(0x1_0000_0000_0000_0000n, op2), 0n);
+});
+
 Deno.test("BigUint64.toBigInt()", () => {
   assertStrictEquals(BigUint64.toBigInt(0n), 0n);
   assertStrictEquals(BigUint64.toBigInt(-0n), 0n);

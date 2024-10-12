@@ -404,6 +404,78 @@ Deno.test("Uint6.toNumber()", () => {
   );
 });
 
+Deno.test("Uint6.fromBigInt()", () => {
+  assertStrictEquals(Uint6.fromBigInt(0n), 0);
+  assertStrictEquals(Object.is(Uint6.fromBigInt(-0n), 0), true);
+  assertStrictEquals(Uint6.fromBigInt(1n), 1);
+  assertStrictEquals(Uint6.fromBigInt(63n), 63);
+  assertStrictEquals(Uint6.fromBigInt(64n), 63);
+  assertStrictEquals(Uint6.fromBigInt(-1n), 0);
+
+  assertStrictEquals(Uint6.fromBigInt(BigInt(Number.MIN_SAFE_INTEGER)), 0);
+  assertStrictEquals(Uint6.fromBigInt(BigInt(Number.MAX_SAFE_INTEGER)), 63);
+
+  const e1 = "`value` must be a `bigint`.";
+  assertThrows(
+    () => {
+      Uint6.fromBigInt(undefined as unknown as bigint);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint6.fromBigInt("0" as unknown as bigint);
+    },
+    TypeError,
+    e1,
+  );
+
+  const e2 = "`value` must be within the range of safe integer.";
+  assertThrows(
+    () => {
+      Uint6.fromBigInt(BigInt(Number.MAX_SAFE_INTEGER) + 1n);
+    },
+    RangeError,
+    e2,
+  );
+  assertThrows(
+    () => {
+      Uint6.fromBigInt(BigInt(Number.MIN_SAFE_INTEGER) - 1n);
+    },
+    RangeError,
+    e2,
+  );
+});
+
+Deno.test("Uint6.fromBigInt() - overflowMode", () => {
+  const op = { overflowMode: Integer.OverflowMode.EXCEPTION };
+
+  const e1 = "`value` must be within the range of `uint6`.";
+  assertThrows(
+    () => {
+      Uint6.fromBigInt(-1n, op);
+    },
+    RangeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint6.fromBigInt(64n, op);
+    },
+    RangeError,
+    e1,
+  );
+
+  const op2 = { overflowMode: Integer.OverflowMode.TRUNCATE };
+
+  assertStrictEquals(Uint6.fromBigInt(-1n, op2), 63);
+  assertStrictEquals(Uint6.fromBigInt(64n, op2), 0);
+  assertStrictEquals(Uint6.fromBigInt(65n, op2), 1);
+  assertStrictEquals(Uint6.fromBigInt(128n, op2), 0);
+  assertStrictEquals(Uint6.fromBigInt(129n, op2), 1);
+});
+
 Deno.test("Uint6.toBigInt()", () => {
   assertStrictEquals(Uint6.toBigInt(0), 0n);
   assertStrictEquals(Uint6.toBigInt(-0), 0n);

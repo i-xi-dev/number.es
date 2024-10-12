@@ -415,6 +415,82 @@ Deno.test("Uint7.toNumber()", () => {
   );
 });
 
+Deno.test("Uint7.fromBigInt()", () => {
+  assertStrictEquals(Uint7.fromBigInt(0n), 0);
+  assertStrictEquals(Object.is(Uint7.fromBigInt(-0n), 0), true);
+  assertStrictEquals(Uint7.fromBigInt(1n), 1);
+  assertStrictEquals(Uint7.fromBigInt(63n), 63);
+  assertStrictEquals(Uint7.fromBigInt(64n), 64);
+  assertStrictEquals(Uint7.fromBigInt(127n), 127);
+  assertStrictEquals(Uint7.fromBigInt(128n), 127);
+  assertStrictEquals(Uint7.fromBigInt(-1n), 0);
+
+  assertStrictEquals(Uint7.fromBigInt(BigInt(Number.MIN_SAFE_INTEGER)), 0);
+  assertStrictEquals(Uint7.fromBigInt(BigInt(Number.MAX_SAFE_INTEGER)), 127);
+
+  const e1 = "`value` must be a `bigint`.";
+  assertThrows(
+    () => {
+      Uint7.fromBigInt(undefined as unknown as bigint);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint7.fromBigInt("0" as unknown as bigint);
+    },
+    TypeError,
+    e1,
+  );
+
+  const e2 = "`value` must be within the range of safe integer.";
+  assertThrows(
+    () => {
+      Uint7.fromBigInt(BigInt(Number.MAX_SAFE_INTEGER) + 1n);
+    },
+    RangeError,
+    e2,
+  );
+  assertThrows(
+    () => {
+      Uint7.fromBigInt(BigInt(Number.MIN_SAFE_INTEGER) - 1n);
+    },
+    RangeError,
+    e2,
+  );
+});
+
+Deno.test("Uint7.fromBigInt() - overflowMode", () => {
+  const op = { overflowMode: Integer.OverflowMode.EXCEPTION };
+
+  const e1 = "`value` must be within the range of `uint7`.";
+  assertThrows(
+    () => {
+      Uint7.fromBigInt(-1n, op);
+    },
+    RangeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint7.fromBigInt(128n, op);
+    },
+    RangeError,
+    e1,
+  );
+
+  const op2 = { overflowMode: Integer.OverflowMode.TRUNCATE };
+
+  assertStrictEquals(Uint7.fromBigInt(-1n, op2), 127);
+  assertStrictEquals(Uint7.fromBigInt(64n, op2), 64);
+  assertStrictEquals(Uint7.fromBigInt(65n, op2), 65);
+  assertStrictEquals(Uint7.fromBigInt(128n, op2), 0);
+  assertStrictEquals(Uint7.fromBigInt(129n, op2), 1);
+  assertStrictEquals(Uint7.fromBigInt(256n, op2), 0);
+  assertStrictEquals(Uint7.fromBigInt(257n, op2), 1);
+});
+
 Deno.test("Uint7.toBigInt()", () => {
   assertStrictEquals(Uint7.toBigInt(0), 0n);
   assertStrictEquals(Uint7.toBigInt(-0), 0n);

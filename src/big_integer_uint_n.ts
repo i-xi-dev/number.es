@@ -1,11 +1,17 @@
 import { BigIntegerRange } from "./big_integer_range.ts";
 import {
   BITS_PER_BYTE,
+  FromBigIntOptions,
   FromNumberOptions,
   Uint8xOperations,
   UintNOperations,
 } from "./uint_n.ts";
-import { inSafeIntegerRange, isNumber, NUMBER_ZERO } from "./numeric.ts";
+import {
+  inSafeIntegerRange,
+  isBigInt,
+  isNumber,
+  NUMBER_ZERO,
+} from "./numeric.ts";
 // import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
 import { OverflowMode, roundNumber } from "./integer.ts";
 import { ZERO } from "./big_integer.ts";
@@ -184,6 +190,30 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
       return Number(self);
     }
     throw new RangeError("`self` must be within the range of safe integer.");
+  }
+
+  fromBigInt(value: bigint, options?: FromBigIntOptions): T {
+    if (isBigInt(value) !== true) {
+      throw new TypeError("`value` must be a `bigint`.");
+    }
+
+    if (this.inRange(value)) {
+      return value;
+    }
+
+    switch (options?.overflowMode) {
+      case OverflowMode.EXCEPTION:
+        throw new RangeError(
+          "`value` must be within the range of `uint" +
+            this.#bitLength + "`.",
+        );
+
+      case OverflowMode.TRUNCATE:
+        return this.#truncateFromInteger(value);
+
+      default: // case OverflowMode.SATURATE:
+        return this.#range.clamp(value);
+    }
   }
 
   toBigInt(self: T): bigint {

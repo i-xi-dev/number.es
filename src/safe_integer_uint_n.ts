@@ -1,11 +1,17 @@
 import {
   BITS_PER_BYTE,
+  FromBigIntOptions,
   FromNumberOptions,
   Uint8xOperations,
   UintNOperations,
 } from "./uint_n.ts";
+import {
+  inSafeIntegerRange,
+  isBigInt,
+  isNumber,
+  normalizeNumber,
+} from "./numeric.ts";
 import { isPositive as isPositiveSafeInteger, ZERO } from "./safe_integer.ts";
-import { isNumber, normalizeNumber } from "./numeric.ts";
 import { OverflowMode, roundNumber } from "./integer.ts";
 import { SafeIntegerRange } from "./safe_integer_range.ts";
 import { uint6, uint7, uint8 } from "./uint_n_type.ts";
@@ -242,18 +248,34 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
     return normalizeNumber(self);
   }
 
-  // fromBigInt(value: bigint, options?: FromBigIntOptions): T {
-  //   if (isBigInt(value) !== true) {
-  //     throw new TypeError("`value` must be a `bigint`.");
-  //   }
-  //   const valueAsNumber = Number(value);
-  //   if (this.inRange(valueAsNumber) !== true) {
-  //     //TODO options?.overflowMode
-  //     throw new RangeError("`value` must be within the range of `uint" + this.#bitLength + "`.");
-  //   }
+  fromBigInt(value: bigint, options?: FromBigIntOptions): T {
+    if (isBigInt(value) !== true) {
+      throw new TypeError("`value` must be a `bigint`.");
+    }
+    if (inSafeIntegerRange(value) !== true) {
+      throw new RangeError("`value` must be within the range of safe integer.");
+    }
 
-  //   return valueAsNumber;
-  // }
+    const valueAsNumber = Number(value);
+
+    if (this.inRange(valueAsNumber)) {
+      return valueAsNumber;
+    }
+
+    switch (options?.overflowMode) {
+      case OverflowMode.EXCEPTION:
+        throw new RangeError(
+          "`value` must be within the range of `uint" +
+            this.#bitLength + "`.",
+        );
+
+      case OverflowMode.TRUNCATE:
+        return this.#truncateFromInteger(valueAsNumber);
+
+      default: // case OverflowMode.SATURATE:
+        return this.#range.clamp(valueAsNumber);
+    }
+  }
 
   toBigInt(self: T): bigint {
     if (this.inRange(self) !== true) {
