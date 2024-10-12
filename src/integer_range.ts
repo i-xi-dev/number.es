@@ -1,4 +1,5 @@
-import { isBigInt, numeric } from "./numeric.ts";
+import { isBigInt } from "./utils.ts";
+import { numeric } from "./numeric.ts";
 
 export interface IntegerRange<T extends numeric> {
   get min(): T;

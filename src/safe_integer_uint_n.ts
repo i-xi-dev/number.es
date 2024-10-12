@@ -1,4 +1,11 @@
 import {
+  assertBigInt,
+  assertNumber,
+  assertSafeInteger,
+  isNumber,
+  isString,
+} from "./utils.ts";
+import {
   BITS_PER_BYTE,
   FromBigIntOptions,
   FromNumberOptions,
@@ -9,13 +16,10 @@ import {
 } from "./uint_n.ts";
 import {
   inSafeIntegerRange,
-  isBigInt,
-  isNumber,
   normalizeNumber,
   RADIX_PREFIX,
 } from "./numeric.ts";
 import { isPositive as isPositiveSafeInteger, ZERO } from "./safe_integer.ts";
-import { isString } from "./utils.ts";
 import {
   OverflowMode,
   RADIX_REGEX,
@@ -121,10 +125,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
 
   rotateLeft(self: T, offset: number): T {
     this._assertInRange(self, "self");
-
-    if (Number.isSafeInteger(offset) !== true) {
-      throw new TypeError("`offset` must be a safe integer.");
-    }
+    assertSafeInteger(offset, "offset");
 
     let normalizedOffset = offset % this.#bitLength;
     if (normalizedOffset < ZERO) {
@@ -149,9 +150,8 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   fromNumber(value: number, options?: FromNumberOptions): T {
-    if (isNumber(value) !== true) {
-      throw new TypeError("`value` must be a `number`.");
-    }
+    assertNumber(value, "value");
+
     if (Number.isNaN(value)) {
       throw new TypeError("`value` must not be `NaN`.");
     }
@@ -193,23 +193,19 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   // #saturateFromInteger(value: number): T {
-  //   // if (Number.isSafeInteger(value) !== true) {
-  //   //   throw new TypeError("`value` must be a safe integer.");
-  //   // }
-  //
+  //   // assertSafeInteger(value, "value");
+
   //   if (value > this.#range.max) {
   //     return this.#range.max;
   //   } else if (value < this.#range.min) {
   //     return this.#range.min;
   //   }
-  //
+
   //   return normalizeNumber(value as T);
   // }
 
   #truncateFromInteger(value: number): T {
-    // if (Number.isSafeInteger(value) !== true) {
-    //   throw new TypeError("`value` must be a safe integer.");
-    // }
+    // assertSafeInteger(value, "value");
 
     if (value === ZERO) {
       return ZERO as T;
@@ -227,9 +223,8 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   fromBigInt(value: bigint, options?: FromBigIntOptions): T {
-    if (isBigInt(value) !== true) {
-      throw new TypeError("`value` must be a `bigint`.");
-    }
+    assertBigInt(value, "value");
+
     if (inSafeIntegerRange(value) !== true) {
       throw new RangeError("`value` must be within the range of safe integer.");
     }

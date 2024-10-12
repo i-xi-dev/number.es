@@ -359,7 +359,7 @@ Deno.test("BigIntegerRange.prototype.includes()", () => {
 });
 
 Deno.test("BigIntegerRange.prototype.clamp()", () => {
-  const em1 = "The type of `input` does not match the type of range.";
+  const em1 = "`input` must be a `bigint`.";
 
   assertThrows(
     () => {

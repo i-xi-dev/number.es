@@ -359,7 +359,7 @@ Deno.test("SafeIntegerRange.prototype.includes()", () => {
 });
 
 Deno.test("SafeIntegerRange.prototype.clamp()", () => {
-  const em1 = "The type of `input` does not match the type of range.";
+  const em1 = "`input` must be a safe integer.";
 
   assertThrows(
     () => {

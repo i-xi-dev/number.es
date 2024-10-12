@@ -11,66 +11,6 @@ Deno.test("Numeric.BIGINT_ZERO", () => {
   assertStrictEquals(Numeric.BIGINT_ZERO === 0n, true);
 });
 
-Deno.test("Numeric.isNumber()", () => {
-  assertStrictEquals(Numeric.isNumber(0), true);
-  assertStrictEquals(Numeric.isNumber(-0), true);
-  assertStrictEquals(Numeric.isNumber(1), true);
-  assertStrictEquals(Numeric.isNumber(-1), true);
-
-  assertStrictEquals(Numeric.isNumber(-10.1), true);
-  assertStrictEquals(Numeric.isNumber(-9.9), true);
-  assertStrictEquals(Numeric.isNumber(9.9), true);
-  assertStrictEquals(Numeric.isNumber(10.1), true);
-
-  assertStrictEquals(Numeric.isNumber(0n), false);
-  assertStrictEquals(Numeric.isNumber(-0n), false);
-  assertStrictEquals(Numeric.isNumber(1n), false);
-  assertStrictEquals(Numeric.isNumber(-1n), false);
-
-  assertStrictEquals(Numeric.isNumber(Number.NaN), true);
-  assertStrictEquals(Numeric.isNumber(Number.POSITIVE_INFINITY), true);
-  assertStrictEquals(Numeric.isNumber(Number.MAX_SAFE_INTEGER), true);
-  assertStrictEquals(Numeric.isNumber(Number.MIN_SAFE_INTEGER), true);
-  assertStrictEquals(Numeric.isNumber(Number.NEGATIVE_INFINITY), true);
-
-  assertStrictEquals(Numeric.isNumber(undefined), false);
-  assertStrictEquals(Numeric.isNumber(null), false);
-  assertStrictEquals(Numeric.isNumber(true), false);
-  assertStrictEquals(Numeric.isNumber(false), false);
-  assertStrictEquals(Numeric.isNumber(""), false);
-  assertStrictEquals(Numeric.isNumber("0"), false);
-});
-
-Deno.test("Numeric.isBigInt()", () => {
-  assertStrictEquals(Numeric.isBigInt(0), false);
-  assertStrictEquals(Numeric.isBigInt(-0), false);
-  assertStrictEquals(Numeric.isBigInt(1), false);
-  assertStrictEquals(Numeric.isBigInt(-1), false);
-
-  assertStrictEquals(Numeric.isBigInt(-10.1), false);
-  assertStrictEquals(Numeric.isBigInt(-9.9), false);
-  assertStrictEquals(Numeric.isBigInt(9.9), false);
-  assertStrictEquals(Numeric.isBigInt(10.1), false);
-
-  assertStrictEquals(Numeric.isBigInt(0n), true);
-  assertStrictEquals(Numeric.isBigInt(-0n), true);
-  assertStrictEquals(Numeric.isBigInt(1n), true);
-  assertStrictEquals(Numeric.isBigInt(-1n), true);
-
-  assertStrictEquals(Numeric.isBigInt(Number.NaN), false);
-  assertStrictEquals(Numeric.isBigInt(Number.POSITIVE_INFINITY), false);
-  assertStrictEquals(Numeric.isBigInt(Number.MAX_SAFE_INTEGER), false);
-  assertStrictEquals(Numeric.isBigInt(Number.MIN_SAFE_INTEGER), false);
-  assertStrictEquals(Numeric.isBigInt(Number.NEGATIVE_INFINITY), false);
-
-  assertStrictEquals(Numeric.isBigInt(undefined), false);
-  assertStrictEquals(Numeric.isBigInt(null), false);
-  assertStrictEquals(Numeric.isBigInt(true), false);
-  assertStrictEquals(Numeric.isBigInt(false), false);
-  assertStrictEquals(Numeric.isBigInt(""), false);
-  assertStrictEquals(Numeric.isBigInt("0"), false);
-});
-
 Deno.test("Numeric.normalizeNumber()", () => {
   assertStrictEquals(Numeric.normalizeNumber(0), 0);
   assertStrictEquals(Numeric.normalizeNumber(-0), 0);

@@ -1,11 +1,11 @@
 import {
   BIGINT_ZERO,
-  isBigInt,
   normalizeNumber,
   NUMBER_ZERO,
   numeric,
   Radix,
 } from "./numeric.ts";
+import { isBigInt } from "./utils.ts";
 
 export function isOdd(test: numeric): boolean {
   if (Number.isSafeInteger(test)) {

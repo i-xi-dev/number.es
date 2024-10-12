@@ -1,5 +1,10 @@
-import { BIGINT_ZERO, inSafeIntegerRange, isBigInt, Radix } from "./numeric.ts";
-import { isString } from "./utils.ts";
+import {
+  assertBigInt,
+  assertSafeInteger,
+  isBigInt,
+  isString,
+} from "./utils.ts";
+import { BIGINT_ZERO, inSafeIntegerRange, Radix } from "./numeric.ts";
 import { RADIX_REGEX, resolveRadix, ToStringOptions } from "./integer.ts";
 
 export const ZERO = BIGINT_ZERO;
@@ -28,14 +33,7 @@ export function isEven(test: bigint): boolean {
   return isBigInt(test) && ((test % 2n) === ZERO);
 }
 
-export function min<T extends bigint>(...args: T[]): T {
-  if (
-    (Array.isArray(args) && (args.length > 0) &&
-      args.every((i) => isBigInt(i))) !== true
-  ) {
-    throw new TypeError("`args` must be one or more `bigint`s.");
-  }
-
+function _min<T extends bigint>(...args: T[]): T {
   let min = args[0];
   let tmp: T;
   for (let i = 1; i < args.length; i++) {
@@ -47,7 +45,7 @@ export function min<T extends bigint>(...args: T[]): T {
   return min;
 }
 
-export function max<T extends bigint>(...args: T[]): T {
+export function min<T extends bigint>(...args: T[]): T {
   if (
     (Array.isArray(args) && (args.length > 0) &&
       args.every((i) => isBigInt(i))) !== true
@@ -55,6 +53,10 @@ export function max<T extends bigint>(...args: T[]): T {
     throw new TypeError("`args` must be one or more `bigint`s.");
   }
 
+  return _min(...args);
+}
+
+function _max<T extends bigint>(...args: T[]): T {
   let max = args[0];
   let tmp: T;
   for (let i = 1; i < args.length; i++) {
@@ -66,18 +68,46 @@ export function max<T extends bigint>(...args: T[]): T {
   return max;
 }
 
-export function fromNumber(source: number): bigint {
-  if (Number.isSafeInteger(source) !== true) {
-    throw new TypeError("`source` must be a safe integer.");
+export function max<T extends bigint>(...args: T[]): T {
+  if (
+    (Array.isArray(args) && (args.length > 0) &&
+      args.every((i) => isBigInt(i))) !== true
+  ) {
+    throw new TypeError("`args` must be one or more `bigint`s.");
   }
+
+  return _max(...args);
+}
+
+export function clampToPositive(value: bigint): bigint {
+  assertBigInt(value, "value");
+  return _max(value, 1n);
+}
+
+export function clampToNonNegative(value: bigint): bigint {
+  assertBigInt(value, "value");
+  return _max(value, ZERO);
+}
+
+export function clampToNonPositive(value: bigint): bigint {
+  assertBigInt(value, "value");
+  return _min(value, ZERO);
+}
+
+export function clampToNegative(value: bigint): bigint {
+  assertBigInt(value, "value");
+  return _min(value, -1n);
+}
+
+export function fromNumber(source: number): bigint {
+  assertSafeInteger(source, "source");
 
   return BigInt(source);
 }
 
 export function toNumber(source: bigint): number {
-  if (isBigInt(source) !== true) {
-    throw new TypeError("`source` must be a `bigint`.");
-  }
+  assertBigInt(source, "source");
+
   if (inSafeIntegerRange(source) !== true) {
     throw new RangeError("`source` must be within the range of safe integer.");
   }
@@ -86,7 +116,7 @@ export function toNumber(source: bigint): number {
 
 export function fromString(
   source: string,
-  //XXX options?: FromStringOptions, 依存ゼロの方針で行くなら10進以外のパーサの自作が必要
+  //TODO options?: FromStringOptions,
 ): bigint {
   if (isString(source) !== true) {
     throw new TypeError("`source` must be a `string`.");
@@ -107,9 +137,7 @@ export function fromString(
 }
 
 export function toString(source: bigint, options?: ToStringOptions): string {
-  if (isBigInt(source) !== true) {
-    throw new TypeError("`source` must be a `bigint`.");
-  }
+  assertBigInt(source, "source");
 
   const radix = resolveRadix(options?.radix);
   return Number(source).toString(radix);

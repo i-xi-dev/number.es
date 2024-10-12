@@ -1,19 +1,12 @@
+import { assertNumber, isBigInt, isNumber } from "./utils.ts";
+
 export const NUMBER_ZERO = 0;
 
 export const BIGINT_ZERO = 0n;
 
-export function isNumber(test: unknown): test is number {
-  return (typeof test === "number");
-}
-
-export function isBigInt(test: unknown): test is bigint {
-  return (typeof test === "bigint");
-}
-
 export function normalizeNumber<T extends number>(input: T): T {
-  if (isNumber(input) !== true) {
-    throw new TypeError("`input` must be a `number`.");
-  }
+  assertNumber(input, "input");
+
   if (Number.isFinite(input) !== true) {
     return input;
   }
@@ -24,9 +17,8 @@ export function normalizeNumber<T extends number>(input: T): T {
 }
 
 export function clampToSafeInteger(input: number): number {
-  if (isNumber(input) !== true) {
-    throw new TypeError("`input` must be a `number`.");
-  }
+  assertNumber(input, "input");
+
   if (Number.isNaN(input)) {
     throw new RangeError("`input` must not be `Number.NaN`.");
   }

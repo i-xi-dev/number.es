@@ -1,5 +1,5 @@
 import { IntegerRange } from "./integer_range.ts";
-import { isBigInt } from "./numeric.ts";
+import { assertBigInt, isBigInt } from "./utils.ts";
 
 export class BigIntegerRange<T extends bigint> implements IntegerRange<T> {
   readonly #min: T;
@@ -98,11 +98,7 @@ export class BigIntegerRange<T extends bigint> implements IntegerRange<T> {
   }
 
   clamp(input: bigint): T {
-    if (isBigInt(input) !== true) {
-      throw new TypeError(
-        "The type of `input` does not match the type of range.",
-      );
-    }
+    assertBigInt(input, "input");
 
     if (this.includes(input)) {
       return input;

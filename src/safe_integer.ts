@@ -1,16 +1,11 @@
+import { assertBigInt, assertSafeInteger, isString } from "./utils.ts";
 import {
   FromStringOptions,
   RADIX_REGEX,
   resolveRadix,
   ToStringOptions,
 } from "./integer.ts";
-import {
-  inSafeIntegerRange,
-  isBigInt,
-  normalizeNumber,
-  NUMBER_ZERO,
-} from "./numeric.ts";
-import { isString } from "./utils.ts";
+import { inSafeIntegerRange, normalizeNumber, NUMBER_ZERO } from "./numeric.ts";
 
 export const ZERO = NUMBER_ZERO;
 
@@ -38,14 +33,33 @@ export function isEven(test: number): boolean {
   return Number.isSafeInteger(test) && ((test % 2) === ZERO);
 }
 
+export function clampToPositive(value: number): number {
+  assertSafeInteger(value, "value");
+  return Math.max(value, 1);
+}
+
+export function clampToNonNegative(value: number): number {
+  assertSafeInteger(value, "value");
+  return normalizeNumber(Math.max(value, ZERO));
+}
+
+export function clampToNonPositive(value: number): number {
+  assertSafeInteger(value, "value");
+  return normalizeNumber(Math.min(value, ZERO));
+}
+
+export function clampToNegative(value: number): number {
+  assertSafeInteger(value, "value");
+  return Math.min(value, -1);
+}
+
 //XXX fromNumber
 
 export function fromBigInt(
   source: bigint, /* , options?: FromBigIntOptions */
 ): number {
-  if (isBigInt(source) !== true) {
-    throw new TypeError("`source` must be a `bigint`.");
-  }
+  assertBigInt(source, "source");
+
   if (inSafeIntegerRange(source) !== true) {
     throw new RangeError(
       "`source` must be within the range of safe integer.",
@@ -56,9 +70,7 @@ export function fromBigInt(
 }
 
 export function toBigInt(source: number): bigint {
-  if (Number.isSafeInteger(source) !== true) {
-    throw new TypeError("`source` must be a safe integer.");
-  }
+  assertSafeInteger(source, "source");
   return BigInt(source);
 }
 
@@ -80,9 +92,7 @@ export function fromString(
 }
 
 export function toString(source: number, options?: ToStringOptions): string {
-  if (Number.isSafeInteger(source) !== true) {
-    throw new TypeError("`source` must be a safe integer.");
-  }
+  assertSafeInteger(source, "source");
 
   const radix = resolveRadix(options?.radix);
   return normalizeNumber(source).toString(radix);

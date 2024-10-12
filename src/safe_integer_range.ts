@@ -1,3 +1,4 @@
+import { assertSafeInteger } from "./utils.ts";
 import { IntegerRange } from "./integer_range.ts";
 import { normalizeNumber } from "./numeric.ts";
 
@@ -97,11 +98,7 @@ export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
   }
 
   clamp(input: number): T {
-    if (Number.isSafeInteger(input) !== true) {
-      throw new TypeError(
-        "The type of `input` does not match the type of range.",
-      );
-    }
+    assertSafeInteger(input, "input");
 
     if (this.includes(input)) {
       return normalizeNumber(input);

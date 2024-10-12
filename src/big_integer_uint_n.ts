@@ -1,3 +1,10 @@
+import {
+  assertBigInt,
+  assertNumber,
+  assertSafeInteger,
+  isNumber,
+  isString,
+} from "./utils.ts";
 import { BigIntegerRange } from "./big_integer_range.ts";
 import {
   BITS_PER_BYTE,
@@ -8,15 +15,8 @@ import {
   Uint8xOperations,
   UintNOperations,
 } from "./uint_n.ts";
-import {
-  inSafeIntegerRange,
-  isBigInt,
-  isNumber,
-  NUMBER_ZERO,
-  RADIX_PREFIX,
-} from "./numeric.ts";
+import { inSafeIntegerRange, NUMBER_ZERO, RADIX_PREFIX } from "./numeric.ts";
 import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
-import { isString } from "./utils.ts";
 // import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
 import {
   OverflowMode,
@@ -84,10 +84,7 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
 
   rotateLeft(self: T, offset: number): T {
     this._assertInRange(self, "self");
-
-    if (Number.isSafeInteger(offset) !== true) {
-      throw new TypeError("`offset` must be a safe integer.");
-    }
+    assertSafeInteger(offset, "offset");
 
     let normalizedOffset = offset % this.#bitLength;
     if (normalizedOffset < NUMBER_ZERO) {
@@ -104,9 +101,8 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   }
 
   fromNumber(value: number, options?: FromNumberOptions): T {
-    if (isNumber(value) !== true) {
-      throw new TypeError("`value` must be a `number`.");
-    }
+    assertNumber(value, "value");
+
     if (Number.isNaN(value)) {
       throw new TypeError("`value` must not be `NaN`.");
     }
@@ -172,9 +168,7 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   }
 
   fromBigInt(value: bigint, options?: FromBigIntOptions): T {
-    if (isBigInt(value) !== true) {
-      throw new TypeError("`value` must be a `bigint`.");
-    }
+    assertBigInt(value, "value");
 
     if (this.inRange(value)) {
       return value;
