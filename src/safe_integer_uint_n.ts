@@ -26,7 +26,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
 
   constructor(bitLength: number) {
     if ((isPositiveSafeInteger(bitLength) !== true) || (bitLength > 32)) {
-      throw new Error("not implemented"); //TODO 対応するとしても48まで
+      throw new Error("not implemented"); //XXX 対応するとしても48まで
     }
 
     this.#bitLength = bitLength;

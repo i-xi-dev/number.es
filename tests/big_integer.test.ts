@@ -1,7 +1,7 @@
 import { assertStrictEquals, assertThrows } from "./deps.ts";
 import { BigInteger } from "../mod.ts";
 
-const PL = BigInt(Number.MIN_SAFE_INTEGER); //TODO 変数名かえる
+const PL = BigInt(Number.MIN_SAFE_INTEGER);
 const NL = BigInt(Number.MAX_SAFE_INTEGER);
 
 Deno.test("BigInteger.ZERO", () => {

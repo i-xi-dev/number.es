@@ -22,7 +22,7 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
 
   constructor(bitLength: number) {
     if (bitLength !== 64) {
-      throw new Error("not implemented"); //TODO 対応するとしても1～128まで？
+      throw new Error("not implemented"); //XXX 対応するとしても1～128まで？
     }
 
     this.#bitLength = bitLength;

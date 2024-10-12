@@ -7,12 +7,12 @@ export interface IntegerRange<T extends numeric> {
   rangeEquals(otherRangeLike: IntegerRange.Like<T>): boolean;
   overlaps(otherRangeLike: IntegerRange.Like<T>): boolean;
   covers(otherRangeLike: IntegerRange.Like<T>): boolean; // isSuperrangeOf
-  //TODO isCoveredBy(otherRangeLike: IntegerRange.Like<T>): boolean; // isSubrangeOf
+  //XXX isCoveredBy(otherRangeLike: IntegerRange.Like<T>): boolean; // isSubrangeOf
   isDisjointFrom(otherRangeLike: IntegerRange.Like<T>): boolean;
   isAdjacentTo(otherRangeLike: IntegerRange.Like<T>): boolean;
-  //TODO exceptWith(otherRangeLike: IntegerRange.Like<T>): IntegerRange;
-  //TODO intersectWith(otherRangeLike: IntegerRange.Like<T>): IntegerRange;
-  //TODO unionWith(otherRangeLike: IntegerRange.Like<T>): IntegerRange;
+  //XXX exceptWith(otherRangeLike: IntegerRange.Like<T>): IntegerRange;
+  //XXX intersectWith(otherRangeLike: IntegerRange.Like<T>): IntegerRange;
+  //XXX unionWith(otherRangeLike: IntegerRange.Like<T>): IntegerRange;
   // normalize(ranges)
   includes(test: T): boolean;
   clamp(input: T): T;
