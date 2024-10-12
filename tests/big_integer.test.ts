@@ -575,7 +575,7 @@ Deno.test("BigInteger.fromString()", () => {
 });
 
 Deno.test("BigInteger.toString()", () => {
-  const rfe1 = "`source` must be a `bigint`.";
+  const rfe1 = "`self` must be a `bigint`.";
 
   assertThrows(
     () => {
@@ -716,12 +716,12 @@ Deno.test("BigInteger.toString() - radix:16", () => {
   assertStrictEquals(BigInteger.toString(7n, op), "7");
   assertStrictEquals(BigInteger.toString(8n, op), "8");
   assertStrictEquals(BigInteger.toString(9n, op), "9");
-  assertStrictEquals(BigInteger.toString(10n, op), "a");
-  assertStrictEquals(BigInteger.toString(11n, op), "b");
-  assertStrictEquals(BigInteger.toString(12n, op), "c");
-  assertStrictEquals(BigInteger.toString(13n, op), "d");
-  assertStrictEquals(BigInteger.toString(14n, op), "e");
-  assertStrictEquals(BigInteger.toString(15n, op), "f");
+  assertStrictEquals(BigInteger.toString(10n, op), "A");
+  assertStrictEquals(BigInteger.toString(11n, op), "B");
+  assertStrictEquals(BigInteger.toString(12n, op), "C");
+  assertStrictEquals(BigInteger.toString(13n, op), "D");
+  assertStrictEquals(BigInteger.toString(14n, op), "E");
+  assertStrictEquals(BigInteger.toString(15n, op), "F");
   assertStrictEquals(BigInteger.toString(16n, op), "10");
 });
 

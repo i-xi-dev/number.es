@@ -1,4 +1,10 @@
-import { assertBigInt, assertNumber, isBigInt, isString } from "./utils.ts";
+import {
+  assertBigInt,
+  assertNumber,
+  isBigInt,
+  isNumber,
+  isString,
+} from "./utils.ts";
 import { BIGINT_ZERO, inSafeIntegerRange, Radix } from "./numeric.ts";
 import {
   FromNumberOptions,
@@ -7,6 +13,7 @@ import {
   roundNumber,
   ToStringOptions,
 } from "./integer.ts";
+import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
 
 export const ZERO = BIGINT_ZERO;
 
@@ -161,9 +168,20 @@ export function fromString( //TODO uintnのと統合する
   // }
 }
 
-export function toString(source: bigint, options?: ToStringOptions): string { //TODO uintnのと統合する
-  assertBigInt(source, "source");
+export function toString(self: bigint, options?: ToStringOptions): string {
+  assertBigInt(self, "self");
 
   const radix = resolveRadix(options?.radix);
-  return Number(source).toString(radix);
+  let result = self.toString(radix);
+
+  if (options?.lowerCase !== true) {
+    result = result.toUpperCase();
+  }
+
+  const minIntegralDigits = options?.minIntegralDigits;
+  if (isNumber(minIntegralDigits) && isPositiveSafeInteger(minIntegralDigits)) {
+    result = result.padStart(minIntegralDigits, "0");
+  }
+
+  return result;
 }

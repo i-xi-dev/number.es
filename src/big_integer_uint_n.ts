@@ -1,9 +1,4 @@
-import {
-  assertBigInt,
-  assertSafeInteger,
-  isNumber,
-  isString,
-} from "./utils.ts";
+import { assertBigInt, assertSafeInteger, isString } from "./utils.ts";
 import { BigIntegerRange } from "./big_integer_range.ts";
 import {
   BITS_PER_BYTE,
@@ -14,11 +9,13 @@ import {
   Uint8xOperations,
   UintNOperations,
 } from "./uint_n.ts";
-import { fromNumber as bigintFromNumber, ZERO } from "./big_integer.ts";
+import {
+  fromNumber as bigintFromNumber,
+  toString as bigintToString,
+  ZERO,
+} from "./big_integer.ts";
 import { OverflowMode, RADIX_REGEX, resolveRadix } from "./integer.ts";
 import { inSafeIntegerRange, NUMBER_ZERO, RADIX_PREFIX } from "./numeric.ts";
-import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
-// import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
 
 class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   readonly #bitLength: number;
@@ -192,23 +189,7 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
 
   toString(self: T, options?: ToStringOptions): string {
     this._assertInRange(self, "self");
-
-    const radix = resolveRadix(options?.radix);
-    let result = self.toString(radix);
-
-    if (options?.lowerCase !== true) {
-      result = result.toUpperCase();
-    }
-
-    const minIntegralDigits = options?.minIntegralDigits;
-    if (
-      isNumber(minIntegralDigits) &&
-      isPositiveSafeInteger(minIntegralDigits as number)
-    ) {
-      result = result.padStart(minIntegralDigits, "0");
-    }
-
-    return result;
+    return bigintToString(self, options);
   }
 }
 
