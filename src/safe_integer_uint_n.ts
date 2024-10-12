@@ -2,6 +2,7 @@ import {
   BITS_PER_BYTE,
   FromBigIntOptions,
   FromNumberOptions,
+  ToStringOptions,
   Uint8xOperations,
   UintNOperations,
 } from "./uint_n.ts";
@@ -12,7 +13,7 @@ import {
   normalizeNumber,
 } from "./numeric.ts";
 import { isPositive as isPositiveSafeInteger, ZERO } from "./safe_integer.ts";
-import { OverflowMode, roundNumber } from "./integer.ts";
+import { OverflowMode, resolveRadix, roundNumber } from "./integer.ts";
 import { SafeIntegerRange } from "./safe_integer_range.ts";
 import { uint6, uint7, uint8 } from "./uint_n_type.ts";
 
@@ -45,13 +46,18 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
     return this.#range.includes(value);
   }
 
-  bitwiseAnd(self: T, other: T): T {
+  protected _assertSelf(self: T): void {
     if (this.inRange(self) !== true) {
       throw new TypeError(
         "The type of `self` does not match the type of `uint" +
           this.#bitLength + "`.",
       );
     }
+  }
+
+  bitwiseAnd(self: T, other: T): T {
+    this._assertSelf(self);
+
     if (this.inRange(other) !== true) {
       throw new TypeError(
         "The type of `other` does not match the type of `uint" +
@@ -75,12 +81,8 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   bitwiseOr(self: T, other: T): T {
-    if (this.inRange(self) !== true) {
-      throw new TypeError(
-        "The type of `self` does not match the type of `uint" +
-          this.#bitLength + "`.",
-      );
-    }
+    this._assertSelf(self);
+
     if (this.inRange(other) !== true) {
       throw new TypeError(
         "The type of `other` does not match the type of `uint" +
@@ -104,12 +106,8 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   bitwiseXOr(self: T, other: T): T {
-    if (this.inRange(self) !== true) {
-      throw new TypeError(
-        "The type of `self` does not match the type of `uint" +
-          this.#bitLength + "`.",
-      );
-    }
+    this._assertSelf(self);
+
     if (this.inRange(other) !== true) {
       throw new TypeError(
         "The type of `other` does not match the type of `uint" +
@@ -133,12 +131,8 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   rotateLeft(self: T, offset: number): T {
-    if (this.inRange(self) !== true) {
-      throw new TypeError(
-        "The type of `self` does not match the type of `uint" +
-          this.#bitLength + "`.",
-      );
-    }
+    this._assertSelf(self);
+
     if (Number.isSafeInteger(offset) !== true) {
       throw new TypeError("`offset` must be a safe integer.");
     }
@@ -238,12 +232,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   toNumber(self: T): number {
-    if (this.inRange(self) !== true) {
-      throw new TypeError(
-        "The type of `self` does not match the type of `uint" +
-          this.#bitLength + "`.",
-      );
-    }
+    this._assertSelf(self);
 
     return normalizeNumber(self);
   }
@@ -278,14 +267,29 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   toBigInt(self: T): bigint {
-    if (this.inRange(self) !== true) {
-      throw new TypeError(
-        "The type of `self` does not match the type of `uint" +
-          this.#bitLength + "`.",
-      );
+    this._assertSelf(self);
+    return BigInt(self);
+  }
+
+  toString(self: T, options?: ToStringOptions): string {
+    this._assertSelf(self);
+
+    const radix = resolveRadix(options?.radix);
+    let result = self.toString(radix);
+
+    if (options?.lowerCase !== true) {
+      result = result.toUpperCase();
     }
 
-    return BigInt(self);
+    const minIntegralDigits = options?.minIntegralDigits;
+    if (
+      isNumber(minIntegralDigits) &&
+      isPositiveSafeInteger(minIntegralDigits as number)
+    ) {
+      result = result.padStart(minIntegralDigits, "0");
+    }
+
+    return result;
   }
 }
 
@@ -307,12 +311,7 @@ class _Uint8xOperations<T extends number> extends _UinNOperations<T>
   }
 
   toBytes(self: T, littleEndian: boolean = false): Uint8Array {
-    if (this.inRange(self) !== true) {
-      throw new TypeError(
-        "The type of `self` does not match the type of `uint" + this.bitLength +
-          "`.",
-      );
-    }
+    this._assertSelf(self);
 
     if (this.bitLength === 8) {
       return Uint8Array.of(self);

@@ -35,7 +35,7 @@ export interface UintNOperations<T extends numeric> {
   fromBigInt(value: bigint, options?: FromBigIntOptions): T;
   toBigInt(self: T): bigint;
   //TODO fromString(value: string, options?: FromStringOptions): T;
-  //TODO toString(self: T, options?: ToStringOptions): string;
+  toString(self: T, options?: ToStringOptions): string;
 }
 
 export const BITS_PER_BYTE = 8;
