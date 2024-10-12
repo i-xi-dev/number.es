@@ -1,9 +1,14 @@
-import { BITS_PER_BYTE, Uint8xOperations, UintNOperations } from "./uint_n.ts";
-import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
-import { isBigInt, normalizeNumber } from "./numeric.ts";
+import {
+  BITS_PER_BYTE,
+  FromNumberOptions,
+  Uint8xOperations,
+  UintNOperations,
+} from "./uint_n.ts";
+import { isPositive as isPositiveSafeInteger, ZERO } from "./safe_integer.ts";
+import { isNumber, normalizeNumber } from "./numeric.ts";
+import { OverflowMode, roundNumber } from "./integer.ts";
 import { SafeIntegerRange } from "./safe_integer_range.ts";
 import { uint6, uint7, uint8 } from "./uint_n_type.ts";
-import { ZERO } from "./safe_integer.ts";
 
 class _UinNOperations<T extends number> implements UintNOperations<T> {
   readonly #bitLength: number;
@@ -154,24 +159,68 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
     }
   }
 
-  #saturateFromInteger(value: number): T {
-    if (Number.isSafeInteger(value) !== true) {
-      throw new TypeError("`value` must be a safe integer.");
+  fromNumber(value: number, options?: FromNumberOptions): T {
+    if (isNumber(value) !== true) {
+      throw new TypeError("`value` must be a `number`.");
+    }
+    if (Number.isNaN(value)) {
+      throw new TypeError("`value` must not be `NaN`.");
     }
 
-    if (value > this.#range.max) {
-      return this.#range.max;
-    } else if (value < this.#range.min) {
-      return this.#range.min;
+    let adjustedValue: number;
+    if (value > Number.MAX_SAFE_INTEGER) {
+      adjustedValue = Number.MAX_SAFE_INTEGER;
+    } else if (value < Number.MIN_SAFE_INTEGER) {
+      adjustedValue = Number.MIN_SAFE_INTEGER;
+    } else {
+      //XXX もっと狭めるか？
+      adjustedValue = value;
     }
 
-    return normalizeNumber(value as T);
+    let valueAsInt: number;
+    if (Number.isSafeInteger(adjustedValue)) {
+      valueAsInt = adjustedValue;
+    } else {
+      valueAsInt = roundNumber(adjustedValue, options?.roundingMode);
+    }
+
+    if (this.inRange(valueAsInt)) {
+      return normalizeNumber(valueAsInt);
+    }
+
+    switch (options?.overflowMode) {
+      case OverflowMode.EXCEPTION:
+        throw new RangeError(
+          "`value` must be within the range of `uint" +
+            this.#bitLength + "`.",
+        );
+
+      case OverflowMode.TRUNCATE:
+        return this.#truncateFromInteger(valueAsInt);
+
+      default: // case OverflowMode.SATURATE:
+        return this.#range.clamp(valueAsInt);
+    }
   }
 
+  // #saturateFromInteger(value: number): T {
+  //   // if (Number.isSafeInteger(value) !== true) {
+  //   //   throw new TypeError("`value` must be a safe integer.");
+  //   // }
+  //
+  //   if (value > this.#range.max) {
+  //     return this.#range.max;
+  //   } else if (value < this.#range.min) {
+  //     return this.#range.min;
+  //   }
+  //
+  //   return normalizeNumber(value as T);
+  // }
+
   #truncateFromInteger(value: number): T {
-    if (Number.isSafeInteger(value) !== true) {
-      throw new TypeError("`value` must be a safe integer.");
-    }
+    // if (Number.isSafeInteger(value) !== true) {
+    //   throw new TypeError("`value` must be a safe integer.");
+    // }
 
     if (value === ZERO) {
       return ZERO as T;
@@ -197,13 +246,13 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   //   if (isBigInt(value) !== true) {
   //     throw new TypeError("`value` must be a `bigint`.");
   //   }
-  //   const asNumber = Number(value);
-  //   if (this.inRange(asNumber) !== true) {
+  //   const valueAsNumber = Number(value);
+  //   if (this.inRange(valueAsNumber) !== true) {
   //     //TODO options?.overflowMode
   //     throw new RangeError("`value` must be within the range of `uint" + this.#bitLength + "`.");
   //   }
 
-  //   return asNumber;
+  //   return valueAsNumber;
   // }
 
   toBigInt(self: T): bigint {

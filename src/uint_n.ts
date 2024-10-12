@@ -30,7 +30,7 @@ export interface UintNOperations<T extends numeric> {
   //TODO bitwiseNot(self: T): T;
   rotateLeft(self: T, offset: number): T;
   //TODO rotateRight(self: T, offset: number): T;
-  //TODO fromNumber(value: number, options: FromNumberOptions): T;
+  fromNumber(value: number, options?: FromNumberOptions): T;
   toNumber(self: T): number;
   //TODO fromBigInt(value: bigint, options?: FromBigIntOptions): T;
   toBigInt(self: T): bigint;

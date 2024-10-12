@@ -1,5 +1,5 @@
 import { assertStrictEquals, assertThrows } from "./deps.ts";
-import { Uint8, uint8 } from "../mod.ts";
+import { Integer, Uint8, uint8 } from "../mod.ts";
 
 Deno.test("Uint8.bitLength", () => {
   assertStrictEquals(Uint8.bitLength, 8);
@@ -231,6 +231,173 @@ Deno.test("Uint8.rotateLeft()", () => {
     TypeError,
     e2,
   );
+});
+
+Deno.test("Uint8.fromNumber()", () => {
+  assertStrictEquals(Uint8.fromNumber(0), 0);
+  assertStrictEquals(Object.is(Uint8.fromNumber(-0), 0), true);
+  assertStrictEquals(Uint8.fromNumber(1), 1);
+  assertStrictEquals(Uint8.fromNumber(63), 63);
+  assertStrictEquals(Uint8.fromNumber(64), 64);
+  assertStrictEquals(Uint8.fromNumber(127), 127);
+  assertStrictEquals(Uint8.fromNumber(128), 128);
+  assertStrictEquals(Uint8.fromNumber(255), 255);
+  assertStrictEquals(Uint8.fromNumber(256), 255);
+  assertStrictEquals(Uint8.fromNumber(-1), 0);
+
+  assertStrictEquals(Uint8.fromNumber(Number.NEGATIVE_INFINITY), 0);
+  assertStrictEquals(Uint8.fromNumber(Number.MIN_SAFE_INTEGER), 0);
+  assertStrictEquals(Uint8.fromNumber(Number.MAX_SAFE_INTEGER), 255);
+  assertStrictEquals(Uint8.fromNumber(Number.POSITIVE_INFINITY), 255);
+
+  assertStrictEquals(Uint8.fromNumber(0.1), 0);
+  assertStrictEquals(Uint8.fromNumber(0.4), 0);
+  assertStrictEquals(Uint8.fromNumber(0.5), 0);
+  assertStrictEquals(Uint8.fromNumber(0.6), 0);
+  assertStrictEquals(Uint8.fromNumber(0.9), 0);
+
+  assertStrictEquals(Object.is(Uint8.fromNumber(-0.1), 0), true);
+  assertStrictEquals(Uint8.fromNumber(-0.4), 0);
+  assertStrictEquals(Uint8.fromNumber(-0.5), 0);
+  assertStrictEquals(Uint8.fromNumber(-0.6), 0);
+  assertStrictEquals(Uint8.fromNumber(-0.9), 0);
+
+  assertStrictEquals(Uint8.fromNumber(255.1), 255);
+  assertStrictEquals(Uint8.fromNumber(255.4), 255);
+  assertStrictEquals(Uint8.fromNumber(255.5), 255);
+  assertStrictEquals(Uint8.fromNumber(255.6), 255);
+  assertStrictEquals(Uint8.fromNumber(255.9), 255);
+
+  const e1 = "`value` must be a `number`.";
+  assertThrows(
+    () => {
+      Uint8.fromNumber(undefined as unknown as uint8);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint8.fromNumber("0" as unknown as uint8);
+    },
+    TypeError,
+    e1,
+  );
+
+  const e2 = "`value` must not be `NaN`.";
+  assertThrows(
+    () => {
+      Uint8.fromNumber(Number.NaN);
+    },
+    TypeError,
+    e2,
+  );
+});
+
+Deno.test("Uint8.fromNumber() - roundingMode", () => {
+  const op = { roundingMode: Integer.RoundingMode.UP };
+
+  assertStrictEquals(Uint8.fromNumber(0, op), 0);
+  assertStrictEquals(Object.is(Uint8.fromNumber(-0, op), 0), true);
+  assertStrictEquals(Uint8.fromNumber(1, op), 1);
+  assertStrictEquals(Uint8.fromNumber(63, op), 63);
+  assertStrictEquals(Uint8.fromNumber(64, op), 64);
+  assertStrictEquals(Uint8.fromNumber(127, op), 127);
+  assertStrictEquals(Uint8.fromNumber(128, op), 128);
+  assertStrictEquals(Uint8.fromNumber(255, op), 255);
+  assertStrictEquals(Uint8.fromNumber(256, op), 255);
+  assertStrictEquals(Uint8.fromNumber(-1, op), 0);
+
+  assertStrictEquals(Uint8.fromNumber(Number.NEGATIVE_INFINITY, op), 0);
+  assertStrictEquals(Uint8.fromNumber(Number.MIN_SAFE_INTEGER, op), 0);
+  assertStrictEquals(Uint8.fromNumber(Number.MAX_SAFE_INTEGER, op), 255);
+  assertStrictEquals(Uint8.fromNumber(Number.POSITIVE_INFINITY, op), 255);
+
+  assertStrictEquals(Uint8.fromNumber(0.1, op), 1);
+  assertStrictEquals(Uint8.fromNumber(0.4, op), 1);
+  assertStrictEquals(Uint8.fromNumber(0.5, op), 1);
+  assertStrictEquals(Uint8.fromNumber(0.6, op), 1);
+  assertStrictEquals(Uint8.fromNumber(0.9, op), 1);
+
+  assertStrictEquals(Uint8.fromNumber(-0.1, op), 0);
+  assertStrictEquals(Uint8.fromNumber(-0.4, op), 0);
+  assertStrictEquals(Uint8.fromNumber(-0.5, op), 0);
+  assertStrictEquals(Uint8.fromNumber(-0.6, op), 0);
+  assertStrictEquals(Uint8.fromNumber(-0.9, op), 0);
+
+  assertStrictEquals(Uint8.fromNumber(255.1, op), 255);
+  assertStrictEquals(Uint8.fromNumber(255.4, op), 255);
+  assertStrictEquals(Uint8.fromNumber(255.5, op), 255);
+  assertStrictEquals(Uint8.fromNumber(255.6, op), 255);
+  assertStrictEquals(Uint8.fromNumber(255.9, op), 255);
+
+  const op2 = { roundingMode: Integer.RoundingMode.DOWN };
+
+  assertStrictEquals(Uint8.fromNumber(0, op2), 0);
+  assertStrictEquals(Object.is(Uint8.fromNumber(-0, op2), 0), true);
+  assertStrictEquals(Uint8.fromNumber(1, op2), 1);
+  assertStrictEquals(Uint8.fromNumber(63, op2), 63);
+  assertStrictEquals(Uint8.fromNumber(64, op2), 64);
+  assertStrictEquals(Uint8.fromNumber(127, op2), 127);
+  assertStrictEquals(Uint8.fromNumber(128, op2), 128);
+  assertStrictEquals(Uint8.fromNumber(255, op2), 255);
+  assertStrictEquals(Uint8.fromNumber(256, op2), 255);
+  assertStrictEquals(Uint8.fromNumber(-1, op2), 0);
+
+  assertStrictEquals(Uint8.fromNumber(Number.NEGATIVE_INFINITY, op2), 0);
+  assertStrictEquals(Uint8.fromNumber(Number.MIN_SAFE_INTEGER, op2), 0);
+  assertStrictEquals(Uint8.fromNumber(Number.MAX_SAFE_INTEGER, op2), 255);
+  assertStrictEquals(Uint8.fromNumber(Number.POSITIVE_INFINITY, op2), 255);
+
+  assertStrictEquals(Uint8.fromNumber(0.1, op2), 0);
+  assertStrictEquals(Uint8.fromNumber(0.4, op2), 0);
+  assertStrictEquals(Uint8.fromNumber(0.5, op2), 0);
+  assertStrictEquals(Uint8.fromNumber(0.6, op2), 0);
+  assertStrictEquals(Uint8.fromNumber(0.9, op2), 0);
+
+  assertStrictEquals(Uint8.fromNumber(-0.1, op2), 0);
+  assertStrictEquals(Uint8.fromNumber(-0.4, op2), 0);
+  assertStrictEquals(Uint8.fromNumber(-0.5, op2), 0);
+  assertStrictEquals(Uint8.fromNumber(-0.6, op2), 0);
+  assertStrictEquals(Uint8.fromNumber(-0.9, op2), 0);
+
+  assertStrictEquals(Uint8.fromNumber(255.1, op2), 255);
+  assertStrictEquals(Uint8.fromNumber(255.4, op2), 255);
+  assertStrictEquals(Uint8.fromNumber(255.5, op2), 255);
+  assertStrictEquals(Uint8.fromNumber(255.6, op2), 255);
+  assertStrictEquals(Uint8.fromNumber(255.9, op2), 255);
+});
+
+Deno.test("Uint8.fromNumber() - overflowMode", () => {
+  const op = { overflowMode: Integer.OverflowMode.EXCEPTION };
+
+  const e1 = "`value` must be within the range of `uint8`.";
+  assertThrows(
+    () => {
+      Uint8.fromNumber(-1, op);
+    },
+    RangeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint8.fromNumber(256, op);
+    },
+    RangeError,
+    e1,
+  );
+
+  const op2 = { overflowMode: Integer.OverflowMode.TRUNCATE };
+
+  assertStrictEquals(Uint8.fromNumber(-1, op2), 255);
+  assertStrictEquals(Uint8.fromNumber(64, op2), 64);
+  assertStrictEquals(Uint8.fromNumber(65, op2), 65);
+  assertStrictEquals(Uint8.fromNumber(128, op2), 128);
+  assertStrictEquals(Uint8.fromNumber(129, op2), 129);
+  assertStrictEquals(Uint8.fromNumber(256, op2), 0);
+  assertStrictEquals(Uint8.fromNumber(257, op2), 1);
+  assertStrictEquals(Uint8.fromNumber(512, op2), 0);
+  assertStrictEquals(Uint8.fromNumber(513, op2), 1);
 });
 
 Deno.test("Uint8.toNumber()", () => {

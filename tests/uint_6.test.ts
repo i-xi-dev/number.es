@@ -1,5 +1,5 @@
 import { assertStrictEquals, assertThrows } from "./deps.ts";
-import { Uint6, uint6 } from "../mod.ts";
+import { Integer, Uint6, uint6 } from "../mod.ts";
 
 Deno.test("Uint6.bitLength", () => {
   assertStrictEquals(Uint6.bitLength, 6);
@@ -221,6 +221,157 @@ Deno.test("Uint6.rotateLeft()", () => {
     TypeError,
     e2,
   );
+});
+
+Deno.test("Uint6.fromNumber()", () => {
+  assertStrictEquals(Uint6.fromNumber(0), 0);
+  assertStrictEquals(Object.is(Uint6.fromNumber(-0), 0), true);
+  assertStrictEquals(Uint6.fromNumber(1), 1);
+  assertStrictEquals(Uint6.fromNumber(63), 63);
+  assertStrictEquals(Uint6.fromNumber(64), 63);
+  assertStrictEquals(Uint6.fromNumber(-1), 0);
+
+  assertStrictEquals(Uint6.fromNumber(Number.NEGATIVE_INFINITY), 0);
+  assertStrictEquals(Uint6.fromNumber(Number.MIN_SAFE_INTEGER), 0);
+  assertStrictEquals(Uint6.fromNumber(Number.MAX_SAFE_INTEGER), 63);
+  assertStrictEquals(Uint6.fromNumber(Number.POSITIVE_INFINITY), 63);
+
+  assertStrictEquals(Uint6.fromNumber(0.1), 0);
+  assertStrictEquals(Uint6.fromNumber(0.4), 0);
+  assertStrictEquals(Uint6.fromNumber(0.5), 0);
+  assertStrictEquals(Uint6.fromNumber(0.6), 0);
+  assertStrictEquals(Uint6.fromNumber(0.9), 0);
+
+  assertStrictEquals(Object.is(Uint6.fromNumber(-0.1), 0), true);
+  assertStrictEquals(Uint6.fromNumber(-0.4), 0);
+  assertStrictEquals(Uint6.fromNumber(-0.5), 0);
+  assertStrictEquals(Uint6.fromNumber(-0.6), 0);
+  assertStrictEquals(Uint6.fromNumber(-0.9), 0);
+
+  assertStrictEquals(Uint6.fromNumber(63.1), 63);
+  assertStrictEquals(Uint6.fromNumber(63.4), 63);
+  assertStrictEquals(Uint6.fromNumber(63.5), 63);
+  assertStrictEquals(Uint6.fromNumber(63.6), 63);
+  assertStrictEquals(Uint6.fromNumber(63.9), 63);
+
+  const e1 = "`value` must be a `number`.";
+  assertThrows(
+    () => {
+      Uint6.fromNumber(undefined as unknown as uint6);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint6.fromNumber("0" as unknown as uint6);
+    },
+    TypeError,
+    e1,
+  );
+
+  const e2 = "`value` must not be `NaN`.";
+  assertThrows(
+    () => {
+      Uint6.fromNumber(Number.NaN);
+    },
+    TypeError,
+    e2,
+  );
+});
+
+Deno.test("Uint6.fromNumber() - roundingMode", () => {
+  const op = { roundingMode: Integer.RoundingMode.UP };
+
+  assertStrictEquals(Uint6.fromNumber(0, op), 0);
+  assertStrictEquals(Object.is(Uint6.fromNumber(-0, op), 0), true);
+  assertStrictEquals(Uint6.fromNumber(1, op), 1);
+  assertStrictEquals(Uint6.fromNumber(63, op), 63);
+  assertStrictEquals(Uint6.fromNumber(64, op), 63);
+  assertStrictEquals(Uint6.fromNumber(-1, op), 0);
+
+  assertStrictEquals(Uint6.fromNumber(Number.NEGATIVE_INFINITY, op), 0);
+  assertStrictEquals(Uint6.fromNumber(Number.MIN_SAFE_INTEGER, op), 0);
+  assertStrictEquals(Uint6.fromNumber(Number.MAX_SAFE_INTEGER, op), 63);
+  assertStrictEquals(Uint6.fromNumber(Number.POSITIVE_INFINITY, op), 63);
+
+  assertStrictEquals(Uint6.fromNumber(0.1, op), 1);
+  assertStrictEquals(Uint6.fromNumber(0.4, op), 1);
+  assertStrictEquals(Uint6.fromNumber(0.5, op), 1);
+  assertStrictEquals(Uint6.fromNumber(0.6, op), 1);
+  assertStrictEquals(Uint6.fromNumber(0.9, op), 1);
+
+  assertStrictEquals(Uint6.fromNumber(-0.1, op), 0);
+  assertStrictEquals(Uint6.fromNumber(-0.4, op), 0);
+  assertStrictEquals(Uint6.fromNumber(-0.5, op), 0);
+  assertStrictEquals(Uint6.fromNumber(-0.6, op), 0);
+  assertStrictEquals(Uint6.fromNumber(-0.9, op), 0);
+
+  assertStrictEquals(Uint6.fromNumber(63.1, op), 63);
+  assertStrictEquals(Uint6.fromNumber(63.4, op), 63);
+  assertStrictEquals(Uint6.fromNumber(63.5, op), 63);
+  assertStrictEquals(Uint6.fromNumber(63.6, op), 63);
+  assertStrictEquals(Uint6.fromNumber(63.9, op), 63);
+
+  const op2 = { roundingMode: Integer.RoundingMode.DOWN };
+
+  assertStrictEquals(Uint6.fromNumber(0, op2), 0);
+  assertStrictEquals(Object.is(Uint6.fromNumber(-0, op2), 0), true);
+  assertStrictEquals(Uint6.fromNumber(1, op2), 1);
+  assertStrictEquals(Uint6.fromNumber(63, op2), 63);
+  assertStrictEquals(Uint6.fromNumber(64, op2), 63);
+  assertStrictEquals(Uint6.fromNumber(-1, op2), 0);
+
+  assertStrictEquals(Uint6.fromNumber(Number.NEGATIVE_INFINITY, op2), 0);
+  assertStrictEquals(Uint6.fromNumber(Number.MIN_SAFE_INTEGER, op2), 0);
+  assertStrictEquals(Uint6.fromNumber(Number.MAX_SAFE_INTEGER, op2), 63);
+  assertStrictEquals(Uint6.fromNumber(Number.POSITIVE_INFINITY, op2), 63);
+
+  assertStrictEquals(Uint6.fromNumber(0.1, op2), 0);
+  assertStrictEquals(Uint6.fromNumber(0.4, op2), 0);
+  assertStrictEquals(Uint6.fromNumber(0.5, op2), 0);
+  assertStrictEquals(Uint6.fromNumber(0.6, op2), 0);
+  assertStrictEquals(Uint6.fromNumber(0.9, op2), 0);
+
+  assertStrictEquals(Uint6.fromNumber(-0.1, op2), 0);
+  assertStrictEquals(Uint6.fromNumber(-0.4, op2), 0);
+  assertStrictEquals(Uint6.fromNumber(-0.5, op2), 0);
+  assertStrictEquals(Uint6.fromNumber(-0.6, op2), 0);
+  assertStrictEquals(Uint6.fromNumber(-0.9, op2), 0);
+
+  assertStrictEquals(Uint6.fromNumber(63.1, op2), 63);
+  assertStrictEquals(Uint6.fromNumber(63.4, op2), 63);
+  assertStrictEquals(Uint6.fromNumber(63.5, op2), 63);
+  assertStrictEquals(Uint6.fromNumber(63.6, op2), 63);
+  assertStrictEquals(Uint6.fromNumber(63.9, op2), 63);
+});
+
+Deno.test("Uint6.fromNumber() - overflowMode", () => {
+  const op = { overflowMode: Integer.OverflowMode.EXCEPTION };
+
+  const e1 = "`value` must be within the range of `uint6`.";
+  assertThrows(
+    () => {
+      Uint6.fromNumber(-1, op);
+    },
+    RangeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint6.fromNumber(64, op);
+    },
+    RangeError,
+    e1,
+  );
+
+  const op2 = { overflowMode: Integer.OverflowMode.TRUNCATE };
+
+  assertStrictEquals(Uint6.fromNumber(-1, op2), 63);
+  assertStrictEquals(Uint6.fromNumber(64, op2), 0);
+  assertStrictEquals(Uint6.fromNumber(65, op2), 1);
+  assertStrictEquals(Uint6.fromNumber(128, op2), 0);
+  assertStrictEquals(Uint6.fromNumber(129, op2), 1);
 });
 
 Deno.test("Uint6.toNumber()", () => {

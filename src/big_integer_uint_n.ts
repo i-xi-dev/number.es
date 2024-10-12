@@ -1,7 +1,14 @@
 import { BigIntegerRange } from "./big_integer_range.ts";
-import { BITS_PER_BYTE, Uint8xOperations, UintNOperations } from "./uint_n.ts";
-import { inSafeIntegerRange, NUMBER_ZERO } from "./numeric.ts";
+import {
+  BITS_PER_BYTE,
+  FromNumberOptions,
+  Uint8xOperations,
+  UintNOperations,
+} from "./uint_n.ts";
+import { inSafeIntegerRange, isNumber, NUMBER_ZERO } from "./numeric.ts";
 // import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
+import { OverflowMode, roundNumber } from "./integer.ts";
+import { ZERO } from "./big_integer.ts";
 
 class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   readonly #bitLength: number;
@@ -104,6 +111,65 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
     return (((self << bigIntOffset) |
       (self >> (BigInt(this.#bitLength) - bigIntOffset))) &
       this.#range.max) as T;
+  }
+
+  fromNumber(value: number, options?: FromNumberOptions): T {
+    if (isNumber(value) !== true) {
+      throw new TypeError("`value` must be a `number`.");
+    }
+    if (Number.isNaN(value)) {
+      throw new TypeError("`value` must not be `NaN`.");
+    }
+
+    let adjustedValue: number;
+    if (value > Number.MAX_SAFE_INTEGER) {
+      adjustedValue = Number.MAX_SAFE_INTEGER;
+    } else if (value < Number.MIN_SAFE_INTEGER) {
+      adjustedValue = Number.MIN_SAFE_INTEGER;
+    } else {
+      //XXX もっと狭めるか？
+      adjustedValue = value;
+    }
+
+    let valueAsInt: number;
+    if (Number.isSafeInteger(adjustedValue)) {
+      valueAsInt = adjustedValue;
+    } else {
+      valueAsInt = roundNumber(adjustedValue, options?.roundingMode);
+    }
+
+    const valueAsBigInt = BigInt(valueAsInt);
+
+    if (this.inRange(valueAsBigInt)) {
+      return valueAsBigInt;
+    }
+
+    switch (options?.overflowMode) {
+      case OverflowMode.EXCEPTION:
+        throw new RangeError(
+          "`value` must be within the range of `uint" +
+            this.#bitLength + "`.",
+        );
+
+      case OverflowMode.TRUNCATE:
+        return this.#truncateFromInteger(valueAsBigInt);
+
+      default: // case OverflowMode.SATURATE:
+        return this.#range.clamp(valueAsBigInt);
+    }
+  }
+
+  #truncateFromInteger(value: bigint): T {
+    if (value === ZERO) {
+      return ZERO as T;
+    }
+
+    const sizeAsBigInt = BigInt(this.#range.size);
+    if (value > ZERO) {
+      return (value % sizeAsBigInt) as T;
+    } else {
+      return (sizeAsBigInt + (value % sizeAsBigInt)) as T;
+    }
   }
 
   toNumber(self: T): number {

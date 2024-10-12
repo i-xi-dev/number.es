@@ -1,5 +1,5 @@
 import { assertStrictEquals, assertThrows } from "./deps.ts";
-import { Uint16 } from "../mod.ts";
+import { Integer, Uint16 } from "../mod.ts";
 
 Deno.test("Uint16.bitLength", () => {
   assertStrictEquals(Uint16.bitLength, 16);
@@ -501,6 +501,183 @@ Deno.test("Uint16.rotateLeft()", () => {
     TypeError,
     e2,
   );
+});
+
+Deno.test("Uint16.fromNumber()", () => {
+  assertStrictEquals(Uint16.fromNumber(0), 0);
+  assertStrictEquals(Object.is(Uint16.fromNumber(-0), 0), true);
+  assertStrictEquals(Uint16.fromNumber(1), 1);
+  assertStrictEquals(Uint16.fromNumber(63), 63);
+  assertStrictEquals(Uint16.fromNumber(64), 64);
+  assertStrictEquals(Uint16.fromNumber(127), 127);
+  assertStrictEquals(Uint16.fromNumber(128), 128);
+  assertStrictEquals(Uint16.fromNumber(255), 255);
+  assertStrictEquals(Uint16.fromNumber(256), 256);
+  assertStrictEquals(Uint16.fromNumber(65535), 65535);
+  assertStrictEquals(Uint16.fromNumber(65536), 65535);
+  assertStrictEquals(Uint16.fromNumber(-1), 0);
+
+  assertStrictEquals(Uint16.fromNumber(Number.NEGATIVE_INFINITY), 0);
+  assertStrictEquals(Uint16.fromNumber(Number.MIN_SAFE_INTEGER), 0);
+  assertStrictEquals(Uint16.fromNumber(Number.MAX_SAFE_INTEGER), 65535);
+  assertStrictEquals(Uint16.fromNumber(Number.POSITIVE_INFINITY), 65535);
+
+  assertStrictEquals(Uint16.fromNumber(0.1), 0);
+  assertStrictEquals(Uint16.fromNumber(0.4), 0);
+  assertStrictEquals(Uint16.fromNumber(0.5), 0);
+  assertStrictEquals(Uint16.fromNumber(0.6), 0);
+  assertStrictEquals(Uint16.fromNumber(0.9), 0);
+
+  assertStrictEquals(Object.is(Uint16.fromNumber(-0.1), 0), true);
+  assertStrictEquals(Uint16.fromNumber(-0.4), 0);
+  assertStrictEquals(Uint16.fromNumber(-0.5), 0);
+  assertStrictEquals(Uint16.fromNumber(-0.6), 0);
+  assertStrictEquals(Uint16.fromNumber(-0.9), 0);
+
+  assertStrictEquals(Uint16.fromNumber(65535.1), 65535);
+  assertStrictEquals(Uint16.fromNumber(65535.4), 65535);
+  assertStrictEquals(Uint16.fromNumber(65535.5), 65535);
+  assertStrictEquals(Uint16.fromNumber(65535.6), 65535);
+  assertStrictEquals(Uint16.fromNumber(65535.9), 65535);
+
+  const e1 = "`value` must be a `number`.";
+  assertThrows(
+    () => {
+      Uint16.fromNumber(undefined as unknown as number);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint16.fromNumber("0" as unknown as number);
+    },
+    TypeError,
+    e1,
+  );
+
+  const e2 = "`value` must not be `NaN`.";
+  assertThrows(
+    () => {
+      Uint16.fromNumber(Number.NaN);
+    },
+    TypeError,
+    e2,
+  );
+});
+
+Deno.test("Uint16.fromNumber() - roundingMode", () => {
+  const op = { roundingMode: Integer.RoundingMode.UP };
+
+  assertStrictEquals(Uint16.fromNumber(0, op), 0);
+  assertStrictEquals(Object.is(Uint16.fromNumber(-0, op), 0), true);
+  assertStrictEquals(Uint16.fromNumber(1, op), 1);
+  assertStrictEquals(Uint16.fromNumber(63, op), 63);
+  assertStrictEquals(Uint16.fromNumber(64, op), 64);
+  assertStrictEquals(Uint16.fromNumber(127, op), 127);
+  assertStrictEquals(Uint16.fromNumber(128, op), 128);
+  assertStrictEquals(Uint16.fromNumber(255, op), 255);
+  assertStrictEquals(Uint16.fromNumber(256, op), 256);
+  assertStrictEquals(Uint16.fromNumber(65535, op), 65535);
+  assertStrictEquals(Uint16.fromNumber(65536, op), 65535);
+  assertStrictEquals(Uint16.fromNumber(-1, op), 0);
+
+  assertStrictEquals(Uint16.fromNumber(Number.NEGATIVE_INFINITY, op), 0);
+  assertStrictEquals(Uint16.fromNumber(Number.MIN_SAFE_INTEGER, op), 0);
+  assertStrictEquals(Uint16.fromNumber(Number.MAX_SAFE_INTEGER, op), 65535);
+  assertStrictEquals(Uint16.fromNumber(Number.POSITIVE_INFINITY, op), 65535);
+
+  assertStrictEquals(Uint16.fromNumber(0.1, op), 1);
+  assertStrictEquals(Uint16.fromNumber(0.4, op), 1);
+  assertStrictEquals(Uint16.fromNumber(0.5, op), 1);
+  assertStrictEquals(Uint16.fromNumber(0.6, op), 1);
+  assertStrictEquals(Uint16.fromNumber(0.9, op), 1);
+
+  assertStrictEquals(Uint16.fromNumber(-0.1, op), 0);
+  assertStrictEquals(Uint16.fromNumber(-0.4, op), 0);
+  assertStrictEquals(Uint16.fromNumber(-0.5, op), 0);
+  assertStrictEquals(Uint16.fromNumber(-0.6, op), 0);
+  assertStrictEquals(Uint16.fromNumber(-0.9, op), 0);
+
+  assertStrictEquals(Uint16.fromNumber(65535.1, op), 65535);
+  assertStrictEquals(Uint16.fromNumber(65535.4, op), 65535);
+  assertStrictEquals(Uint16.fromNumber(65535.5, op), 65535);
+  assertStrictEquals(Uint16.fromNumber(65535.6, op), 65535);
+  assertStrictEquals(Uint16.fromNumber(65535.9, op), 65535);
+
+  const op2 = { roundingMode: Integer.RoundingMode.DOWN };
+
+  assertStrictEquals(Uint16.fromNumber(0, op2), 0);
+  assertStrictEquals(Object.is(Uint16.fromNumber(-0, op2), 0), true);
+  assertStrictEquals(Uint16.fromNumber(1, op2), 1);
+  assertStrictEquals(Uint16.fromNumber(63, op2), 63);
+  assertStrictEquals(Uint16.fromNumber(64, op2), 64);
+  assertStrictEquals(Uint16.fromNumber(127, op2), 127);
+  assertStrictEquals(Uint16.fromNumber(128, op2), 128);
+  assertStrictEquals(Uint16.fromNumber(255, op2), 255);
+  assertStrictEquals(Uint16.fromNumber(256, op2), 256);
+  assertStrictEquals(Uint16.fromNumber(65535, op2), 65535);
+  assertStrictEquals(Uint16.fromNumber(65536, op2), 65535);
+  assertStrictEquals(Uint16.fromNumber(-1, op2), 0);
+
+  assertStrictEquals(Uint16.fromNumber(Number.NEGATIVE_INFINITY, op2), 0);
+  assertStrictEquals(Uint16.fromNumber(Number.MIN_SAFE_INTEGER, op2), 0);
+  assertStrictEquals(Uint16.fromNumber(Number.MAX_SAFE_INTEGER, op2), 65535);
+  assertStrictEquals(Uint16.fromNumber(Number.POSITIVE_INFINITY, op2), 65535);
+
+  assertStrictEquals(Uint16.fromNumber(0.1, op2), 0);
+  assertStrictEquals(Uint16.fromNumber(0.4, op2), 0);
+  assertStrictEquals(Uint16.fromNumber(0.5, op2), 0);
+  assertStrictEquals(Uint16.fromNumber(0.6, op2), 0);
+  assertStrictEquals(Uint16.fromNumber(0.9, op2), 0);
+
+  assertStrictEquals(Uint16.fromNumber(-0.1, op2), 0);
+  assertStrictEquals(Uint16.fromNumber(-0.4, op2), 0);
+  assertStrictEquals(Uint16.fromNumber(-0.5, op2), 0);
+  assertStrictEquals(Uint16.fromNumber(-0.6, op2), 0);
+  assertStrictEquals(Uint16.fromNumber(-0.9, op2), 0);
+
+  assertStrictEquals(Uint16.fromNumber(65535.1, op2), 65535);
+  assertStrictEquals(Uint16.fromNumber(65535.4, op2), 65535);
+  assertStrictEquals(Uint16.fromNumber(65535.5, op2), 65535);
+  assertStrictEquals(Uint16.fromNumber(65535.6, op2), 65535);
+  assertStrictEquals(Uint16.fromNumber(65535.9, op2), 65535);
+});
+
+Deno.test("Uint16.fromNumber() - overflowMode", () => {
+  const op = { overflowMode: Integer.OverflowMode.EXCEPTION };
+
+  const e1 = "`value` must be within the range of `uint16`.";
+  assertThrows(
+    () => {
+      Uint16.fromNumber(-1, op);
+    },
+    RangeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint16.fromNumber(65536, op);
+    },
+    RangeError,
+    e1,
+  );
+
+  const op2 = { overflowMode: Integer.OverflowMode.TRUNCATE };
+
+  assertStrictEquals(Uint16.fromNumber(-1, op2), 65535);
+  assertStrictEquals(Uint16.fromNumber(64, op2), 64);
+  assertStrictEquals(Uint16.fromNumber(65, op2), 65);
+  assertStrictEquals(Uint16.fromNumber(128, op2), 128);
+  assertStrictEquals(Uint16.fromNumber(129, op2), 129);
+  assertStrictEquals(Uint16.fromNumber(256, op2), 256);
+  assertStrictEquals(Uint16.fromNumber(257, op2), 257);
+  assertStrictEquals(Uint16.fromNumber(512, op2), 512);
+  assertStrictEquals(Uint16.fromNumber(513, op2), 513);
+  assertStrictEquals(Uint16.fromNumber(65535, op2), 65535);
+  assertStrictEquals(Uint16.fromNumber(65536, op2), 0);
+  assertStrictEquals(Uint16.fromNumber(131071, op2), 65535);
+  assertStrictEquals(Uint16.fromNumber(131072, op2), 0);
 });
 
 Deno.test("Uint16.toNumber()", () => {

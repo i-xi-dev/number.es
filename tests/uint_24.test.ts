@@ -1,5 +1,5 @@
 import { assertStrictEquals, assertThrows } from "./deps.ts";
-import { Uint24 } from "../mod.ts";
+import { Integer, Uint24 } from "../mod.ts";
 
 Deno.test("Uint24.bitLength", () => {
   assertStrictEquals(Uint24.bitLength, 24);
@@ -671,6 +671,196 @@ Deno.test("Uint24.rotateLeft()", () => {
     TypeError,
     e2,
   );
+});
+
+Deno.test("Uint24.fromNumber()", () => {
+  assertStrictEquals(Uint24.fromNumber(0), 0);
+  assertStrictEquals(Object.is(Uint24.fromNumber(-0), 0), true);
+  assertStrictEquals(Uint24.fromNumber(1), 1);
+  assertStrictEquals(Uint24.fromNumber(63), 63);
+  assertStrictEquals(Uint24.fromNumber(64), 64);
+  assertStrictEquals(Uint24.fromNumber(127), 127);
+  assertStrictEquals(Uint24.fromNumber(128), 128);
+  assertStrictEquals(Uint24.fromNumber(255), 255);
+  assertStrictEquals(Uint24.fromNumber(256), 256);
+  assertStrictEquals(Uint24.fromNumber(65535), 65535);
+  assertStrictEquals(Uint24.fromNumber(65536), 65536);
+  assertStrictEquals(Uint24.fromNumber(16777215), 16777215);
+  assertStrictEquals(Uint24.fromNumber(16777216), 16777215);
+  assertStrictEquals(Uint24.fromNumber(-1), 0);
+
+  assertStrictEquals(Uint24.fromNumber(Number.NEGATIVE_INFINITY), 0);
+  assertStrictEquals(Uint24.fromNumber(Number.MIN_SAFE_INTEGER), 0);
+  assertStrictEquals(Uint24.fromNumber(Number.MAX_SAFE_INTEGER), 16777215);
+  assertStrictEquals(Uint24.fromNumber(Number.POSITIVE_INFINITY), 16777215);
+
+  assertStrictEquals(Uint24.fromNumber(0.1), 0);
+  assertStrictEquals(Uint24.fromNumber(0.4), 0);
+  assertStrictEquals(Uint24.fromNumber(0.5), 0);
+  assertStrictEquals(Uint24.fromNumber(0.6), 0);
+  assertStrictEquals(Uint24.fromNumber(0.9), 0);
+
+  assertStrictEquals(Object.is(Uint24.fromNumber(-0.1), 0), true);
+  assertStrictEquals(Uint24.fromNumber(-0.4), 0);
+  assertStrictEquals(Uint24.fromNumber(-0.5), 0);
+  assertStrictEquals(Uint24.fromNumber(-0.6), 0);
+  assertStrictEquals(Uint24.fromNumber(-0.9), 0);
+
+  assertStrictEquals(Uint24.fromNumber(16777215.1), 16777215);
+  assertStrictEquals(Uint24.fromNumber(16777215.4), 16777215);
+  assertStrictEquals(Uint24.fromNumber(16777215.5), 16777215);
+  assertStrictEquals(Uint24.fromNumber(16777215.6), 16777215);
+  assertStrictEquals(Uint24.fromNumber(16777215.9), 16777215);
+
+  const e1 = "`value` must be a `number`.";
+  assertThrows(
+    () => {
+      Uint24.fromNumber(undefined as unknown as number);
+    },
+    TypeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint24.fromNumber("0" as unknown as number);
+    },
+    TypeError,
+    e1,
+  );
+
+  const e2 = "`value` must not be `NaN`.";
+  assertThrows(
+    () => {
+      Uint24.fromNumber(Number.NaN);
+    },
+    TypeError,
+    e2,
+  );
+});
+
+Deno.test("Uint24.fromNumber() - roundingMode", () => {
+  const op = { roundingMode: Integer.RoundingMode.UP };
+
+  assertStrictEquals(Uint24.fromNumber(0, op), 0);
+  assertStrictEquals(Object.is(Uint24.fromNumber(-0, op), 0), true);
+  assertStrictEquals(Uint24.fromNumber(1, op), 1);
+  assertStrictEquals(Uint24.fromNumber(63, op), 63);
+  assertStrictEquals(Uint24.fromNumber(64, op), 64);
+  assertStrictEquals(Uint24.fromNumber(127, op), 127);
+  assertStrictEquals(Uint24.fromNumber(128, op), 128);
+  assertStrictEquals(Uint24.fromNumber(255, op), 255);
+  assertStrictEquals(Uint24.fromNumber(256, op), 256);
+  assertStrictEquals(Uint24.fromNumber(65535, op), 65535);
+  assertStrictEquals(Uint24.fromNumber(65536, op), 65536);
+  assertStrictEquals(Uint24.fromNumber(16777215, op), 16777215);
+  assertStrictEquals(Uint24.fromNumber(16777216, op), 16777215);
+  assertStrictEquals(Uint24.fromNumber(-1, op), 0);
+
+  assertStrictEquals(Uint24.fromNumber(Number.NEGATIVE_INFINITY, op), 0);
+  assertStrictEquals(Uint24.fromNumber(Number.MIN_SAFE_INTEGER, op), 0);
+  assertStrictEquals(Uint24.fromNumber(Number.MAX_SAFE_INTEGER, op), 16777215);
+  assertStrictEquals(Uint24.fromNumber(Number.POSITIVE_INFINITY, op), 16777215);
+
+  assertStrictEquals(Uint24.fromNumber(0.1, op), 1);
+  assertStrictEquals(Uint24.fromNumber(0.4, op), 1);
+  assertStrictEquals(Uint24.fromNumber(0.5, op), 1);
+  assertStrictEquals(Uint24.fromNumber(0.6, op), 1);
+  assertStrictEquals(Uint24.fromNumber(0.9, op), 1);
+
+  assertStrictEquals(Uint24.fromNumber(-0.1, op), 0);
+  assertStrictEquals(Uint24.fromNumber(-0.4, op), 0);
+  assertStrictEquals(Uint24.fromNumber(-0.5, op), 0);
+  assertStrictEquals(Uint24.fromNumber(-0.6, op), 0);
+  assertStrictEquals(Uint24.fromNumber(-0.9, op), 0);
+
+  assertStrictEquals(Uint24.fromNumber(16777215.1, op), 16777215);
+  assertStrictEquals(Uint24.fromNumber(16777215.4, op), 16777215);
+  assertStrictEquals(Uint24.fromNumber(16777215.5, op), 16777215);
+  assertStrictEquals(Uint24.fromNumber(16777215.6, op), 16777215);
+  assertStrictEquals(Uint24.fromNumber(16777215.9, op), 16777215);
+
+  const op2 = { roundingMode: Integer.RoundingMode.DOWN };
+
+  assertStrictEquals(Uint24.fromNumber(0, op2), 0);
+  assertStrictEquals(Object.is(Uint24.fromNumber(-0, op2), 0), true);
+  assertStrictEquals(Uint24.fromNumber(1, op2), 1);
+  assertStrictEquals(Uint24.fromNumber(63, op2), 63);
+  assertStrictEquals(Uint24.fromNumber(64, op2), 64);
+  assertStrictEquals(Uint24.fromNumber(127, op2), 127);
+  assertStrictEquals(Uint24.fromNumber(128, op2), 128);
+  assertStrictEquals(Uint24.fromNumber(255, op2), 255);
+  assertStrictEquals(Uint24.fromNumber(256, op2), 256);
+  assertStrictEquals(Uint24.fromNumber(65535, op2), 65535);
+  assertStrictEquals(Uint24.fromNumber(65536, op2), 65536);
+  assertStrictEquals(Uint24.fromNumber(16777215, op2), 16777215);
+  assertStrictEquals(Uint24.fromNumber(16777216, op2), 16777215);
+  assertStrictEquals(Uint24.fromNumber(-1, op2), 0);
+
+  assertStrictEquals(Uint24.fromNumber(Number.NEGATIVE_INFINITY, op2), 0);
+  assertStrictEquals(Uint24.fromNumber(Number.MIN_SAFE_INTEGER, op2), 0);
+  assertStrictEquals(Uint24.fromNumber(Number.MAX_SAFE_INTEGER, op2), 16777215);
+  assertStrictEquals(
+    Uint24.fromNumber(Number.POSITIVE_INFINITY, op2),
+    16777215,
+  );
+
+  assertStrictEquals(Uint24.fromNumber(0.1, op2), 0);
+  assertStrictEquals(Uint24.fromNumber(0.4, op2), 0);
+  assertStrictEquals(Uint24.fromNumber(0.5, op2), 0);
+  assertStrictEquals(Uint24.fromNumber(0.6, op2), 0);
+  assertStrictEquals(Uint24.fromNumber(0.9, op2), 0);
+
+  assertStrictEquals(Uint24.fromNumber(-0.1, op2), 0);
+  assertStrictEquals(Uint24.fromNumber(-0.4, op2), 0);
+  assertStrictEquals(Uint24.fromNumber(-0.5, op2), 0);
+  assertStrictEquals(Uint24.fromNumber(-0.6, op2), 0);
+  assertStrictEquals(Uint24.fromNumber(-0.9, op2), 0);
+
+  assertStrictEquals(Uint24.fromNumber(16777215.1, op2), 16777215);
+  assertStrictEquals(Uint24.fromNumber(16777215.4, op2), 16777215);
+  assertStrictEquals(Uint24.fromNumber(16777215.5, op2), 16777215);
+  assertStrictEquals(Uint24.fromNumber(16777215.6, op2), 16777215);
+  assertStrictEquals(Uint24.fromNumber(16777215.9, op2), 16777215);
+});
+
+Deno.test("Uint24.fromNumber() - overflowMode", () => {
+  const op = { overflowMode: Integer.OverflowMode.EXCEPTION };
+
+  const e1 = "`value` must be within the range of `uint24`.";
+  assertThrows(
+    () => {
+      Uint24.fromNumber(-1, op);
+    },
+    RangeError,
+    e1,
+  );
+  assertThrows(
+    () => {
+      Uint24.fromNumber(16777216, op);
+    },
+    RangeError,
+    e1,
+  );
+
+  const op2 = { overflowMode: Integer.OverflowMode.TRUNCATE };
+
+  assertStrictEquals(Uint24.fromNumber(-1, op2), 16777215);
+  assertStrictEquals(Uint24.fromNumber(64, op2), 64);
+  assertStrictEquals(Uint24.fromNumber(65, op2), 65);
+  assertStrictEquals(Uint24.fromNumber(128, op2), 128);
+  assertStrictEquals(Uint24.fromNumber(129, op2), 129);
+  assertStrictEquals(Uint24.fromNumber(256, op2), 256);
+  assertStrictEquals(Uint24.fromNumber(257, op2), 257);
+  assertStrictEquals(Uint24.fromNumber(512, op2), 512);
+  assertStrictEquals(Uint24.fromNumber(513, op2), 513);
+  assertStrictEquals(Uint24.fromNumber(65535, op2), 65535);
+  assertStrictEquals(Uint24.fromNumber(65536, op2), 65536);
+  assertStrictEquals(Uint24.fromNumber(131071, op2), 131071);
+  assertStrictEquals(Uint24.fromNumber(131072, op2), 131072);
+  assertStrictEquals(Uint24.fromNumber(16777215, op2), 16777215);
+  assertStrictEquals(Uint24.fromNumber(16777216, op2), 0);
+  assertStrictEquals(Uint24.fromNumber(33554431, op2), 16777215);
+  assertStrictEquals(Uint24.fromNumber(33554432, op2), 0);
 });
 
 Deno.test("Uint24.toNumber()", () => {
