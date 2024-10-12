@@ -1,4 +1,9 @@
-import { assertBigInt, assertSafeInteger, isString } from "./utils.ts";
+import {
+  assertBigInt,
+  assertSafeInteger,
+  isNumber,
+  isString,
+} from "./utils.ts";
 import {
   FromStringOptions,
   RADIX_REGEX,
@@ -87,9 +92,20 @@ export function fromString(
   return normalizeNumber(Number.parseInt(source, radix));
 }
 
-export function toString(source: number, options?: ToStringOptions): string { //TODO  uintnのと統合する
-  assertSafeInteger(source, "source");
+export function toString(self: number, options?: ToStringOptions): string {
+  assertSafeInteger(self, "self");
 
   const radix = resolveRadix(options?.radix);
-  return normalizeNumber(source).toString(radix);
+  let result = self.toString(radix);
+
+  if (options?.lowerCase !== true) {
+    result = result.toUpperCase();
+  }
+
+  const minIntegralDigits = options?.minIntegralDigits;
+  if (isNumber(minIntegralDigits) && isPositive(minIntegralDigits)) {
+    result = result.padStart(minIntegralDigits, "0");
+  }
+
+  return result;
 }

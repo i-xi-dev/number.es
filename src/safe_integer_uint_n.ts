@@ -1,9 +1,4 @@
-import {
-  assertNumber,
-  assertSafeInteger,
-  isNumber,
-  isString,
-} from "./utils.ts";
+import { assertNumber, assertSafeInteger, isString } from "./utils.ts";
 import {
   BITS_PER_BYTE,
   FromBigIntOptions,
@@ -16,6 +11,7 @@ import {
 import {
   fromBigInt as safeIntegerFromBigInt,
   isPositive as isPositiveSafeInteger,
+  toString as safeIntegerToString,
   ZERO,
 } from "./safe_integer.ts";
 import {
@@ -276,23 +272,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
 
   toString(self: T, options?: ToStringOptions): string {
     this._assertInRange(self, "self");
-
-    const radix = resolveRadix(options?.radix);
-    let result = self.toString(radix);
-
-    if (options?.lowerCase !== true) {
-      result = result.toUpperCase();
-    }
-
-    const minIntegralDigits = options?.minIntegralDigits;
-    if (
-      isNumber(minIntegralDigits) &&
-      isPositiveSafeInteger(minIntegralDigits as number)
-    ) {
-      result = result.padStart(minIntegralDigits, "0");
-    }
-
-    return result;
+    return safeIntegerToString(self, options);
   }
 }
 

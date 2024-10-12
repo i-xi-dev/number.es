@@ -665,7 +665,7 @@ Deno.test("SafeInteger.fromString() - radix:unknown", () => {
 });
 
 Deno.test("SafeInteger.toString()", () => {
-  const rfe1 = "`source` must be a safe integer.";
+  const rfe1 = "`self` must be a safe integer.";
 
   assertThrows(
     () => {
@@ -806,12 +806,12 @@ Deno.test("SafeInteger.toString() - radix:16", () => {
   assertStrictEquals(SafeInteger.toString(7, op), "7");
   assertStrictEquals(SafeInteger.toString(8, op), "8");
   assertStrictEquals(SafeInteger.toString(9, op), "9");
-  assertStrictEquals(SafeInteger.toString(10, op), "a");
-  assertStrictEquals(SafeInteger.toString(11, op), "b");
-  assertStrictEquals(SafeInteger.toString(12, op), "c");
-  assertStrictEquals(SafeInteger.toString(13, op), "d");
-  assertStrictEquals(SafeInteger.toString(14, op), "e");
-  assertStrictEquals(SafeInteger.toString(15, op), "f");
+  assertStrictEquals(SafeInteger.toString(10, op), "A");
+  assertStrictEquals(SafeInteger.toString(11, op), "B");
+  assertStrictEquals(SafeInteger.toString(12, op), "C");
+  assertStrictEquals(SafeInteger.toString(13, op), "D");
+  assertStrictEquals(SafeInteger.toString(14, op), "E");
+  assertStrictEquals(SafeInteger.toString(15, op), "F");
   assertStrictEquals(SafeInteger.toString(16, op), "10");
 });
 
