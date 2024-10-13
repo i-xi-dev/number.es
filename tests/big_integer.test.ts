@@ -518,7 +518,7 @@ Deno.test("BigInteger.toNumber()", () => {
 });
 
 Deno.test("BigInteger.fromString()", () => {
-  const rfe1 = "`source` must be a `string`.";
+  const rfe1 = "`value` must be a `string`.";
 
   assertThrows(
     () => {
@@ -536,7 +536,7 @@ Deno.test("BigInteger.fromString()", () => {
     rfe1,
   );
 
-  const rfe2 = "`source` must be a representation of a integer.";
+  const rfe2 = "`value` must be a decimal representation of an integer.";
 
   assertThrows(
     () => {

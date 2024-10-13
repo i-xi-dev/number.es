@@ -1,6 +1,6 @@
 import {
+  assertIntegerTextRepresentation,
   FromStringOptions,
-  RADIX_REGEX,
   resolveRadix,
   ToStringOptions,
 } from "./integer.ts";
@@ -70,19 +70,15 @@ export function toBigInt(source: number): bigint {
   return BigInt(source);
 }
 
-export function fromString(
-  source: string,
-  options?: FromStringOptions, //TODO  uintnのと統合する
-): number {
-  Type.assertString(source, "source");
+export function fromString(value: string, options?: FromStringOptions): number {
+  Type.assertString(value, "value");
 
   const radix = resolveRadix(options?.radix);
-  const regex = RADIX_REGEX[radix];
-  if (regex.test(source) !== true) {
-    throw new RangeError("`source` must be a representation of a integer.");
-  }
+  assertIntegerTextRepresentation(value, "value", radix);
 
-  return normalizeNumber(Number.parseInt(source, radix));
+  //TODO safe_integer_uint_n と合わせる
+
+  return normalizeNumber(Number.parseInt(value, radix));
 }
 
 export function toString(self: number, options?: ToStringOptions): string {

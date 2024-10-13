@@ -1040,7 +1040,10 @@ Deno.test("Uint24.fromString()", () => {
     e1,
   );
 
-  const e2 = "`value` must be a representation of a `uint24`.";
+  const e2 = "`value` must be a decimal representation of an integer.";
+  const e22 = "`value` must be a binary representation of an integer.";
+  const e28 = "`value` must be an octal representation of an integer.";
+  const e216 = "`value` must be a hexadecimal representation of an integer.";
   assertThrows(
     () => {
       Uint24.fromString("");
@@ -1067,7 +1070,7 @@ Deno.test("Uint24.fromString()", () => {
       Uint24.fromString("2", op2);
     },
     RangeError,
-    e2,
+    e22,
   );
   const op2e = { radix: 2, overflowMode: "exception" } as const;
   assertThrows(
@@ -1088,7 +1091,7 @@ Deno.test("Uint24.fromString()", () => {
       Uint24.fromString("8", op8);
     },
     RangeError,
-    e2,
+    e28,
   );
 
   const op10 = { radix: 10 } as const;
@@ -1115,7 +1118,7 @@ Deno.test("Uint24.fromString()", () => {
       Uint24.fromString("g", op16);
     },
     RangeError,
-    e2,
+    e216,
   );
 });
 

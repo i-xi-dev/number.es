@@ -447,7 +447,7 @@ Deno.test("SafeInteger.toBigInt()", () => {
 });
 
 Deno.test("SafeInteger.fromString()", () => {
-  const rfe1 = "`source` must be a `string`.";
+  const rfe1 = "`value` must be a `string`.";
 
   assertThrows(
     () => {
@@ -473,7 +473,7 @@ Deno.test("SafeInteger.fromString()", () => {
     rfe1,
   );
 
-  const rfe2 = "`source` must be a representation of a integer.";
+  const rfe2 = "`value` must be a decimal representation of an integer.";
 
   assertThrows(
     () => {
@@ -508,7 +508,7 @@ Deno.test("SafeInteger.fromString()", () => {
 Deno.test("SafeInteger.fromString() - radix:2", () => {
   const op = { radix: 2 } as const;
 
-  const rfe2 = "`source` must be a representation of a integer.";
+  const rfe2 = "`value` must be a binary representation of an integer.";
 
   assertThrows(
     () => {
@@ -534,7 +534,7 @@ Deno.test("SafeInteger.fromString() - radix:2", () => {
 Deno.test("SafeInteger.fromString() - radix:8", () => {
   const op = { radix: 8 } as const;
 
-  const rfe2 = "`source` must be a representation of a integer.";
+  const rfe2 = "`value` must be an octal representation of an integer.";
 
   assertThrows(
     () => {
@@ -600,7 +600,7 @@ Deno.test("SafeInteger.fromString() - radix:10", () => {
 Deno.test("SafeInteger.fromString() - radix:16", () => {
   const op = { radix: 16 } as const;
 
-  const rfe2 = "`source` must be a representation of a integer.";
+  const rfe2 = "`value` must be a hexadecimal representation of an integer.";
 
   assertThrows(
     () => {

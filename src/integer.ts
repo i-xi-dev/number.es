@@ -160,12 +160,34 @@ export function resolveRadix(radix?: Radix): Radix {
     : Radix.DECIMAL;
 }
 
-export const RADIX_REGEX = {
+const _RADIX_REGEX = {
   [Radix.BINARY]: /^[-+]?[01]+$/,
   [Radix.OCTAL]: /^[-+]?[0-7]+$/,
   [Radix.DECIMAL]: /^[-+]?[0-9]+$/,
   [Radix.HEXADECIMAL]: /^[-+]?[0-9a-fA-F]+$/,
 } as const;
+
+const _RADIX_LABEL = {
+  [Radix.BINARY]: "a binary",
+  [Radix.OCTAL]: "an octal",
+  [Radix.DECIMAL]: "a decimal",
+  [Radix.HEXADECIMAL]: "a hexadecimal",
+} as const;
+
+export function assertIntegerTextRepresentation(
+  test: string,
+  label: string,
+  radix: Radix,
+): void {
+  const regex = _RADIX_REGEX[radix];
+  if (regex.test(test) !== true) {
+    throw new RangeError(
+      `\`${label}\` must be ${
+        _RADIX_LABEL[radix]
+      } representation of an integer.`,
+    );
+  }
+}
 
 export const OverflowMode = {
   EXCEPTION: "exception",
