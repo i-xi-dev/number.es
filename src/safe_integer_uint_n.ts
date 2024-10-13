@@ -283,7 +283,7 @@ class _Uint8xOperations<T extends number> extends _UinNOperations<T>
     super(bitLength);
     //if ((bitLength % BITS_PER_BYTE) !== 0) {
     if (_BITS.includes(bitLength) !== true) {
-      throw new Error("TODO");
+      throw new Error("Unsupprted bit length.");
     }
   }
 
