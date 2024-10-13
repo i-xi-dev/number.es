@@ -4,6 +4,7 @@ import {
   NUMBER_ZERO,
   numeric,
   Radix,
+  RADIX_PREFIX,
 } from "./numeric.ts";
 import { Type } from "../deps.ts";
 
@@ -174,7 +175,7 @@ const _RADIX_LABEL = {
   [Radix.HEXADECIMAL]: "a hexadecimal",
 } as const;
 
-export function assertIntegerTextRepresentation(
+function _assertIntegerTextRepresentation(
   test: string,
   label: string,
   radix: Radix,
@@ -187,6 +188,21 @@ export function assertIntegerTextRepresentation(
       } representation of an integer.`,
     );
   }
+}
+
+export function stringToBigInt(value: string, radix: Radix): bigint {
+  _assertIntegerTextRepresentation(value, "value", radix);
+
+  const negative = value.startsWith("-");
+  let adjustedValue = value;
+  adjustedValue = adjustedValue.replace(/^[-+]?/, "");
+  adjustedValue = RADIX_PREFIX[radix] + adjustedValue;
+  let valueAsBigInt = BigInt(adjustedValue);
+  if (negative === true) {
+    valueAsBigInt *= -1n;
+  }
+
+  return valueAsBigInt;
 }
 
 export const OverflowMode = {

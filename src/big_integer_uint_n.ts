@@ -1,8 +1,3 @@
-import {
-  assertIntegerTextRepresentation,
-  OverflowMode,
-  resolveRadix,
-} from "./integer.ts";
 import { BigIntegerRange } from "./big_integer_range.ts";
 import {
   BITS_PER_BYTE,
@@ -18,7 +13,8 @@ import {
   toString as bigintToString,
   ZERO,
 } from "./big_integer.ts";
-import { inSafeIntegerRange, NUMBER_ZERO, RADIX_PREFIX } from "./numeric.ts";
+import { inSafeIntegerRange, NUMBER_ZERO } from "./numeric.ts";
+import { OverflowMode, resolveRadix, stringToBigInt } from "./integer.ts";
 import { Type } from "../deps.ts";
 
 class _UinNOperations<T extends bigint> implements UintNOperations<T> {
@@ -170,18 +166,7 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
     Type.assertString(value, "value");
 
     const radix = resolveRadix(options?.radix);
-    assertIntegerTextRepresentation(value, "value", radix);
-
-    //TODO big_integer と合わせる
-
-    const negative = value.startsWith("-");
-    let adjustedValue = value;
-    adjustedValue = adjustedValue.replace(/^[-+]?/, "");
-    adjustedValue = RADIX_PREFIX[radix] + adjustedValue;
-    let valueAsBigInt = BigInt(adjustedValue);
-    if (negative === true) {
-      valueAsBigInt *= -1n;
-    }
+    const valueAsBigInt = stringToBigInt(value, radix);
 
     return this.fromBigInt(valueAsBigInt, options);
   }

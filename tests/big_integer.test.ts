@@ -572,6 +572,16 @@ Deno.test("BigInteger.fromString()", () => {
 
   assertStrictEquals(BigInteger.fromString(SIMAX.toString()), BigInt(SIMAX));
   assertStrictEquals(BigInteger.fromString(SIMIN.toString()), BigInt(SIMIN));
+
+  const op2 = { radix: 2 } as const;
+  assertStrictEquals(BigInteger.fromString("11", op2), 3n);
+
+  const op8 = { radix: 8 } as const;
+  assertStrictEquals(BigInteger.fromString("11", op8), 9n);
+
+  const op16 = { radix: 16 } as const;
+  assertStrictEquals(BigInteger.fromString("1f", op16), 31n);
+  assertStrictEquals(BigInteger.fromString("1F", op16), 31n);
 });
 
 Deno.test("BigInteger.toString()", () => {

@@ -1,7 +1,7 @@
 import {
-  assertIntegerTextRepresentation,
   FromStringOptions,
   resolveRadix,
+  stringToBigInt,
   ToStringOptions,
 } from "./integer.ts";
 import { inSafeIntegerRange, normalizeNumber, NUMBER_ZERO } from "./numeric.ts";
@@ -74,11 +74,9 @@ export function fromString(value: string, options?: FromStringOptions): number {
   Type.assertString(value, "value");
 
   const radix = resolveRadix(options?.radix);
-  assertIntegerTextRepresentation(value, "value", radix);
+  const valueAsBigInt = stringToBigInt(value, radix);
 
-  //TODO safe_integer_uint_n と合わせる
-
-  return normalizeNumber(Number.parseInt(value, radix));
+  return fromBigInt(valueAsBigInt);
 }
 
 export function toString(self: number, options?: ToStringOptions): string {

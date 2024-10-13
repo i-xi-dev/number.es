@@ -1,12 +1,12 @@
+import { BIGINT_ZERO, inSafeIntegerRange } from "./numeric.ts";
 import {
-  assertIntegerTextRepresentation,
   FromNumberOptions,
   FromStringOptions,
   resolveRadix,
   roundNumber,
+  stringToBigInt,
   ToStringOptions,
 } from "./integer.ts";
-import { BIGINT_ZERO, inSafeIntegerRange } from "./numeric.ts";
 import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
 import { Type } from "../deps.ts";
 
@@ -145,15 +145,9 @@ export function fromString(value: string, options?: FromStringOptions): bigint {
   Type.assertString(value, "value");
 
   const radix = resolveRadix(options?.radix);
-  assertIntegerTextRepresentation(value, "value", radix);
+  const valueAsBigInt = stringToBigInt(value, radix);
 
-  //TODO big_integer_uint_n と合わせる
-
-  // if (radix === Radix.DECIMAL) {
-  return BigInt(value);
-  // } else {
-  //   //XXX
-  // }
+  return valueAsBigInt;
 }
 
 export function toString(self: bigint, options?: ToStringOptions): string {
