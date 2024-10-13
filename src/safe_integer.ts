@@ -1,16 +1,11 @@
 import {
-  assertBigInt,
-  assertSafeInteger,
-  isNumber,
-  isString,
-} from "./utils.ts";
-import {
   FromStringOptions,
   RADIX_REGEX,
   resolveRadix,
   ToStringOptions,
 } from "./integer.ts";
 import { inSafeIntegerRange, normalizeNumber, NUMBER_ZERO } from "./numeric.ts";
+import { Type } from "../deps.ts";
 
 export const ZERO = NUMBER_ZERO;
 
@@ -39,29 +34,29 @@ export function isEven(test: number): boolean {
 }
 
 export function clampToPositive(value: number): number {
-  assertSafeInteger(value, "value");
+  Type.assertSafeInteger(value, "value");
   return Math.max(value, 1);
 }
 
 export function clampToNonNegative(value: number): number {
-  assertSafeInteger(value, "value");
+  Type.assertSafeInteger(value, "value");
   return normalizeNumber(Math.max(value, ZERO));
 }
 
 export function clampToNonPositive(value: number): number {
-  assertSafeInteger(value, "value");
+  Type.assertSafeInteger(value, "value");
   return normalizeNumber(Math.min(value, ZERO));
 }
 
 export function clampToNegative(value: number): number {
-  assertSafeInteger(value, "value");
+  Type.assertSafeInteger(value, "value");
   return Math.min(value, -1);
 }
 
 //XXX fromNumber
 
 export function fromBigInt(value: bigint): number {
-  assertBigInt(value, "value");
+  Type.assertBigInt(value, "value");
 
   if (inSafeIntegerRange(value) !== true) {
     throw new RangeError("`value` must be within the range of safe integer.");
@@ -71,7 +66,7 @@ export function fromBigInt(value: bigint): number {
 }
 
 export function toBigInt(source: number): bigint {
-  assertSafeInteger(source, "source");
+  Type.assertSafeInteger(source, "source");
   return BigInt(source);
 }
 
@@ -79,9 +74,7 @@ export function fromString(
   source: string,
   options?: FromStringOptions, //TODO  uintnのと統合する
 ): number {
-  if (isString(source) !== true) {
-    throw new TypeError("`source` must be a `string`.");
-  }
+  Type.assertString(source, "source");
 
   const radix = resolveRadix(options?.radix);
   const regex = RADIX_REGEX[radix];
@@ -93,7 +86,7 @@ export function fromString(
 }
 
 export function toString(self: number, options?: ToStringOptions): string {
-  assertSafeInteger(self, "self");
+  Type.assertSafeInteger(self, "self");
 
   const radix = resolveRadix(options?.radix);
   let result = self.toString(radix);
@@ -103,7 +96,7 @@ export function toString(self: number, options?: ToStringOptions): string {
   }
 
   const minIntegralDigits = options?.minIntegralDigits;
-  if (isNumber(minIntegralDigits) && isPositive(minIntegralDigits)) {
+  if (Type.isNumber(minIntegralDigits) && isPositive(minIntegralDigits)) {
     result = result.padStart(minIntegralDigits, "0");
   }
 

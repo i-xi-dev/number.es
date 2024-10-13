@@ -1,11 +1,11 @@
-import { assertNumber, isBigInt, isNumber } from "./utils.ts";
+import { Type } from "../deps.ts";
 
 export const NUMBER_ZERO = 0;
 
 export const BIGINT_ZERO = 0n;
 
 export function normalizeNumber<T extends number>(input: T): T {
-  assertNumber(input, "input");
+  Type.assertNumber(input, "input");
 
   if (Number.isFinite(input) !== true) {
     return input;
@@ -17,7 +17,7 @@ export function normalizeNumber<T extends number>(input: T): T {
 }
 
 export function clampToSafeInteger(input: number): number {
-  assertNumber(input, "input");
+  Type.assertNumber(input, "input");
 
   if (Number.isNaN(input)) {
     throw new RangeError("`input` must not be `Number.NaN`.");
@@ -35,7 +35,8 @@ export function clampToSafeInteger(input: number): number {
 export type numeric = number | bigint;
 
 function _isNumeric(test: unknown): test is numeric {
-  return (isNumber(test) && (Number.isNaN(test) !== true)) || isBigInt(test);
+  return (Type.isNumber(test) && (Number.isNaN(test) !== true)) ||
+    Type.isBigInt(test);
 }
 
 export function isPositive(test: numeric): boolean {

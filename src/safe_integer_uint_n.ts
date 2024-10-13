@@ -1,4 +1,3 @@
-import { assertNumber, assertSafeInteger, isString } from "./utils.ts";
 import {
   BITS_PER_BYTE,
   FromBigIntOptions,
@@ -22,6 +21,7 @@ import {
 } from "./integer.ts";
 import { normalizeNumber, RADIX_PREFIX } from "./numeric.ts";
 import { SafeIntegerRange } from "./safe_integer_range.ts";
+import { Type } from "../deps.ts";
 import { uint6, uint7, uint8 } from "./uint_n_type.ts";
 
 class _UinNOperations<T extends number> implements UintNOperations<T> {
@@ -120,7 +120,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
 
   rotateLeft(self: T, offset: number): T {
     this._assertInRange(self, "self");
-    assertSafeInteger(offset, "offset");
+    Type.assertSafeInteger(offset, "offset");
 
     let normalizedOffset = offset % this.#bitLength;
     if (normalizedOffset < ZERO) {
@@ -145,7 +145,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   fromNumber(value: number, options?: FromNumberOptions): T {
-    assertNumber(value, "value");
+    Type.assertNumber(value, "value");
 
     if (Number.isNaN(value)) {
       throw new TypeError("`value` must not be `NaN`.");
@@ -188,7 +188,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   // #saturateFromInteger(value: number): T {
-  //   // assertSafeInteger(value, "value");
+  //   // Type.assertSafeInteger(value, "value");
 
   //   if (value > this.#range.max) {
   //     return this.#range.max;
@@ -200,7 +200,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   // }
 
   #truncateFromInteger(value: number): T {
-    // assertSafeInteger(value, "value");
+    // Type.assertSafeInteger(value, "value");
 
     if (value === ZERO) {
       return ZERO as T;
@@ -246,9 +246,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
 
   //XXX 小数も受け付ける？
   fromString(value: string, options?: FromStringOptions): T {
-    if (isString(value) !== true) {
-      throw new TypeError("`value` must be a `string`.");
-    }
+    Type.assertString(value, "value");
 
     const radix = resolveRadix(options?.radix);
     const regex = RADIX_REGEX[radix];

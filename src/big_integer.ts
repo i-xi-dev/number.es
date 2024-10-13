@@ -1,10 +1,3 @@
-import {
-  assertBigInt,
-  assertNumber,
-  isBigInt,
-  isNumber,
-  isString,
-} from "./utils.ts";
 import { BIGINT_ZERO, inSafeIntegerRange, Radix } from "./numeric.ts";
 import {
   FromNumberOptions,
@@ -14,31 +7,32 @@ import {
   ToStringOptions,
 } from "./integer.ts";
 import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
+import { Type } from "../deps.ts";
 
 export const ZERO = BIGINT_ZERO;
 
 export function isPositive(test: bigint): boolean {
-  return isBigInt(test) && (test > ZERO);
+  return Type.isBigInt(test) && (test > ZERO);
 }
 
 export function isNonNegative(test: bigint): boolean {
-  return isBigInt(test) && (test >= ZERO);
+  return Type.isBigInt(test) && (test >= ZERO);
 }
 
 export function isNonPositive(test: bigint): boolean {
-  return isBigInt(test) && (test <= ZERO);
+  return Type.isBigInt(test) && (test <= ZERO);
 }
 
 export function isNegative(test: bigint): boolean {
-  return isBigInt(test) && (test < ZERO);
+  return Type.isBigInt(test) && (test < ZERO);
 }
 
 export function isOdd(test: bigint): boolean {
-  return isBigInt(test) && ((test % 2n) !== ZERO);
+  return Type.isBigInt(test) && ((test % 2n) !== ZERO);
 }
 
 export function isEven(test: bigint): boolean {
-  return isBigInt(test) && ((test % 2n) === ZERO);
+  return Type.isBigInt(test) && ((test % 2n) === ZERO);
 }
 
 function _min<T extends bigint>(...args: T[]): T {
@@ -56,7 +50,7 @@ function _min<T extends bigint>(...args: T[]): T {
 export function min<T extends bigint>(...args: T[]): T {
   if (
     (Array.isArray(args) && (args.length > 0) &&
-      args.every((i) => isBigInt(i))) !== true
+      args.every((i) => Type.isBigInt(i))) !== true
   ) {
     throw new TypeError("`args` must be one or more `bigint`s.");
   }
@@ -79,7 +73,7 @@ function _max<T extends bigint>(...args: T[]): T {
 export function max<T extends bigint>(...args: T[]): T {
   if (
     (Array.isArray(args) && (args.length > 0) &&
-      args.every((i) => isBigInt(i))) !== true
+      args.every((i) => Type.isBigInt(i))) !== true
   ) {
     throw new TypeError("`args` must be one or more `bigint`s.");
   }
@@ -88,22 +82,22 @@ export function max<T extends bigint>(...args: T[]): T {
 }
 
 export function clampToPositive(value: bigint): bigint {
-  assertBigInt(value, "value");
+  Type.assertBigInt(value, "value");
   return _max(value, 1n);
 }
 
 export function clampToNonNegative(value: bigint): bigint {
-  assertBigInt(value, "value");
+  Type.assertBigInt(value, "value");
   return _max(value, ZERO);
 }
 
 export function clampToNonPositive(value: bigint): bigint {
-  assertBigInt(value, "value");
+  Type.assertBigInt(value, "value");
   return _min(value, ZERO);
 }
 
 export function clampToNegative(value: bigint): bigint {
-  assertBigInt(value, "value");
+  Type.assertBigInt(value, "value");
   return _min(value, -1n);
 }
 
@@ -111,7 +105,7 @@ export function fromNumber(
   value: number,
   options?: FromNumberOptions,
 ): bigint {
-  assertNumber(value, "value");
+  Type.assertNumber(value, "value");
   //TODO bigintのときはFiniteでなければエラーで良いのでは
 
   if (Number.isNaN(value)) {
@@ -138,7 +132,7 @@ export function fromNumber(
 }
 
 export function toNumber(source: bigint): number {
-  assertBigInt(source, "source");
+  Type.assertBigInt(source, "source");
 
   if (inSafeIntegerRange(source) !== true) {
     throw new RangeError("`source` must be within the range of safe integer.");
@@ -150,9 +144,7 @@ export function fromString( //TODO uintnのと統合する
   source: string,
   //TODO options?: FromStringOptions,
 ): bigint {
-  if (isString(source) !== true) {
-    throw new TypeError("`source` must be a `string`.");
-  }
+  Type.assertString(source, "source");
 
   // const radix = resolveRadix(options?.radix);
   // const regex = REGEX[radix];
@@ -169,7 +161,7 @@ export function fromString( //TODO uintnのと統合する
 }
 
 export function toString(self: bigint, options?: ToStringOptions): string {
-  assertBigInt(self, "self");
+  Type.assertBigInt(self, "self");
 
   const radix = resolveRadix(options?.radix);
   let result = self.toString(radix);
@@ -179,7 +171,9 @@ export function toString(self: bigint, options?: ToStringOptions): string {
   }
 
   const minIntegralDigits = options?.minIntegralDigits;
-  if (isNumber(minIntegralDigits) && isPositiveSafeInteger(minIntegralDigits)) {
+  if (
+    Type.isNumber(minIntegralDigits) && isPositiveSafeInteger(minIntegralDigits)
+  ) {
     result = result.padStart(minIntegralDigits, "0");
   }
 

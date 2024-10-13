@@ -14,5 +14,9 @@
     "@std/internal@1.0.4": {
       "integrity": "62e8e4911527e5e4f307741a795c0b0a9e6958d0b3790716ae71ce085f755422"
     }
+  },
+  "remote": {
+    "https://raw.githubusercontent.com/i-xi-dev/type.es/1.0.0/mod.ts": "cc30fa5a47e933811f9f32e1eff26597800acf1c5f1e9247a940a6d69e1e00de",
+    "https://raw.githubusercontent.com/i-xi-dev/type.es/1.0.0/src/type.ts": "4df04ad5e846868f4c77a7369e3a227c25c6e5af2f53658f4c31b575a3c9accc"
   }
 }

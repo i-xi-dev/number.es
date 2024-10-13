@@ -1,6 +1,6 @@
-import { assertSafeInteger } from "./utils.ts";
 import { IntegerRange } from "./integer_range.ts";
 import { normalizeNumber } from "./numeric.ts";
+import { Type } from "../deps.ts";
 
 export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
   readonly #min: T;
@@ -98,7 +98,7 @@ export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
   }
 
   clamp(input: number): T {
-    assertSafeInteger(input, "input");
+    Type.assertSafeInteger(input, "input");
 
     if (this.includes(input)) {
       return normalizeNumber(input);

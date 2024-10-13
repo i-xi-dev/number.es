@@ -5,12 +5,12 @@ import {
   numeric,
   Radix,
 } from "./numeric.ts";
-import { isBigInt } from "./utils.ts";
+import { Type } from "../deps.ts";
 
 export function isOdd(test: numeric): boolean {
   if (Number.isSafeInteger(test)) {
     return (((test as number) % 2) !== NUMBER_ZERO);
-  } else if (isBigInt(test)) {
+  } else if (Type.isBigInt(test)) {
     return ((test % 2n) !== BIGINT_ZERO);
   }
   return false;
@@ -19,7 +19,7 @@ export function isOdd(test: numeric): boolean {
 export function isEven(test: numeric): boolean {
   if (Number.isSafeInteger(test)) {
     return (((test as number) % 2) === NUMBER_ZERO);
-  } else if (isBigInt(test)) {
+  } else if (Type.isBigInt(test)) {
     return ((test % 2n) === BIGINT_ZERO);
   }
   return false;
