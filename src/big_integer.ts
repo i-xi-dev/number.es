@@ -82,24 +82,68 @@ export function max<T extends bigint>(...args: T[]): T {
   return _max(...args);
 }
 
-export function clampToPositive(value: bigint): bigint {
-  Type.assertBigInt(value, "value");
-  return _max(value, 1n);
+function _clamp<T extends bigint>(value: T, min: T, max: T): T {
+  return _min(_max(value, min), max);
 }
 
-export function clampToNonNegative(value: bigint): bigint {
+export function clamp<T extends bigint>(value: T, min: T, max: T): T {
   Type.assertBigInt(value, "value");
-  return _max(value, ZERO);
+  Type.assertBigInt(min, "min");
+  Type.assertBigInt(max, "max");
+
+  if (max < min) {
+    throw new RangeError("`min` must be less than or equal to `max`.");
+  }
+
+  return _clamp(value, min, max);
 }
 
-export function clampToNonPositive(value: bigint): bigint {
+export function clampToPositive<T extends bigint>(value: T, max?: T): T {
   Type.assertBigInt(value, "value");
-  return _min(value, ZERO);
+  const min = 1n as T;
+  if (Type.isBigInt(max)) {
+    if (max < min) {
+      throw new RangeError("`max` must be greater than or equal to `1n`.");
+    }
+    return _clamp(value, min, max);
+  }
+  return _max(value, min);
 }
 
-export function clampToNegative(value: bigint): bigint {
+export function clampToNonNegative<T extends bigint>(value: T, max?: T): T {
   Type.assertBigInt(value, "value");
-  return _min(value, -1n);
+  const min = ZERO as T;
+  if (Type.isBigInt(max)) {
+    if (max < min) {
+      throw new RangeError("`max` must be greater than or equal to `0n`.");
+    }
+    return _clamp(value, min, max);
+  }
+  return _max(value, min);
+}
+
+export function clampToNonPositive<T extends bigint>(value: T, min?: T): T {
+  Type.assertBigInt(value, "value");
+  const max = ZERO as T;
+  if (Type.isBigInt(min)) {
+    if (max < min) {
+      throw new RangeError("`min` must be less than or equal to `0n`.");
+    }
+    return _clamp(value, min, max);
+  }
+  return _min(value, max);
+}
+
+export function clampToNegative<T extends bigint>(value: T, min?: T): T {
+  Type.assertBigInt(value, "value");
+  const max = -1n as T;
+  if (Type.isBigInt(min)) {
+    if (max < min) {
+      throw new RangeError("`min` must be less than or equal to `-1n`.");
+    }
+    return _clamp(value, min, max);
+  }
+  return _min(value, max);
 }
 
 export function fromNumber(

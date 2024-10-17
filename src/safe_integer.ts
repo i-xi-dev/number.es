@@ -33,24 +33,68 @@ export function isEven(test: number): boolean {
   return Number.isSafeInteger(test) && ((test % 2) === ZERO);
 }
 
-export function clampToPositive(value: number): number {
-  Type.assertSafeInteger(value, "value");
-  return Math.max(value, 1);
+function _clamp<T extends number>(value: T, min: T, max: T): T {
+  return normalizeNumber(Math.min(Math.max(value, min), max)) as T;
 }
 
-export function clampToNonNegative(value: number): number {
+export function clamp<T extends number>(value: T, min: T, max: T): T {
   Type.assertSafeInteger(value, "value");
-  return normalizeNumber(Math.max(value, ZERO));
+  Type.assertSafeInteger(min, "min");
+  Type.assertSafeInteger(max, "max");
+
+  if (max < min) {
+    throw new RangeError("`min` must be less than or equal to `max`.");
+  }
+
+  return _clamp(value, min, max);
 }
 
-export function clampToNonPositive(value: number): number {
+export function clampToPositive<T extends number>(value: T, max?: T): T {
   Type.assertSafeInteger(value, "value");
-  return normalizeNumber(Math.min(value, ZERO));
+  const min = 1 as T;
+  if (Number.isSafeInteger(max)) {
+    if ((max as T) < min) {
+      throw new RangeError("`max` must be greater than or equal to `1`.");
+    }
+    return _clamp(value, min, max as T);
+  }
+  return normalizeNumber(Math.max(value, 1)) as T;
 }
 
-export function clampToNegative(value: number): number {
+export function clampToNonNegative<T extends number>(value: T, max?: T): T {
   Type.assertSafeInteger(value, "value");
-  return Math.min(value, -1);
+  const min = ZERO as T;
+  if (Number.isSafeInteger(max)) {
+    if ((max as T) < min) {
+      throw new RangeError("`max` must be greater than or equal to `0`.");
+    }
+    return _clamp(value, min, max as T);
+  }
+  return normalizeNumber(Math.max(value, ZERO)) as T;
+}
+
+export function clampToNonPositive<T extends number>(value: T, min?: T): T {
+  Type.assertSafeInteger(value, "value");
+  const max = ZERO as T;
+  if (Number.isSafeInteger(min)) {
+    if (max < (min as T)) {
+      throw new RangeError("`min` must be less than or equal to `0`.");
+    }
+    return _clamp(value, min as T, max);
+  }
+  return normalizeNumber(Math.min(value, ZERO)) as T;
+}
+
+export function clampToNegative<T extends number>(value: T, min?: T): T {
+  Type.assertSafeInteger(value, "value");
+  const max = -1 as T;
+  if (Number.isSafeInteger(min)) {
+    if (max < (min as T)) {
+      throw new RangeError("`min` must be less than or equal to `-1`.");
+    }
+    return _clamp(value, min as T, max);
+  }
+  return normalizeNumber(Math.min(value, -1)) as T;
 }
 
 //XXX fromNumber
