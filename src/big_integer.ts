@@ -82,11 +82,11 @@ export function max<T extends bigint>(...args: T[]): T {
   return _max(...args);
 }
 
-function _clamp<T extends bigint>(value: T, min: T, max: T): T {
-  return _min(_max(value, min), max);
+function _clamp<T extends bigint>(value: bigint, min: T, max: T): T {
+  return _min(_max(value, min), max) as T;
 }
 
-export function clamp<T extends bigint>(value: T, min: T, max: T): T {
+export function clamp<T extends bigint>(value: bigint, min: T, max: T): T {
   Type.assertBigInt(value, "value");
   Type.assertBigInt(min, "min");
   Type.assertBigInt(max, "max");

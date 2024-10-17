@@ -33,11 +33,11 @@ export function isEven(test: number): boolean {
   return Number.isSafeInteger(test) && ((test % 2) === ZERO);
 }
 
-function _clamp<T extends number>(value: T, min: T, max: T): T {
+function _clamp<T extends number>(value: number, min: T, max: T): T {
   return normalizeNumber(Math.min(Math.max(value, min), max)) as T;
 }
 
-export function clamp<T extends number>(value: T, min: T, max: T): T {
+export function clamp<T extends number>(value: number, min: T, max: T): T {
   Type.assertSafeInteger(value, "value");
   Type.assertSafeInteger(min, "min");
   Type.assertSafeInteger(max, "max");
