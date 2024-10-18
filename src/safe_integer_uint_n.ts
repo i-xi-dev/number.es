@@ -9,7 +9,6 @@ import {
 } from "./uint_n.ts";
 import {
   fromBigInt as safeIntegerFromBigInt,
-  isPositive as isPositiveSafeInteger,
   toString as safeIntegerToString,
   ZERO,
 } from "./safe_integer.ts";
@@ -33,7 +32,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   readonly #bufferUint16View: Uint16Array;
 
   constructor(bitLength: number) {
-    if ((isPositiveSafeInteger(bitLength) !== true) || (bitLength > 32)) {
+    if (Type.isNonPositiveSafeInteger(bitLength) || (bitLength > 32)) {
       throw new Error("not implemented"); //XXX 対応するとしても48まで
     }
 

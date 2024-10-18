@@ -1,5 +1,4 @@
 import {
-  BIGINT_ZERO,
   normalizeNumber,
   NUMBER_ZERO,
   numeric,
@@ -9,21 +8,11 @@ import {
 import { Type } from "../deps.ts";
 
 export function isOdd(test: numeric): boolean {
-  if (Number.isSafeInteger(test)) {
-    return (((test as number) % 2) !== NUMBER_ZERO);
-  } else if (Type.isBigInt(test)) {
-    return ((test % 2n) !== BIGINT_ZERO);
-  }
-  return false;
+  return Type.isOddSafeInteger(test) || Type.isOddBigInt(test);
 }
 
 export function isEven(test: numeric): boolean {
-  if (Number.isSafeInteger(test)) {
-    return (((test as number) % 2) === NUMBER_ZERO);
-  } else if (Type.isBigInt(test)) {
-    return ((test % 2n) === BIGINT_ZERO);
-  }
-  return false;
+  return Type.isEvenSafeInteger(test) || Type.isEvenBigInt(test);
 }
 
 const UP = "up"; // TOWARD_POSITIVE_INFINITY
@@ -70,7 +59,7 @@ export function roundNumber(
   }
 
   const integralPart = normalizeNumber(Math.trunc(input));
-  const integralPartIsEven = isEven(integralPart);
+  const integralPartIsEven = Type.isEvenSafeInteger(integralPart);
 
   const resolvedRoundingMode =
     Object.values(RoundingMode).includes(roundingMode as RoundingMode)

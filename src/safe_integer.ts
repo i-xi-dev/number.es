@@ -9,28 +9,28 @@ import { Type } from "../deps.ts";
 
 export const ZERO = NUMBER_ZERO;
 
-export function isPositive(test: number): boolean {
-  return Number.isSafeInteger(test) && (test > ZERO);
+export function isPositive(test: number): test is number {
+  return Type.isPositiveSafeInteger(test);
 }
 
-export function isNonNegative(test: number): boolean {
-  return Number.isSafeInteger(test) && (test >= ZERO);
+export function isNonNegative(test: number): test is number {
+  return Type.isNonNegativeSafeInteger(test);
 }
 
-export function isNonPositive(test: number): boolean {
-  return Number.isSafeInteger(test) && (test <= ZERO);
+export function isNonPositive(test: number): test is number {
+  return Type.isNonPositiveSafeInteger(test);
 }
 
-export function isNegative(test: number): boolean {
-  return Number.isSafeInteger(test) && (test < ZERO);
+export function isNegative(test: number): test is number {
+  return Type.isNegativeSafeInteger(test);
 }
 
-export function isOdd(test: number): boolean {
-  return Number.isSafeInteger(test) && ((test % 2) !== ZERO);
+export function isOdd(test: number): test is number {
+  return Type.isOddSafeInteger(test);
 }
 
-export function isEven(test: number): boolean {
-  return Number.isSafeInteger(test) && ((test % 2) === ZERO);
+export function isEven(test: number): test is number {
+  return Type.isEvenSafeInteger(test);
 }
 
 function _clamp<T extends number>(value: number, min: T, max: T): T {

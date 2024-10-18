@@ -27,12 +27,12 @@ export function isNegative(test: bigint): test is bigint {
   return Type.isNegativeBigInt(test);
 }
 
-export function isOdd(test: bigint): boolean {
-  return Type.isBigInt(test) && ((test % 2n) !== ZERO);
+export function isOdd(test: bigint): test is bigint {
+  return Type.isOddBigInt(test);
 }
 
-export function isEven(test: bigint): boolean {
-  return Type.isBigInt(test) && ((test % 2n) === ZERO);
+export function isEven(test: bigint): test is bigint {
+  return Type.isEvenBigInt(test);
 }
 
 function _min<T extends bigint>(...args: T[]): T {
