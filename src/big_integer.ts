@@ -12,16 +12,16 @@ import { Type } from "../deps.ts";
 
 export const ZERO = BIGINT_ZERO;
 
-export function isPositive(test: bigint): boolean {
-  return Type.isBigInt(test) && (test > ZERO);
+export function isPositive(test: bigint): test is bigint {
+  return Type.isPositiveBigInt(test);
 }
 
-export function isNonNegative(test: bigint): boolean {
-  return Type.isBigInt(test) && (test >= ZERO);
+export function isNonNegative(test: bigint): test is bigint {
+  return Type.isNonNegativeBigInt(test);
 }
 
-export function isNonPositive(test: bigint): boolean {
-  return Type.isBigInt(test) && (test <= ZERO);
+export function isNonPositive(test: bigint): test is bigint {
+  return Type.isNonPositiveBigInt(test);
 }
 
 export function isNegative(test: bigint): boolean {
