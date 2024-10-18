@@ -7,11 +7,11 @@ import {
 } from "./numeric.ts";
 import { Type } from "../deps.ts";
 
-export function isOdd(test: numeric): boolean {
+export function isOdd(test: numeric): test is numeric {
   return Type.isOddSafeInteger(test) || Type.isOddBigInt(test);
 }
 
-export function isEven(test: numeric): boolean {
+export function isEven(test: numeric): test is numeric {
   return Type.isEvenSafeInteger(test) || Type.isEvenBigInt(test);
 }
 

@@ -112,7 +112,7 @@ export namespace IntegerRange {
         throw new TypeError("`rangeLike` must be a `IntegerRange.Like`.");
       }
 
-      if (Number.isSafeInteger(parsedMin) && Number.isSafeInteger(parsedMax)) {
+      if (Type.isSafeInteger(parsedMin) && Type.isSafeInteger(parsedMax)) {
         // ok
       } else if (Type.isBigInt(parsedMin) && Type.isBigInt(parsedMax)) {
         // ok
@@ -122,15 +122,15 @@ export namespace IntegerRange {
         );
       }
 
-      if ((parsedMin as T) > (parsedMax as T)) {
+      if (parsedMin > parsedMax) {
         throw new RangeError(
           "`min` must be less than or equal to `max`.",
         );
       }
 
       return {
-        min: parsedMin as T,
-        max: parsedMax as T,
+        min: parsedMin,
+        max: parsedMax,
       };
     }
   }

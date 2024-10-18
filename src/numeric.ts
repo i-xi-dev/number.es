@@ -34,29 +34,25 @@ export function clampToSafeInteger(input: number): number {
 
 export type numeric = number | bigint;
 
-function _isNumeric(test: unknown): test is numeric {
-  return (Type.isNumber(test) && (Number.isNaN(test) !== true)) ||
-    Type.isBigInt(test);
+export function isPositive(test: numeric): test is numeric {
+  return Type.isPositiveNumber(test) || Type.isPositiveBigInt(test);
 }
 
-export function isPositive(test: numeric): boolean {
-  return _isNumeric(test) && (test > NUMBER_ZERO);
+export function isNonNegative(test: numeric): test is numeric {
+  return Type.isNonNegativeNumber(test) || Type.isNonNegativeBigInt(test);
 }
 
-export function isNonNegative(test: numeric): boolean {
-  return _isNumeric(test) && (test >= NUMBER_ZERO);
+export function isNonPositive(test: numeric): test is numeric {
+  return Type.isNonPositiveNumber(test) || Type.isNonPositiveBigInt(test);
 }
 
-export function isNonPositive(test: numeric): boolean {
-  return _isNumeric(test) && (test <= NUMBER_ZERO);
+export function isNegative(test: numeric): test is numeric {
+  return Type.isNegativeNumber(test) || Type.isNegativeBigInt(test);
 }
 
-export function isNegative(test: numeric): boolean {
-  return _isNumeric(test) && (test < NUMBER_ZERO);
-}
-
-export function inSafeIntegerRange(test: numeric) {
-  return _isNumeric(test) && (test >= Number.MIN_SAFE_INTEGER) &&
+export function inSafeIntegerRange(test: numeric): test is numeric {
+  return (Type.isNumber(test) || Type.isBigInt(test)) &&
+    (test >= Number.MIN_SAFE_INTEGER) &&
     (test <= Number.MAX_SAFE_INTEGER);
 }
 
