@@ -7,7 +7,6 @@ import {
   stringToBigInt,
   ToStringOptions,
 } from "./integer.ts";
-import { isPositive as isPositiveSafeInteger } from "./safe_integer.ts";
 import { Type } from "../deps.ts";
 
 export const ZERO = BIGINT_ZERO;
@@ -24,8 +23,8 @@ export function isNonPositive(test: bigint): test is bigint {
   return Type.isNonPositiveBigInt(test);
 }
 
-export function isNegative(test: bigint): boolean {
-  return Type.isBigInt(test) && (test < ZERO);
+export function isNegative(test: bigint): test is bigint {
+  return Type.isNegativeBigInt(test);
 }
 
 export function isOdd(test: bigint): boolean {
@@ -205,9 +204,7 @@ export function toString(self: bigint, options?: ToStringOptions): string {
   }
 
   const minIntegralDigits = options?.minIntegralDigits;
-  if (
-    Type.isNumber(minIntegralDigits) && isPositiveSafeInteger(minIntegralDigits)
-  ) {
+  if (Type.isPositiveSafeInteger(minIntegralDigits)) {
     result = result.padStart(minIntegralDigits, "0");
   }
 
