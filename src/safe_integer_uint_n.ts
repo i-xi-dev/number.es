@@ -12,7 +12,6 @@ import {
   toString as safeIntegerToString,
   ZERO,
 } from "./safe_integer.ts";
-import { normalizeNumber } from "./numeric.ts";
 import {
   OverflowMode,
   resolveRadix,
@@ -168,7 +167,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
     }
 
     if (this.inRange(valueAsInt)) {
-      return normalizeNumber(valueAsInt);
+      return Type.toNormalizedNumber(valueAsInt);
     }
 
     switch (options?.overflowMode) {
@@ -195,7 +194,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   //     return this.#range.min;
   //   }
 
-  //   return normalizeNumber(value as T);
+  //   return Type.toNormalizedNumber(value as T);
   // }
 
   #truncateFromInteger(value: number): T {
@@ -213,7 +212,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   toNumber(self: T): number {
     this._assertInRange(self, "self");
 
-    return normalizeNumber(self);
+    return Type.toNormalizedNumber(self);
   }
 
   fromBigInt(value: bigint, options?: FromBigIntOptions): T {

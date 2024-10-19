@@ -6,14 +6,7 @@ export const BIGINT_ZERO = 0n;
 
 export function normalizeNumber<T extends number>(input: T): T {
   Type.assertNumber(input, "input");
-
-  if (Number.isFinite(input) !== true) {
-    return input;
-  }
-
-  // -0は0にする
-  // asを使っているが、0がTの範囲外ならそもそも0が返ることは無い
-  return (input === NUMBER_ZERO) ? (NUMBER_ZERO as T) : input;
+  return Type.toNormalizedNumber(input);
 }
 
 export function clampToSafeInteger(input: number): number {
@@ -29,7 +22,7 @@ export function clampToSafeInteger(input: number): number {
   if (input >= Number.MAX_SAFE_INTEGER) {
     return Number.MAX_SAFE_INTEGER;
   }
-  return normalizeNumber(input);
+  return Type.toNormalizedNumber(input);
 }
 
 export type numeric = number | bigint;
@@ -49,6 +42,8 @@ export function isNonPositive(test: numeric): test is numeric {
 export function isNegative(test: numeric): test is numeric {
   return Type.isNegativeNumber(test) || Type.isNegativeBigInt(test);
 }
+
+//TODO inRange
 
 export function inSafeIntegerRange(test: numeric): test is numeric {
   return (Type.isNumber(test) || Type.isBigInt(test)) &&

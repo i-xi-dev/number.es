@@ -1,10 +1,4 @@
-import {
-  normalizeNumber,
-  NUMBER_ZERO,
-  numeric,
-  Radix,
-  RADIX_PREFIX,
-} from "./numeric.ts";
+import { NUMBER_ZERO, numeric, Radix, RADIX_PREFIX } from "./numeric.ts";
 import { Type } from "../deps.ts";
 
 export function isOdd(test: numeric): test is numeric {
@@ -58,7 +52,7 @@ export function roundNumber(
     throw new TypeError("`input` must be a finite number.");
   }
 
-  const integralPart = normalizeNumber(Math.trunc(input));
+  const integralPart = Type.toNormalizedNumber(Math.trunc(input));
   const integralPartIsEven = Type.isEvenSafeInteger(integralPart);
 
   const resolvedRoundingMode =
@@ -67,11 +61,11 @@ export function roundNumber(
       : RoundingMode.TRUNCATE;
 
   if (Number.isInteger(input)) {
-    return normalizeNumber(input);
+    return Type.toNormalizedNumber(input);
   }
 
-  const nearestP = normalizeNumber(Math.ceil(input));
-  const nearestN = normalizeNumber(Math.floor(input));
+  const nearestP = Type.toNormalizedNumber(Math.ceil(input));
+  const nearestN = Type.toNormalizedNumber(Math.floor(input));
   const sourceIsNegative = input < 0;
   const nearestPH = nearestP - 0.5;
   const nearestNH = nearestN + 0.5;

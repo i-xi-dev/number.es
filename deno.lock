@@ -16,9 +16,9 @@
     }
   },
   "remote": {
-    "https://raw.githubusercontent.com/i-xi-dev/type.es/1.2.0/mod.ts": "6f2b659861b9f75396e6ea3f908dd44fcf5f8a93aac5782ccd7cc2b022525032",
-    "https://raw.githubusercontent.com/i-xi-dev/type.es/1.2.0/src/bigint.ts": "09ebc853d7b9d74b0d009d660fd6ec1ff1733d7cee4e90a4b7f50c272ecd78f0",
-    "https://raw.githubusercontent.com/i-xi-dev/type.es/1.2.0/src/number.ts": "c3b1031b9acaa985edc04bdde9be9352d5321467f67e9e294480e0fdc5a97443",
-    "https://raw.githubusercontent.com/i-xi-dev/type.es/1.2.0/src/string.ts": "f7ca76d4791be1208dbbaccb09b1e5e11ccdb7b94a9e441ca29c03d4ddd8e6e0"
+    "https://raw.githubusercontent.com/i-xi-dev/type.es/1.3.0/mod.ts": "6f2b659861b9f75396e6ea3f908dd44fcf5f8a93aac5782ccd7cc2b022525032",
+    "https://raw.githubusercontent.com/i-xi-dev/type.es/1.3.0/src/bigint.ts": "9bbdb03d0c455d466ffc1539c19f894b49fa495dea62d19d76293eda67d17227",
+    "https://raw.githubusercontent.com/i-xi-dev/type.es/1.3.0/src/number.ts": "64e92fa93a6224aec5fe303adff79b6dab2d8ec2b9567fc2d8439fe62800d6f7",
+    "https://raw.githubusercontent.com/i-xi-dev/type.es/1.3.0/src/string.ts": "f7ca76d4791be1208dbbaccb09b1e5e11ccdb7b94a9e441ca29c03d4ddd8e6e0"
   }
 }

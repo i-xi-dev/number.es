@@ -35,18 +35,6 @@ export function isEven(test: bigint): test is bigint {
   return Type.isEvenBigInt(test);
 }
 
-function _min<T extends bigint>(...args: T[]): T {
-  let min = args[0];
-  let tmp: T;
-  for (let i = 1; i < args.length; i++) {
-    tmp = args[i];
-    if (tmp < min) {
-      min = tmp;
-    }
-  }
-  return min;
-}
-
 export function min<T extends bigint>(...args: T[]): T {
   if (
     (Array.isArray(args) && (args.length > 0) &&
@@ -55,19 +43,7 @@ export function min<T extends bigint>(...args: T[]): T {
     throw new TypeError("`args` must be one or more `bigint`s.");
   }
 
-  return _min(...args);
-}
-
-function _max<T extends bigint>(...args: T[]): T {
-  let max = args[0];
-  let tmp: T;
-  for (let i = 1; i < args.length; i++) {
-    tmp = args[i];
-    if (tmp > max) {
-      max = tmp;
-    }
-  }
-  return max;
+  return Type.minBigIntOf(args[0], ...args.slice(1));
 }
 
 export function max<T extends bigint>(...args: T[]): T {
@@ -78,12 +54,10 @@ export function max<T extends bigint>(...args: T[]): T {
     throw new TypeError("`args` must be one or more `bigint`s.");
   }
 
-  return _max(...args);
+  return Type.maxBigIntOf(args[0], ...args.slice(1));
 }
 
-function _clamp<T extends bigint>(value: bigint, min: T, max: T): T {
-  return _min(_max(value, min), max) as T;
-}
+//TODO isBigIntInRange
 
 export function clamp<T extends bigint>(value: bigint, min: T, max: T): T {
   Type.assertBigInt(value, "value");
@@ -94,7 +68,7 @@ export function clamp<T extends bigint>(value: bigint, min: T, max: T): T {
     throw new RangeError("`min` must be less than or equal to `max`.");
   }
 
-  return _clamp(value, min, max);
+  return Type.toClampedBigInt(value, min, max);
 }
 
 export function clampToPositive<T extends bigint>(value: T, max?: T): T {
@@ -104,9 +78,9 @@ export function clampToPositive<T extends bigint>(value: T, max?: T): T {
     if (max < min) {
       throw new RangeError("`max` must be greater than or equal to `1n`.");
     }
-    return _clamp(value, min, max);
+    return Type.toClampedBigInt(value, min, max);
   }
-  return _max(value, min);
+  return Type.maxBigIntOf(value, min);
 }
 
 export function clampToNonNegative<T extends bigint>(value: T, max?: T): T {
@@ -116,9 +90,9 @@ export function clampToNonNegative<T extends bigint>(value: T, max?: T): T {
     if (max < min) {
       throw new RangeError("`max` must be greater than or equal to `0n`.");
     }
-    return _clamp(value, min, max);
+    return Type.toClampedBigInt(value, min, max);
   }
-  return _max(value, min);
+  return Type.maxBigIntOf(value, min);
 }
 
 export function clampToNonPositive<T extends bigint>(value: T, min?: T): T {
@@ -128,9 +102,9 @@ export function clampToNonPositive<T extends bigint>(value: T, min?: T): T {
     if (max < min) {
       throw new RangeError("`min` must be less than or equal to `0n`.");
     }
-    return _clamp(value, min, max);
+    return Type.toClampedBigInt(value, min, max);
   }
-  return _min(value, max);
+  return Type.minBigIntOf(value, max);
 }
 
 export function clampToNegative<T extends bigint>(value: T, min?: T): T {
@@ -140,9 +114,9 @@ export function clampToNegative<T extends bigint>(value: T, min?: T): T {
     if (max < min) {
       throw new RangeError("`min` must be less than or equal to `-1n`.");
     }
-    return _clamp(value, min, max);
+    return Type.toClampedBigInt(value, min, max);
   }
-  return _min(value, max);
+  return Type.minBigIntOf(value, max);
 }
 
 export function fromNumber(

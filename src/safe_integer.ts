@@ -4,7 +4,7 @@ import {
   stringToBigInt,
   ToStringOptions,
 } from "./integer.ts";
-import { inSafeIntegerRange, normalizeNumber, NUMBER_ZERO } from "./numeric.ts";
+import { inSafeIntegerRange, NUMBER_ZERO } from "./numeric.ts";
 import { Type } from "../deps.ts";
 
 export const ZERO = NUMBER_ZERO;
@@ -33,9 +33,9 @@ export function isEven(test: number): test is number {
   return Type.isEvenSafeInteger(test);
 }
 
-function _clamp<T extends number>(value: number, min: T, max: T): T {
-  return normalizeNumber(Math.min(Math.max(value, min), max)) as T;
-}
+// export function inRange(): boolean {
+//TODO isSafeIntegerInRange
+// }
 
 export function clamp<T extends number>(value: number, min: T, max: T): T {
   Type.assertSafeInteger(value, "value");
@@ -46,7 +46,7 @@ export function clamp<T extends number>(value: number, min: T, max: T): T {
     throw new RangeError("`min` must be less than or equal to `max`.");
   }
 
-  return _clamp(value, min, max);
+  return Type.toClampedNumber(value, min, max);
 }
 
 export function clampToPositive<T extends number>(value: T, max?: T): T {
@@ -56,9 +56,9 @@ export function clampToPositive<T extends number>(value: T, max?: T): T {
     if (max < min) {
       throw new RangeError("`max` must be greater than or equal to `1`.");
     }
-    return _clamp(value, min, max as T);
+    return Type.toClampedNumber(value, min, max);
   }
-  return normalizeNumber(Math.max(value, 1)) as T;
+  return Type.toNormalizedNumber(Math.max(value, 1)) as T;
 }
 
 export function clampToNonNegative<T extends number>(value: T, max?: T): T {
@@ -68,9 +68,9 @@ export function clampToNonNegative<T extends number>(value: T, max?: T): T {
     if (max < min) {
       throw new RangeError("`max` must be greater than or equal to `0`.");
     }
-    return _clamp(value, min, max as T);
+    return Type.toClampedNumber(value, min, max);
   }
-  return normalizeNumber(Math.max(value, ZERO)) as T;
+  return Type.toNormalizedNumber(Math.max(value, ZERO)) as T;
 }
 
 export function clampToNonPositive<T extends number>(value: T, min?: T): T {
@@ -80,9 +80,9 @@ export function clampToNonPositive<T extends number>(value: T, min?: T): T {
     if (max < min) {
       throw new RangeError("`min` must be less than or equal to `0`.");
     }
-    return _clamp(value, min as T, max);
+    return Type.toClampedNumber(value, min, max);
   }
-  return normalizeNumber(Math.min(value, ZERO)) as T;
+  return Type.toNormalizedNumber(Math.min(value, ZERO)) as T;
 }
 
 export function clampToNegative<T extends number>(value: T, min?: T): T {
@@ -92,9 +92,9 @@ export function clampToNegative<T extends number>(value: T, min?: T): T {
     if (max < min) {
       throw new RangeError("`min` must be less than or equal to `-1`.");
     }
-    return _clamp(value, min as T, max);
+    return Type.toClampedNumber(value, min, max);
   }
-  return normalizeNumber(Math.min(value, -1)) as T;
+  return Type.toNormalizedNumber(Math.min(value, -1)) as T;
 }
 
 //XXX fromNumber
