@@ -1,4 +1,5 @@
 import { BigIntegerRange } from "./big_integer_range.ts";
+import { BigIntType, SafeIntegerType, StringType } from "../deps.ts";
 import {
   BITS_PER_BYTE,
   FromBigIntOptions,
@@ -15,7 +16,6 @@ import {
 } from "./big_integer.ts";
 import { inSafeIntegerRange, NUMBER_ZERO } from "./numeric.ts";
 import { OverflowMode, resolveRadix, stringToBigInt } from "./integer.ts";
-import { Type } from "../deps.ts";
 
 class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   readonly #bitLength: number;
@@ -75,7 +75,7 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
 
   rotateLeft(self: T, offset: number): T {
     this._assertInRange(self, "self");
-    Type.assertSafeInteger(offset, "offset");
+    SafeIntegerType.assertSafeInteger(offset, "offset");
 
     let normalizedOffset = offset % this.#bitLength;
     if (normalizedOffset < NUMBER_ZERO) {
@@ -136,7 +136,7 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   }
 
   fromBigInt(value: bigint, options?: FromBigIntOptions): T {
-    Type.assertBigInt(value, "value");
+    BigIntType.assertBigInt(value, "value");
 
     if (this.inRange(value)) {
       return value;
@@ -163,7 +163,7 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   }
 
   fromString(value: string, options?: FromStringOptions): T {
-    Type.assertString(value, "value");
+    StringType.assertString(value, "value");
 
     const radix = resolveRadix(options?.radix);
     const valueAsBigInt = stringToBigInt(value, radix);

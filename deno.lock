@@ -16,9 +16,15 @@
     }
   },
   "remote": {
-    "https://raw.githubusercontent.com/i-xi-dev/type.es/1.3.0/mod.ts": "6f2b659861b9f75396e6ea3f908dd44fcf5f8a93aac5782ccd7cc2b022525032",
-    "https://raw.githubusercontent.com/i-xi-dev/type.es/1.3.0/src/bigint.ts": "9bbdb03d0c455d466ffc1539c19f894b49fa495dea62d19d76293eda67d17227",
-    "https://raw.githubusercontent.com/i-xi-dev/type.es/1.3.0/src/number.ts": "64e92fa93a6224aec5fe303adff79b6dab2d8ec2b9567fc2d8439fe62800d6f7",
-    "https://raw.githubusercontent.com/i-xi-dev/type.es/1.3.0/src/string.ts": "f7ca76d4791be1208dbbaccb09b1e5e11ccdb7b94a9e441ca29c03d4ddd8e6e0"
+    "https://raw.githubusercontent.com/i-xi-dev/type.es/2.1.0/mod.ts": "94ca4b0d7ed1e15149693a241257980c7641aced0759092ba4afdc6a13671f32",
+    "https://raw.githubusercontent.com/i-xi-dev/type.es/2.1.0/src/bigint_type.ts": "7c0f5109e7d25f0862c55426b3284eead119413e79c112f0bb7d0592b252b307",
+    "https://raw.githubusercontent.com/i-xi-dev/type.es/2.1.0/src/char_type.ts": "5b3dc3f37d50ce623364754aa23f5b1661c850304c06828b07394cc91f937e84",
+    "https://raw.githubusercontent.com/i-xi-dev/type.es/2.1.0/src/integer_type.ts": "b91fdef3f3085cf90b22a19bcbdb615870eadc032663e840958f059ef85c56a7",
+    "https://raw.githubusercontent.com/i-xi-dev/type.es/2.1.0/src/number_type.ts": "3fb10a3e5bb2360aa213448ccab8b48e80849ee8aca87fe2cad14e8bf143c707",
+    "https://raw.githubusercontent.com/i-xi-dev/type.es/2.1.0/src/numeric_type.ts": "39fd159dfe310645dd05ec44d09296ccc0b784c142944a072dc4cc3a98a8dcc7",
+    "https://raw.githubusercontent.com/i-xi-dev/type.es/2.1.0/src/object_type.ts": "7145ea3a0562d379d1d57ce1dfa1964ef243bce1cea30e5a400909ea82b3dc25",
+    "https://raw.githubusercontent.com/i-xi-dev/type.es/2.1.0/src/rune_type.ts": "a1af93056993e15590d7b2a8469c7d093bbdb404cf7e478dc4d5ab15093e0f23",
+    "https://raw.githubusercontent.com/i-xi-dev/type.es/2.1.0/src/safe_integer_type.ts": "ab4b34808aded99e7d653df0203f32ee49978937ddae77b419311ee6fb509a0e",
+    "https://raw.githubusercontent.com/i-xi-dev/type.es/2.1.0/src/string_type.ts": "e7dcaf1d547627a39b8cc4f3ccac823a94ee0e41eba8aff2e4ad4d407ea71184"
   }
 }

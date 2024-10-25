@@ -1,5 +1,5 @@
+import { BigIntType, SafeIntegerType } from "../deps.ts";
 import { numeric } from "./numeric.ts";
-import { Type } from "../deps.ts";
 
 export interface IntegerRange<T extends numeric> {
   get min(): T;
@@ -75,7 +75,7 @@ export namespace IntegerRange {
       return false;
     }
 
-    const one = (Type.isBigInt(self.min) ? 1n : 1) as T;
+    const one = (BigIntType.isBigInt(self.min) ? 1n : 1) as T;
     if ((other.min - self.max) === one) {
       return true;
     } else if ((self.min - other.max) === one) {
@@ -112,9 +112,14 @@ export namespace IntegerRange {
         throw new TypeError("`rangeLike` must be a `IntegerRange.Like`.");
       }
 
-      if (Type.isSafeInteger(parsedMin) && Type.isSafeInteger(parsedMax)) {
+      if (
+        SafeIntegerType.isSafeInteger(parsedMin) &&
+        SafeIntegerType.isSafeInteger(parsedMax)
+      ) {
         // ok
-      } else if (Type.isBigInt(parsedMin) && Type.isBigInt(parsedMax)) {
+      } else if (
+        BigIntType.isBigInt(parsedMin) && BigIntType.isBigInt(parsedMax)
+      ) {
         // ok
       } else {
         throw new TypeError(

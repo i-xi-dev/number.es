@@ -1,5 +1,5 @@
 import { IntegerRange } from "./integer_range.ts";
-import { Type } from "../deps.ts";
+import { NumberType, SafeIntegerType } from "../deps.ts";
 
 export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
   readonly #min: T;
@@ -11,8 +11,8 @@ export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
       throw new RangeError("Range size exceeds upper limit.");
     }
 
-    this.#min = Type.toNormalizedNumber(min);
-    this.#max = Type.toNormalizedNumber(max);
+    this.#min = NumberType.toNormalized(min);
+    this.#max = NumberType.toNormalized(max);
   }
 
   get min(): T {
@@ -97,10 +97,10 @@ export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
   }
 
   clamp(input: number): T {
-    Type.assertSafeInteger(input, "input");
+    SafeIntegerType.assertSafeInteger(input, "input");
 
     if (this.includes(input)) {
-      return Type.toNormalizedNumber(input);
+      return NumberType.toNormalized(input);
     }
 
     if (input < this.#min) {

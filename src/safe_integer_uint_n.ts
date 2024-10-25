@@ -12,6 +12,7 @@ import {
   toString as safeIntegerToString,
   ZERO,
 } from "./safe_integer.ts";
+import { NumberType, SafeIntegerType, StringType } from "../deps.ts";
 import {
   OverflowMode,
   resolveRadix,
@@ -19,7 +20,6 @@ import {
   stringToBigInt,
 } from "./integer.ts";
 import { SafeIntegerRange } from "./safe_integer_range.ts";
-import { Type } from "../deps.ts";
 import { uint6, uint7, uint8 } from "./uint_n_type.ts";
 
 class _UinNOperations<T extends number> implements UintNOperations<T> {
@@ -31,7 +31,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   readonly #bufferUint16View: Uint16Array;
 
   constructor(bitLength: number) {
-    if (Type.isNonPositiveSafeInteger(bitLength) || (bitLength > 32)) {
+    if (SafeIntegerType.isNonPositive(bitLength) || (bitLength > 32)) {
       throw new Error("not implemented"); //XXX 対応するとしても48まで
     }
 
@@ -118,7 +118,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
 
   rotateLeft(self: T, offset: number): T {
     this._assertInRange(self, "self");
-    Type.assertSafeInteger(offset, "offset");
+    SafeIntegerType.assertSafeInteger(offset, "offset");
 
     let normalizedOffset = offset % this.#bitLength;
     if (normalizedOffset < ZERO) {
@@ -143,7 +143,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   fromNumber(value: number, options?: FromNumberOptions): T {
-    Type.assertNumber(value, "value");
+    NumberType.assertNumber(value, "value");
 
     if (Number.isNaN(value)) {
       throw new TypeError("`value` must not be `NaN`.");
@@ -167,7 +167,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
     }
 
     if (this.inRange(valueAsInt)) {
-      return Type.toNormalizedNumber(valueAsInt);
+      return NumberType.toNormalized(valueAsInt);
     }
 
     switch (options?.overflowMode) {
@@ -186,7 +186,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   }
 
   // #saturateFromInteger(value: number): T {
-  //   // Type.assertSafeInteger(value, "value");
+  //   // SafeIntegerType.assertSafeInteger(value, "value");
 
   //   if (value > this.#range.max) {
   //     return this.#range.max;
@@ -194,11 +194,11 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   //     return this.#range.min;
   //   }
 
-  //   return Type.toNormalizedNumber(value as T);
+  //   return NumberType.toNormalized(value as T);
   // }
 
   #truncateFromInteger(value: number): T {
-    // Type.assertSafeInteger(value, "value");
+    // SafeIntegerType.assertSafeInteger(value, "value");
 
     if (value === ZERO) {
       return ZERO as T;
@@ -212,7 +212,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   toNumber(self: T): number {
     this._assertInRange(self, "self");
 
-    return Type.toNormalizedNumber(self);
+    return NumberType.toNormalized(self);
   }
 
   fromBigInt(value: bigint, options?: FromBigIntOptions): T {
@@ -244,7 +244,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
 
   //XXX 小数も受け付ける？
   fromString(value: string, options?: FromStringOptions): T {
-    Type.assertString(value, "value");
+    StringType.assertString(value, "value");
 
     const radix = resolveRadix(options?.radix);
     const valueAsBigInt = stringToBigInt(value, radix);

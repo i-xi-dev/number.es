@@ -1,12 +1,12 @@
+import { BigIntType, NumberType, SafeIntegerType } from "../deps.ts";
 import { NUMBER_ZERO, numeric, Radix, RADIX_PREFIX } from "./numeric.ts";
-import { Type } from "../deps.ts";
 
 export function isOdd(test: numeric): test is numeric {
-  return Type.isOddSafeInteger(test) || Type.isOddBigInt(test);
+  return SafeIntegerType.isOdd(test) || BigIntType.isOdd(test);
 }
 
 export function isEven(test: numeric): test is numeric {
-  return Type.isEvenSafeInteger(test) || Type.isEvenBigInt(test);
+  return SafeIntegerType.isEven(test) || BigIntType.isEven(test);
 }
 
 const UP = "up"; // TOWARD_POSITIVE_INFINITY
@@ -52,8 +52,8 @@ export function roundNumber(
     throw new TypeError("`input` must be a finite number.");
   }
 
-  const integralPart = Type.toNormalizedNumber(Math.trunc(input));
-  const integralPartIsEven = Type.isEvenSafeInteger(integralPart);
+  const integralPart = NumberType.toNormalized(Math.trunc(input));
+  const integralPartIsEven = SafeIntegerType.isEven(integralPart);
 
   const resolvedRoundingMode =
     Object.values(RoundingMode).includes(roundingMode as RoundingMode)
@@ -61,11 +61,11 @@ export function roundNumber(
       : RoundingMode.TRUNCATE;
 
   if (Number.isInteger(input)) {
-    return Type.toNormalizedNumber(input);
+    return NumberType.toNormalized(input);
   }
 
-  const nearestP = Type.toNormalizedNumber(Math.ceil(input));
-  const nearestN = Type.toNormalizedNumber(Math.floor(input));
+  const nearestP = NumberType.toNormalized(Math.ceil(input));
+  const nearestN = NumberType.toNormalized(Math.floor(input));
   const sourceIsNegative = input < 0;
   const nearestPH = nearestP - 0.5;
   const nearestNH = nearestN + 0.5;

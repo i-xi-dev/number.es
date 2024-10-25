@@ -1,5 +1,5 @@
+import { BigIntType } from "../deps.ts";
 import { IntegerRange } from "./integer_range.ts";
-import { Type } from "../deps.ts";
 
 export class BigIntegerRange<T extends bigint> implements IntegerRange<T> {
   readonly #min: T;
@@ -94,11 +94,12 @@ export class BigIntegerRange<T extends bigint> implements IntegerRange<T> {
   }
 
   includes(test: bigint): test is T {
-    return Type.isBigInt(test) && (test >= this.#min) && (test <= this.#max);
+    return BigIntType.isBigInt(test) && (test >= this.#min) &&
+      (test <= this.#max);
   }
 
   clamp(input: bigint): T {
-    Type.assertBigInt(input, "input");
+    BigIntType.assertBigInt(input, "input");
 
     if (this.includes(input)) {
       return input;

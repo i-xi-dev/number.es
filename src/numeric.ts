@@ -1,54 +1,59 @@
-import { Type } from "../deps.ts";
+import { BigIntType, NumberType } from "../deps.ts";
 
 export const NUMBER_ZERO = 0;
 
 export const BIGINT_ZERO = 0n;
 
 export function normalizeNumber<T extends number>(input: T): T {
-  Type.assertNumber(input, "input");
-  return Type.toNormalizedNumber(input);
+  NumberType.assertNumber(input, "input");
+  return NumberType.toNormalized(input);
 }
 
 export function clampToSafeInteger(input: number): number {
-  Type.assertNumber(input, "input");
+  NumberType.assertNumber(input, "input");
 
   if (Number.isNaN(input)) {
     throw new RangeError("`input` must not be `Number.NaN`.");
   }
 
-  if (input <= Number.MIN_SAFE_INTEGER) {
-    return Number.MIN_SAFE_INTEGER;
-  }
-  if (input >= Number.MAX_SAFE_INTEGER) {
-    return Number.MAX_SAFE_INTEGER;
-  }
-  return Type.toNormalizedNumber(input);
+  return NumberType.toClamped(
+    input,
+    Number.MIN_SAFE_INTEGER,
+    Number.MAX_SAFE_INTEGER,
+  );
 }
 
 export type numeric = number | bigint;
 
 export function isPositive(test: numeric): test is numeric {
-  return Type.isPositiveNumber(test) || Type.isPositiveBigInt(test);
+  return NumberType.isPositive(test) || BigIntType.isPositive(test);
 }
 
 export function isNonNegative(test: numeric): test is numeric {
-  return Type.isNonNegativeNumber(test) || Type.isNonNegativeBigInt(test);
+  return NumberType.isNonNegative(test) || BigIntType.isNonNegative(test);
 }
 
 export function isNonPositive(test: numeric): test is numeric {
-  return Type.isNonPositiveNumber(test) || Type.isNonPositiveBigInt(test);
+  return NumberType.isNonPositive(test) || BigIntType.isNonPositive(test);
 }
 
 export function isNegative(test: numeric): test is numeric {
-  return Type.isNegativeNumber(test) || Type.isNegativeBigInt(test);
+  return NumberType.isNegative(test) || BigIntType.isNegative(test);
 }
 
 //TODO inRange
 
 export function inSafeIntegerRange(test: numeric): test is numeric {
-  return (Type.isNumber(test) || Type.isBigInt(test)) &&
-    (test >= Number.MIN_SAFE_INTEGER) &&
-    (test <= Number.MAX_SAFE_INTEGER);
+  return NumberType.isInRange(
+    test,
+    Number.MIN_SAFE_INTEGER,
+    Number.MAX_SAFE_INTEGER,
+  ) ||
+    BigIntType.isInRange(
+      test,
+      BigInt(Number.MIN_SAFE_INTEGER),
+      BigInt(Number.MAX_SAFE_INTEGER),
+    );
 }
 
 /**
