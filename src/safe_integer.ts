@@ -3,7 +3,6 @@ import {
   NumberType,
   NumericType,
   SafeIntegerType,
-  StringType,
 } from "../deps.ts";
 import { FromStringOptions, ToStringOptions } from "./integer.ts";
 import { inSafeIntegerRange, NUMBER_ZERO } from "./numeric.ts";
@@ -116,7 +115,6 @@ export function toBigInt(source: number): bigint {
 }
 
 export function fromString(value: string, options?: FromStringOptions): number {
-  StringType.assertString(value, "value");
   const valueAsBigInt = BigIntType.fromString(value, options?.radix);
   return fromBigInt(valueAsBigInt);
 }

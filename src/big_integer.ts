@@ -4,7 +4,6 @@ import {
   NumberType,
   NumericType,
   SafeIntegerType,
-  StringType,
 } from "../deps.ts";
 import {
   FromNumberOptions,
@@ -163,7 +162,6 @@ export function toNumber(source: bigint): number {
 }
 
 export function fromString(value: string, options?: FromStringOptions): bigint {
-  StringType.assertString(value, "value");
   return BigIntType.fromString(value, options?.radix);
 }
 

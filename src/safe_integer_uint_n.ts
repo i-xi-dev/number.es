@@ -1,9 +1,4 @@
-import {
-  BigIntType,
-  NumberType,
-  SafeIntegerType,
-  StringType,
-} from "../deps.ts";
+import { BigIntType, NumberType, SafeIntegerType } from "../deps.ts";
 import {
   BITS_PER_BYTE,
   FromBigIntOptions,
@@ -244,7 +239,6 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
 
   //XXX 小数も受け付ける？
   fromString(value: string, options?: FromStringOptions): T {
-    StringType.assertString(value, "value");
     const valueAsBigInt = BigIntType.fromString(value, options?.radix);
     return this.fromBigInt(valueAsBigInt, options);
   }

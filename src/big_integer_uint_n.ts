@@ -1,5 +1,5 @@
 import { BigIntegerRange } from "./big_integer_range.ts";
-import { BigIntType, SafeIntegerType, StringType } from "../deps.ts";
+import { BigIntType, SafeIntegerType } from "../deps.ts";
 import {
   BITS_PER_BYTE,
   FromBigIntOptions,
@@ -163,7 +163,6 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   }
 
   fromString(value: string, options?: FromStringOptions): T {
-    StringType.assertString(value, "value");
     const valueAsBigInt = BigIntType.fromString(value, options?.radix);
     return this.fromBigInt(valueAsBigInt, options);
   }
