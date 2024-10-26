@@ -2,15 +2,14 @@ import { BIGINT_ZERO, inSafeIntegerRange } from "./numeric.ts";
 import {
   BigIntType,
   NumberType,
+  NumericType,
   SafeIntegerType,
   StringType,
 } from "../deps.ts";
 import {
   FromNumberOptions,
   FromStringOptions,
-  resolveRadix,
   roundNumber,
-  stringToBigInt,
   ToStringOptions,
 } from "./integer.ts";
 
@@ -165,17 +164,13 @@ export function toNumber(source: bigint): number {
 
 export function fromString(value: string, options?: FromStringOptions): bigint {
   StringType.assertString(value, "value");
-
-  const radix = resolveRadix(options?.radix);
-  const valueAsBigInt = stringToBigInt(value, radix);
-
-  return valueAsBigInt;
+  return BigIntType.fromString(value, options?.radix);
 }
 
 export function toString(self: bigint, options?: ToStringOptions): string {
   BigIntType.assertBigInt(self, "self");
 
-  const radix = resolveRadix(options?.radix);
+  const radix = NumericType.radixPropertiesOf(options?.radix).radix;
   let result = self.toString(radix);
 
   if (options?.lowerCase !== true) {

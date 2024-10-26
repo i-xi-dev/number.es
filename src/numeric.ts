@@ -55,22 +55,3 @@ export function inSafeIntegerRange(test: numeric): test is numeric {
       BigInt(Number.MAX_SAFE_INTEGER),
     );
 }
-
-/**
- * 2, 8, 10, or 16.
- */
-export const Radix = {
-  BINARY: 2,
-  DECIMAL: 10,
-  HEXADECIMAL: 16,
-  OCTAL: 8,
-} as const;
-
-export type Radix = typeof Radix[keyof typeof Radix];
-
-export const RADIX_PREFIX = {
-  [Radix.BINARY]: "0b",
-  [Radix.OCTAL]: "0o",
-  [Radix.DECIMAL]: "",
-  [Radix.HEXADECIMAL]: "0x",
-} as const;

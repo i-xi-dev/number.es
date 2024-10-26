@@ -1,5 +1,5 @@
 import { assertStrictEquals, assertThrows } from "./deps.ts";
-import { Integer, Numeric } from "../mod.ts";
+import { Integer } from "../mod.ts";
 
 Deno.test("Integer.isOdd()", () => {
   assertStrictEquals(Integer.isOdd(0), false);
@@ -1308,25 +1308,4 @@ Deno.test("Integer.roundNumber() - roundingMode:unknown", () => {
   assertStrictEquals(Integer.roundNumber(MAX + 0.1, op), MAX);
   assertStrictEquals(Integer.roundNumber(MAX + 0.9, op), MAX + 1);
   // <<<
-});
-
-Deno.test("Integer.resolveRadix()", () => {
-  assertStrictEquals(Integer.resolveRadix(0 as Numeric.Radix), 10);
-  assertStrictEquals(Integer.resolveRadix(1 as Numeric.Radix), 10);
-  assertStrictEquals(Integer.resolveRadix(2), 2);
-  assertStrictEquals(Integer.resolveRadix(3 as Numeric.Radix), 10);
-  assertStrictEquals(Integer.resolveRadix(4 as Numeric.Radix), 10);
-  assertStrictEquals(Integer.resolveRadix(5 as Numeric.Radix), 10);
-  assertStrictEquals(Integer.resolveRadix(6 as Numeric.Radix), 10);
-  assertStrictEquals(Integer.resolveRadix(7 as Numeric.Radix), 10);
-  assertStrictEquals(Integer.resolveRadix(8), 8);
-  assertStrictEquals(Integer.resolveRadix(9 as Numeric.Radix), 10);
-  assertStrictEquals(Integer.resolveRadix(10), 10);
-  assertStrictEquals(Integer.resolveRadix(11 as Numeric.Radix), 10);
-  assertStrictEquals(Integer.resolveRadix(12 as Numeric.Radix), 10);
-  assertStrictEquals(Integer.resolveRadix(13 as Numeric.Radix), 10);
-  assertStrictEquals(Integer.resolveRadix(14 as Numeric.Radix), 10);
-  assertStrictEquals(Integer.resolveRadix(15 as Numeric.Radix), 10);
-  assertStrictEquals(Integer.resolveRadix(16), 16);
-  assertStrictEquals(Integer.resolveRadix(17 as Numeric.Radix), 10);
 });

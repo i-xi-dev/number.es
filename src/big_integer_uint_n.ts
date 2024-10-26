@@ -15,7 +15,7 @@ import {
   ZERO,
 } from "./big_integer.ts";
 import { inSafeIntegerRange, NUMBER_ZERO } from "./numeric.ts";
-import { OverflowMode, resolveRadix, stringToBigInt } from "./integer.ts";
+import { OverflowMode } from "./integer.ts";
 
 class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   readonly #bitLength: number;
@@ -164,10 +164,7 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
 
   fromString(value: string, options?: FromStringOptions): T {
     StringType.assertString(value, "value");
-
-    const radix = resolveRadix(options?.radix);
-    const valueAsBigInt = stringToBigInt(value, radix);
-
+    const valueAsBigInt = BigIntType.fromString(value, options?.radix);
     return this.fromBigInt(valueAsBigInt, options);
   }
 

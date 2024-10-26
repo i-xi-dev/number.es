@@ -1,4 +1,10 @@
 import {
+  BigIntType,
+  NumberType,
+  SafeIntegerType,
+  StringType,
+} from "../deps.ts";
+import {
   BITS_PER_BYTE,
   FromBigIntOptions,
   FromNumberOptions,
@@ -12,13 +18,7 @@ import {
   toString as safeIntegerToString,
   ZERO,
 } from "./safe_integer.ts";
-import { NumberType, SafeIntegerType, StringType } from "../deps.ts";
-import {
-  OverflowMode,
-  resolveRadix,
-  roundNumber,
-  stringToBigInt,
-} from "./integer.ts";
+import { OverflowMode, roundNumber } from "./integer.ts";
 import { SafeIntegerRange } from "./safe_integer_range.ts";
 import { uint6, uint7, uint8 } from "./uint_n_type.ts";
 
@@ -245,10 +245,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   //XXX 小数も受け付ける？
   fromString(value: string, options?: FromStringOptions): T {
     StringType.assertString(value, "value");
-
-    const radix = resolveRadix(options?.radix);
-    const valueAsBigInt = stringToBigInt(value, radix);
-
+    const valueAsBigInt = BigIntType.fromString(value, options?.radix);
     return this.fromBigInt(valueAsBigInt, options);
   }
 

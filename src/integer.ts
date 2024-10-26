@@ -1,5 +1,10 @@
-import { BigIntType, NumberType, SafeIntegerType } from "../deps.ts";
-import { NUMBER_ZERO, numeric, Radix, RADIX_PREFIX } from "./numeric.ts";
+import {
+  BigIntType,
+  NumberType,
+  NumericType,
+  SafeIntegerType,
+} from "../deps.ts";
+import { NUMBER_ZERO, numeric } from "./numeric.ts";
 
 export function isOdd(test: numeric): test is numeric {
   return SafeIntegerType.isOdd(test) || BigIntType.isOdd(test);
@@ -129,64 +134,14 @@ export type FromNumberOptions = {
 // };
 
 export type FromStringOptions = {
-  radix?: Radix;
+  radix?: NumericType.Radix;
 };
 
 export type ToStringOptions = {
   lowerCase?: boolean;
   minIntegralDigits?: number;
-  radix?: Radix;
+  radix?: NumericType.Radix;
 };
-
-export function resolveRadix(radix?: Radix): Radix {
-  return Object.values(Radix).includes(radix as Radix)
-    ? (radix as Radix)
-    : Radix.DECIMAL;
-}
-
-const _RADIX_REGEX = {
-  [Radix.BINARY]: /^[-+]?[01]+$/,
-  [Radix.OCTAL]: /^[-+]?[0-7]+$/,
-  [Radix.DECIMAL]: /^[-+]?[0-9]+$/,
-  [Radix.HEXADECIMAL]: /^[-+]?[0-9a-fA-F]+$/,
-} as const;
-
-const _RADIX_LABEL = {
-  [Radix.BINARY]: "a binary",
-  [Radix.OCTAL]: "an octal",
-  [Radix.DECIMAL]: "a decimal",
-  [Radix.HEXADECIMAL]: "a hexadecimal",
-} as const;
-
-function _assertIntegerTextRepresentation(
-  test: string,
-  label: string,
-  radix: Radix,
-): void {
-  const regex = _RADIX_REGEX[radix];
-  if (regex.test(test) !== true) {
-    throw new RangeError(
-      `\`${label}\` must be ${
-        _RADIX_LABEL[radix]
-      } representation of an integer.`,
-    );
-  }
-}
-
-export function stringToBigInt(value: string, radix: Radix): bigint {
-  _assertIntegerTextRepresentation(value, "value", radix);
-
-  const negative = value.startsWith("-");
-  let adjustedValue = value;
-  adjustedValue = adjustedValue.replace(/^[-+]?/, "");
-  adjustedValue = RADIX_PREFIX[radix] + adjustedValue;
-  let valueAsBigInt = BigInt(adjustedValue);
-  if (negative === true) {
-    valueAsBigInt *= -1n;
-  }
-
-  return valueAsBigInt;
-}
 
 export const OverflowMode = {
   EXCEPTION: "exception",
