@@ -663,7 +663,7 @@ Deno.test("SafeInteger.fromString()", () => {
     () => {
       SafeInteger.fromString("");
     },
-    RangeError,
+    TypeError,
     rfe2,
   );
 
@@ -671,7 +671,7 @@ Deno.test("SafeInteger.fromString()", () => {
     () => {
       SafeInteger.fromString("a");
     },
-    RangeError,
+    TypeError,
     rfe2,
   );
 
@@ -733,7 +733,7 @@ Deno.test("SafeInteger.fromString() - radix:2", () => {
     () => {
       SafeInteger.fromString("2", op);
     },
-    RangeError,
+    TypeError,
     rfe2,
   );
 
@@ -759,7 +759,7 @@ Deno.test("SafeInteger.fromString() - radix:8", () => {
     () => {
       SafeInteger.fromString("8", op);
     },
-    RangeError,
+    TypeError,
     rfe2,
   );
 
@@ -767,7 +767,7 @@ Deno.test("SafeInteger.fromString() - radix:8", () => {
     () => {
       SafeInteger.fromString("9", op);
     },
-    RangeError,
+    TypeError,
     rfe2,
   );
 
@@ -825,7 +825,7 @@ Deno.test("SafeInteger.fromString() - radix:16", () => {
     () => {
       SafeInteger.fromString("g", op);
     },
-    RangeError,
+    TypeError,
     rfe2,
   );
 

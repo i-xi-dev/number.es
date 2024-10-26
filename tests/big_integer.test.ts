@@ -726,7 +726,7 @@ Deno.test("BigInteger.fromString()", () => {
     () => {
       BigInteger.fromString("");
     },
-    RangeError,
+    TypeError,
     rfe2,
   );
 
@@ -734,7 +734,7 @@ Deno.test("BigInteger.fromString()", () => {
     () => {
       BigInteger.fromString("g");
     },
-    RangeError,
+    TypeError,
     rfe2,
   );
 

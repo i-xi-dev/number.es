@@ -1289,7 +1289,7 @@ Deno.test("BigUint64.fromString()", () => {
     () => {
       BigUint64.fromString("");
     },
-    RangeError,
+    TypeError,
     e2,
   );
 
@@ -1322,7 +1322,7 @@ Deno.test("BigUint64.fromString()", () => {
     () => {
       BigUint64.fromString("2", op2);
     },
-    RangeError,
+    TypeError,
     e22,
   );
   const op2e = { radix: 2, overflowMode: "exception" } as const;
@@ -1349,7 +1349,7 @@ Deno.test("BigUint64.fromString()", () => {
     () => {
       BigUint64.fromString("8", op8);
     },
-    RangeError,
+    TypeError,
     e28,
   );
 
@@ -1368,7 +1368,7 @@ Deno.test("BigUint64.fromString()", () => {
     () => {
       BigUint64.fromString("a", op10);
     },
-    RangeError,
+    TypeError,
     e2,
   );
 
@@ -1391,7 +1391,7 @@ Deno.test("BigUint64.fromString()", () => {
     () => {
       BigUint64.fromString("g", op16);
     },
-    RangeError,
+    TypeError,
     e216,
   );
 });

@@ -552,7 +552,7 @@ Deno.test("Uint7.fromString()", () => {
     () => {
       Uint7.fromString("");
     },
-    RangeError,
+    TypeError,
     e2,
   );
 
@@ -567,7 +567,7 @@ Deno.test("Uint7.fromString()", () => {
     () => {
       Uint7.fromString("2", op2);
     },
-    RangeError,
+    TypeError,
     e22,
   );
   const op2e = { radix: 2, overflowMode: "exception" } as const;
@@ -588,7 +588,7 @@ Deno.test("Uint7.fromString()", () => {
     () => {
       Uint7.fromString("8", op8);
     },
-    RangeError,
+    TypeError,
     e28,
   );
 
@@ -601,7 +601,7 @@ Deno.test("Uint7.fromString()", () => {
     () => {
       Uint7.fromString("a", op10);
     },
-    RangeError,
+    TypeError,
     e2,
   );
 
@@ -615,7 +615,7 @@ Deno.test("Uint7.fromString()", () => {
     () => {
       Uint7.fromString("g", op16);
     },
-    RangeError,
+    TypeError,
     e216,
   );
 });
