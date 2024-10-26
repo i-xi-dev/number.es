@@ -702,14 +702,15 @@ Deno.test("BigInteger.toNumber()", () => {
 });
 
 Deno.test("BigInteger.fromString()", () => {
-  const rfe1 = "`value` must be a `string`.";
+  // const rfe1 = "`value` must be a `string`.";
+  const rfe2 = "`value` must be a decimal representation of an integer.";
 
   assertThrows(
     () => {
       BigInteger.fromString(undefined as unknown as string);
     },
     TypeError,
-    rfe1,
+    rfe2,
   );
 
   assertThrows(
@@ -717,10 +718,8 @@ Deno.test("BigInteger.fromString()", () => {
       BigInteger.fromString(0 as unknown as string);
     },
     TypeError,
-    rfe1,
+    rfe2,
   );
-
-  const rfe2 = "`value` must be a decimal representation of an integer.";
 
   assertThrows(
     () => {

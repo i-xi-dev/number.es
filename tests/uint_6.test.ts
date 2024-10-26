@@ -513,22 +513,7 @@ Deno.test("Uint6.fromString()", () => {
   assertStrictEquals(Uint6.fromString("63"), 63);
   assertStrictEquals(Uint6.fromString("64"), 63);
 
-  const e1 = "`value` must be a `string`.";
-  assertThrows(
-    () => {
-      Uint6.fromString(undefined as unknown as string);
-    },
-    TypeError,
-    e1,
-  );
-  assertThrows(
-    () => {
-      Uint6.fromString(0 as unknown as string);
-    },
-    TypeError,
-    e1,
-  );
-
+  // const e1 = "`value` must be a `string`.";
   const e2 = "`value` must be a decimal representation of an integer.";
   const e22 = "`value` must be a binary representation of an integer.";
   const e28 = "`value` must be an octal representation of an integer.";
@@ -536,6 +521,20 @@ Deno.test("Uint6.fromString()", () => {
   assertThrows(
     () => {
       Uint6.fromString("");
+    },
+    TypeError,
+    e2,
+  );
+  assertThrows(
+    () => {
+      Uint6.fromString(undefined as unknown as string);
+    },
+    TypeError,
+    e2,
+  );
+  assertThrows(
+    () => {
+      Uint6.fromString(0 as unknown as string);
     },
     TypeError,
     e2,

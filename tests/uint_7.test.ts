@@ -528,22 +528,7 @@ Deno.test("Uint7.fromString()", () => {
   assertStrictEquals(Uint7.fromString("127"), 127);
   assertStrictEquals(Uint7.fromString("128"), 127);
 
-  const e1 = "`value` must be a `string`.";
-  assertThrows(
-    () => {
-      Uint7.fromString(undefined as unknown as string);
-    },
-    TypeError,
-    e1,
-  );
-  assertThrows(
-    () => {
-      Uint7.fromString(0 as unknown as string);
-    },
-    TypeError,
-    e1,
-  );
-
+  // const e1 = "`value` must be a `string`.";
   const e2 = "`value` must be a decimal representation of an integer.";
   const e22 = "`value` must be a binary representation of an integer.";
   const e28 = "`value` must be an octal representation of an integer.";
@@ -551,6 +536,20 @@ Deno.test("Uint7.fromString()", () => {
   assertThrows(
     () => {
       Uint7.fromString("");
+    },
+    TypeError,
+    e2,
+  );
+  assertThrows(
+    () => {
+      Uint7.fromString(undefined as unknown as string);
+    },
+    TypeError,
+    e2,
+  );
+  assertThrows(
+    () => {
+      Uint7.fromString(0 as unknown as string);
     },
     TypeError,
     e2,

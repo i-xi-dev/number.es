@@ -631,14 +631,15 @@ Deno.test("SafeInteger.toBigInt()", () => {
 });
 
 Deno.test("SafeInteger.fromString()", () => {
-  const rfe1 = "`value` must be a `string`.";
+  // const rfe1 = "`value` must be a `string`.";
+  const rfe2 = "`value` must be a decimal representation of an integer.";
 
   assertThrows(
     () => {
       SafeInteger.fromString(undefined as unknown as string);
     },
     TypeError,
-    rfe1,
+    rfe2,
   );
 
   assertThrows(
@@ -646,7 +647,7 @@ Deno.test("SafeInteger.fromString()", () => {
       SafeInteger.fromString(0 as unknown as string);
     },
     TypeError,
-    rfe1,
+    rfe2,
   );
 
   assertThrows(
@@ -654,10 +655,8 @@ Deno.test("SafeInteger.fromString()", () => {
       SafeInteger.fromString(0n as unknown as string);
     },
     TypeError,
-    rfe1,
+    rfe2,
   );
-
-  const rfe2 = "`value` must be a decimal representation of an integer.";
 
   assertThrows(
     () => {

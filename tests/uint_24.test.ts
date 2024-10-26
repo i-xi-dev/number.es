@@ -1024,22 +1024,7 @@ Deno.test("Uint24.fromString()", () => {
   assertStrictEquals(Uint24.fromString("16777215"), 16777215);
   assertStrictEquals(Uint24.fromString("16777216"), 16777215);
 
-  const e1 = "`value` must be a `string`.";
-  assertThrows(
-    () => {
-      Uint24.fromString(undefined as unknown as string);
-    },
-    TypeError,
-    e1,
-  );
-  assertThrows(
-    () => {
-      Uint24.fromString(0 as unknown as string);
-    },
-    TypeError,
-    e1,
-  );
-
+  // const e1 = "`value` must be a `string`.";
   const e2 = "`value` must be a decimal representation of an integer.";
   const e22 = "`value` must be a binary representation of an integer.";
   const e28 = "`value` must be an octal representation of an integer.";
@@ -1047,6 +1032,20 @@ Deno.test("Uint24.fromString()", () => {
   assertThrows(
     () => {
       Uint24.fromString("");
+    },
+    TypeError,
+    e2,
+  );
+  assertThrows(
+    () => {
+      Uint24.fromString(undefined as unknown as string);
+    },
+    TypeError,
+    e2,
+  );
+  assertThrows(
+    () => {
+      Uint24.fromString(0 as unknown as string);
     },
     TypeError,
     e2,
