@@ -1,26 +1,22 @@
-import { OverflowMode, RoundingMode } from "./integer.ts";
-import { numeric } from "./numeric.ts";
-import { NumericType } from "../deps.ts";
+import { Numerics } from "../deps.ts";
+
+type numeric = number | bigint;
 
 export type FromNumberOptions = {
-  overflowMode?: OverflowMode;
-  roundingMode?: RoundingMode;
-};
+  overflowMode?: Numerics.OverflowMode;
+  roundingMode?: Numerics.RoundingMode;
+}; // Numerics.FromNumberOptions & { overflowMode }
 
 export type FromBigIntOptions = {
-  overflowMode?: OverflowMode;
+  overflowMode?: Numerics.OverflowMode;
 };
 
 export type FromStringOptions = {
-  overflowMode?: OverflowMode;
-  radix?: NumericType.Radix;
-};
+  overflowMode?: Numerics.OverflowMode;
+  radix?: Numerics.Radix;
+}; // Numerics.FromStringOptions & { overflowMode }
 
-export type ToStringOptions = {
-  lowerCase?: boolean;
-  minIntegralDigits?: number;
-  radix?: NumericType.Radix;
-};
+export type ToStringOptions = Numerics.ToStringOptions;
 
 export interface UintNOperations<T extends numeric> {
   bitLength: number;

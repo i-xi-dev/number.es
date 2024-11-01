@@ -1,5 +1,6 @@
 import { BigIntType, SafeIntegerType } from "../deps.ts";
-import { numeric } from "./numeric.ts";
+
+type numeric = number | bigint;
 
 export interface IntegerRange<T extends numeric> {
   get min(): T;

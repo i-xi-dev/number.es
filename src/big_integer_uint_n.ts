@@ -1,5 +1,5 @@
 import { BigIntegerRange } from "./big_integer_range.ts";
-import { BigIntType, SafeIntegerType } from "../deps.ts";
+import { BigIntType, Numerics, SafeIntegerType } from "../deps.ts";
 import {
   BITS_PER_BYTE,
   FromBigIntOptions,
@@ -9,13 +9,6 @@ import {
   Uint8xOperations,
   UintNOperations,
 } from "./uint_n.ts";
-import {
-  fromNumber as bigintFromNumber,
-  toString as bigintToString,
-  ZERO,
-} from "./big_integer.ts";
-import { inSafeIntegerRange, NUMBER_ZERO } from "./numeric.ts";
-import { OverflowMode } from "./integer.ts";
 
 class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   readonly #bitLength: number;
@@ -78,10 +71,10 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
     SafeIntegerType.assertSafeInteger(offset, "offset");
 
     let normalizedOffset = offset % this.#bitLength;
-    if (normalizedOffset < NUMBER_ZERO) {
+    if (normalizedOffset < 0) {
       normalizedOffset = normalizedOffset + this.#bitLength;
     }
-    if (normalizedOffset === NUMBER_ZERO) {
+    if (normalizedOffset === 0) {
       return self;
     }
 
@@ -92,34 +85,34 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   }
 
   fromNumber(value: number, options?: FromNumberOptions): T {
-    const valueAsBigInt = bigintFromNumber(value, options);
+    const valueAsBigInt = BigIntType.fromNumber(value, options);
 
     if (this.inRange(valueAsBigInt)) {
       return valueAsBigInt;
     }
 
     switch (options?.overflowMode) {
-      case OverflowMode.EXCEPTION:
+      case Numerics.OverflowMode.EXCEPTION:
         throw new RangeError(
           "`value` must be within the range of `uint" +
             this.#bitLength + "`.",
         );
 
-      case OverflowMode.TRUNCATE:
+      case Numerics.OverflowMode.TRUNCATE:
         return this.#truncateFromInteger(valueAsBigInt);
 
-      default: // case OverflowMode.SATURATE:
+      default: // case Numerics.OverflowMode.SATURATE:
         return this.#range.clamp(valueAsBigInt);
     }
   }
 
   #truncateFromInteger(value: bigint): T {
-    if (value === ZERO) {
-      return ZERO as T;
+    if (value === 0n) {
+      return 0n as T;
     }
 
     const sizeAsBigInt = BigInt(this.#range.size);
-    if (value > ZERO) {
+    if (value > 0n) {
       return (value % sizeAsBigInt) as T;
     } else {
       return (sizeAsBigInt + (value % sizeAsBigInt)) as T;
@@ -129,7 +122,13 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   toNumber(self: T): number {
     this._assertInRange(self, "self");
 
-    if (inSafeIntegerRange(self) !== true) {
+    if (
+      BigIntType.isInRange(
+        self,
+        BigInt(Number.MIN_SAFE_INTEGER),
+        BigInt(Number.MAX_SAFE_INTEGER),
+      ) !== true
+    ) {
       throw new RangeError("`self` must be within the range of safe integer.");
     }
     return Number(self);
@@ -143,16 +142,16 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
     }
 
     switch (options?.overflowMode) {
-      case OverflowMode.EXCEPTION:
+      case Numerics.OverflowMode.EXCEPTION:
         throw new RangeError(
           "`value` must be within the range of `uint" +
             this.#bitLength + "`.",
         );
 
-      case OverflowMode.TRUNCATE:
+      case Numerics.OverflowMode.TRUNCATE:
         return this.#truncateFromInteger(value);
 
-      default: // case OverflowMode.SATURATE:
+      default: // case Numerics.OverflowMode.SATURATE:
         return this.#range.clamp(value);
     }
   }
@@ -163,13 +162,13 @@ class _UinNOperations<T extends bigint> implements UintNOperations<T> {
   }
 
   fromString(value: string, options?: FromStringOptions): T {
-    const valueAsBigInt = BigIntType.fromString(value, options?.radix);
+    const valueAsBigInt = BigIntType.fromString(value, options);
     return this.fromBigInt(valueAsBigInt, options);
   }
 
   toString(self: T, options?: ToStringOptions): string {
     this._assertInRange(self, "self");
-    return bigintToString(self, options);
+    return BigIntType.toString(self, options);
   }
 }
 

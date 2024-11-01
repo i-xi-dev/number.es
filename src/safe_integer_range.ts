@@ -11,8 +11,8 @@ export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
       throw new RangeError("Range size exceeds upper limit.");
     }
 
-    this.#min = NumberType.toNormalized(min);
-    this.#max = NumberType.toNormalized(max);
+    this.#min = NumberType.normalize(min);
+    this.#max = NumberType.normalize(max);
   }
 
   get min(): T {
@@ -100,7 +100,7 @@ export class SafeIntegerRange<T extends number> implements IntegerRange<T> {
     SafeIntegerType.assertSafeInteger(input, "input");
 
     if (this.includes(input)) {
-      return NumberType.toNormalized(input);
+      return NumberType.normalize(input);
     }
 
     if (input < this.#min) {

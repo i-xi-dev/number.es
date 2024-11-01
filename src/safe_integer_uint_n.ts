@@ -1,4 +1,4 @@
-import { BigIntType, NumberType, SafeIntegerType } from "../deps.ts";
+import { BigIntType, NumberType, Numerics, SafeIntegerType } from "../deps.ts";
 import {
   BITS_PER_BYTE,
   FromBigIntOptions,
@@ -8,12 +8,6 @@ import {
   Uint8xOperations,
   UintNOperations,
 } from "./uint_n.ts";
-import {
-  fromBigInt as safeIntegerFromBigInt,
-  toString as safeIntegerToString,
-  ZERO,
-} from "./safe_integer.ts";
-import { OverflowMode, roundNumber } from "./integer.ts";
 import { SafeIntegerRange } from "./safe_integer_range.ts";
 import { uint6, uint7, uint8 } from "./uint_n_type.ts";
 
@@ -63,7 +57,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
       // bigintに変換してビット演算するよりこちらの方が速い
       this.#bufferUint32View[0] = self;
       this.#bufferUint32View[1] = other;
-      this.#bufferUint32View[2] = ZERO;
+      this.#bufferUint32View[2] = 0;
       const [a1, a2, b1, b2] = this.#bufferUint16View; // バイオオーダーは元の順にセットするので、ここでは関係ない
       this.#bufferUint16View[4] = a1 & b1;
       this.#bufferUint16View[5] = a2 & b2;
@@ -82,7 +76,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
       // bigintに変換してビット演算するよりこちらの方が速い
       this.#bufferUint32View[0] = self;
       this.#bufferUint32View[1] = other;
-      this.#bufferUint32View[2] = ZERO;
+      this.#bufferUint32View[2] = 0;
       const [a1, a2, b1, b2] = this.#bufferUint16View; // バイオオーダーは元の順にセットするので、ここでは関係ない
       this.#bufferUint16View[4] = a1 | b1;
       this.#bufferUint16View[5] = a2 | b2;
@@ -101,7 +95,7 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
       // bigintに変換してビット演算するよりこちらの方が速い
       this.#bufferUint32View[0] = self;
       this.#bufferUint32View[1] = other;
-      this.#bufferUint32View[2] = ZERO;
+      this.#bufferUint32View[2] = 0;
       const [a1, a2, b1, b2] = this.#bufferUint16View; // バイオオーダーは元の順にセットするので、ここでは関係ない
       this.#bufferUint16View[4] = a1 ^ b1;
       this.#bufferUint16View[5] = a2 ^ b2;
@@ -116,10 +110,10 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
     SafeIntegerType.assertSafeInteger(offset, "offset");
 
     let normalizedOffset = offset % this.#bitLength;
-    if (normalizedOffset < ZERO) {
+    if (normalizedOffset < 0) {
       normalizedOffset = normalizedOffset + this.#bitLength;
     }
-    if (normalizedOffset === ZERO) {
+    if (normalizedOffset === 0) {
       return self;
     }
 
@@ -158,24 +152,24 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
     if (Number.isSafeInteger(adjustedValue)) {
       valueAsInt = adjustedValue;
     } else {
-      valueAsInt = roundNumber(adjustedValue, options?.roundingMode);
+      valueAsInt = NumberType.round(adjustedValue, options?.roundingMode);
     }
 
     if (this.inRange(valueAsInt)) {
-      return NumberType.toNormalized(valueAsInt);
+      return NumberType.normalize(valueAsInt);
     }
 
     switch (options?.overflowMode) {
-      case OverflowMode.EXCEPTION:
+      case Numerics.OverflowMode.EXCEPTION:
         throw new RangeError(
           "`value` must be within the range of `uint" +
             this.#bitLength + "`.",
         );
 
-      case OverflowMode.TRUNCATE:
+      case Numerics.OverflowMode.TRUNCATE:
         return this.#truncateFromInteger(valueAsInt);
 
-      default: // case OverflowMode.SATURATE:
+      default: // case Numerics.OverflowMode.SATURATE:
         return this.#range.clamp(valueAsInt);
     }
   }
@@ -189,15 +183,15 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   //     return this.#range.min;
   //   }
 
-  //   return NumberType.toNormalized(value as T);
+  //   return NumberType.normalize(value as T);
   // }
 
   #truncateFromInteger(value: number): T {
     // SafeIntegerType.assertSafeInteger(value, "value");
 
-    if (value === ZERO) {
-      return ZERO as T;
-    } else if (value > ZERO) {
+    if (value === 0) {
+      return 0 as T;
+    } else if (value > 0) {
       return (value % this.#range.size) as T;
     } else {
       return (this.#range.size + (value % this.#range.size)) as T;
@@ -207,27 +201,27 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
   toNumber(self: T): number {
     this._assertInRange(self, "self");
 
-    return NumberType.toNormalized(self);
+    return NumberType.normalize(self);
   }
 
   fromBigInt(value: bigint, options?: FromBigIntOptions): T {
-    const valueAsNumber = safeIntegerFromBigInt(value);
+    const valueAsNumber = SafeIntegerType.fromBigInt(value);
 
     if (this.inRange(valueAsNumber)) {
       return valueAsNumber;
     }
 
     switch (options?.overflowMode) {
-      case OverflowMode.EXCEPTION:
+      case Numerics.OverflowMode.EXCEPTION:
         throw new RangeError(
           "`value` must be within the range of `uint" +
             this.#bitLength + "`.",
         );
 
-      case OverflowMode.TRUNCATE:
+      case Numerics.OverflowMode.TRUNCATE:
         return this.#truncateFromInteger(valueAsNumber);
 
-      default: // case OverflowMode.SATURATE:
+      default: // case Numerics.OverflowMode.SATURATE:
         return this.#range.clamp(valueAsNumber);
     }
   }
@@ -239,13 +233,13 @@ class _UinNOperations<T extends number> implements UintNOperations<T> {
 
   //XXX 小数も受け付ける？
   fromString(value: string, options?: FromStringOptions): T {
-    const valueAsBigInt = BigIntType.fromString(value, options?.radix);
+    const valueAsBigInt = BigIntType.fromString(value, options);
     return this.fromBigInt(valueAsBigInt, options);
   }
 
   toString(self: T, options?: ToStringOptions): string {
     this._assertInRange(self, "self");
-    return safeIntegerToString(self, options);
+    return SafeIntegerType.toString(self, options);
   }
 }
 
