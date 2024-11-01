@@ -1,5 +1,5 @@
 import { assertStrictEquals, assertThrows } from "./deps.ts";
-import { Integer, Uint24 } from "../mod.ts";
+import { Uint24 } from "../mod.ts";
 
 Deno.test("Uint24.bitLength", () => {
   assertStrictEquals(Uint24.bitLength, 24);
@@ -739,7 +739,7 @@ Deno.test("Uint24.fromNumber()", () => {
 });
 
 Deno.test("Uint24.fromNumber() - roundingMode", () => {
-  const op = { roundingMode: Integer.RoundingMode.UP };
+  const op = { roundingMode: "up" } as const;
 
   assertStrictEquals(Uint24.fromNumber(0, op), 0);
   assertStrictEquals(Object.is(Uint24.fromNumber(-0, op), 0), true);
@@ -779,7 +779,7 @@ Deno.test("Uint24.fromNumber() - roundingMode", () => {
   assertStrictEquals(Uint24.fromNumber(16777215.6, op), 16777215);
   assertStrictEquals(Uint24.fromNumber(16777215.9, op), 16777215);
 
-  const op2 = { roundingMode: Integer.RoundingMode.DOWN };
+  const op2 = { roundingMode: "down" } as const;
 
   assertStrictEquals(Uint24.fromNumber(0, op2), 0);
   assertStrictEquals(Object.is(Uint24.fromNumber(-0, op2), 0), true);
@@ -824,7 +824,7 @@ Deno.test("Uint24.fromNumber() - roundingMode", () => {
 });
 
 Deno.test("Uint24.fromNumber() - overflowMode", () => {
-  const op = { overflowMode: Integer.OverflowMode.EXCEPTION };
+  const op = { overflowMode: "exception" } as const;
 
   const e1 = "`value` must be within the range of `uint24`.";
   assertThrows(
@@ -842,7 +842,7 @@ Deno.test("Uint24.fromNumber() - overflowMode", () => {
     e1,
   );
 
-  const op2 = { overflowMode: Integer.OverflowMode.TRUNCATE };
+  const op2 = { overflowMode: "truncate" } as const;
 
   assertStrictEquals(Uint24.fromNumber(-1, op2), 16777215);
   assertStrictEquals(Uint24.fromNumber(64, op2), 64);
@@ -949,7 +949,7 @@ Deno.test("Uint24.fromBigInt()", () => {
 });
 
 Deno.test("Uint24.fromBigInt() - overflowMode", () => {
-  const op = { overflowMode: Integer.OverflowMode.EXCEPTION };
+  const op = { overflowMode: "exception" } as const;
 
   const e1 = "`value` must be within the range of `uint24`.";
   assertThrows(
@@ -967,7 +967,7 @@ Deno.test("Uint24.fromBigInt() - overflowMode", () => {
     e1,
   );
 
-  const op2 = { overflowMode: Integer.OverflowMode.TRUNCATE };
+  const op2 = { overflowMode: "truncate" } as const;
 
   assertStrictEquals(Uint24.fromBigInt(-1n, op2), 16777215);
   assertStrictEquals(Uint24.fromBigInt(64n, op2), 64);

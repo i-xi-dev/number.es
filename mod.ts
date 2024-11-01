@@ -1,10 +1,6 @@
-export * as BigInteger from "./src/big_integer.ts";
 export * from "./src/big_integer_range.ts";
 export * from "./src/big_integer_uint_n.ts";
-export * as Integer from "./src/integer.ts";
 export * from "./src/integer_range.ts";
-export * as Numeric from "./src/numeric.ts";
-export * as SafeInteger from "./src/safe_integer.ts";
 export * from "./src/safe_integer_range.ts";
 export * from "./src/safe_integer_uint_n.ts";
 export * from "./src/uint_n_type.ts";

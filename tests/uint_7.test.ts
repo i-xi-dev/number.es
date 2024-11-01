@@ -1,5 +1,5 @@
 import { assertStrictEquals, assertThrows } from "./deps.ts";
-import { Integer, Uint7, uint7 } from "../mod.ts";
+import { Uint7, uint7 } from "../mod.ts";
 
 Deno.test("Uint7.bitLength", () => {
   assertStrictEquals(Uint7.bitLength, 7);
@@ -286,7 +286,7 @@ Deno.test("Uint7.fromNumber()", () => {
 });
 
 Deno.test("Uint7.fromNumber() - roundingMode", () => {
-  const op = { roundingMode: Integer.RoundingMode.UP };
+  const op = { roundingMode: "up" } as const;
 
   assertStrictEquals(Uint7.fromNumber(0, op), 0);
   assertStrictEquals(Object.is(Uint7.fromNumber(-0, op), 0), true);
@@ -320,7 +320,7 @@ Deno.test("Uint7.fromNumber() - roundingMode", () => {
   assertStrictEquals(Uint7.fromNumber(127.6, op), 127);
   assertStrictEquals(Uint7.fromNumber(127.9, op), 127);
 
-  const op2 = { roundingMode: Integer.RoundingMode.DOWN };
+  const op2 = { roundingMode: "down" } as const;
 
   assertStrictEquals(Uint7.fromNumber(0, op2), 0);
   assertStrictEquals(Object.is(Uint7.fromNumber(-0, op2), 0), true);
@@ -356,7 +356,7 @@ Deno.test("Uint7.fromNumber() - roundingMode", () => {
 });
 
 Deno.test("Uint7.fromNumber() - overflowMode", () => {
-  const op = { overflowMode: Integer.OverflowMode.EXCEPTION };
+  const op = { overflowMode: "exception" } as const;
 
   const e1 = "`value` must be within the range of `uint7`.";
   assertThrows(
@@ -374,7 +374,7 @@ Deno.test("Uint7.fromNumber() - overflowMode", () => {
     e1,
   );
 
-  const op2 = { overflowMode: Integer.OverflowMode.TRUNCATE };
+  const op2 = { overflowMode: "truncate" } as const;
 
   assertStrictEquals(Uint7.fromNumber(-1, op2), 127);
   assertStrictEquals(Uint7.fromNumber(64, op2), 64);
@@ -462,7 +462,7 @@ Deno.test("Uint7.fromBigInt()", () => {
 });
 
 Deno.test("Uint7.fromBigInt() - overflowMode", () => {
-  const op = { overflowMode: Integer.OverflowMode.EXCEPTION };
+  const op = { overflowMode: "exception" } as const;
 
   const e1 = "`value` must be within the range of `uint7`.";
   assertThrows(
@@ -480,7 +480,7 @@ Deno.test("Uint7.fromBigInt() - overflowMode", () => {
     e1,
   );
 
-  const op2 = { overflowMode: Integer.OverflowMode.TRUNCATE };
+  const op2 = { overflowMode: "truncate" } as const;
 
   assertStrictEquals(Uint7.fromBigInt(-1n, op2), 127);
   assertStrictEquals(Uint7.fromBigInt(64n, op2), 64);

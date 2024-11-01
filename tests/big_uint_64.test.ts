@@ -1,5 +1,5 @@
 import { assertStrictEquals, assertThrows } from "./deps.ts";
-import { BigUint64, Integer } from "../mod.ts";
+import { BigUint64 } from "../mod.ts";
 
 Deno.test("BigUint64.bitLength", () => {
   assertStrictEquals(BigUint64.bitLength, 64);
@@ -904,7 +904,7 @@ Deno.test("BigUint64.fromNumber()", () => {
 });
 
 Deno.test("BigUint64.fromNumber() - roundingMode", () => {
-  const op = { roundingMode: Integer.RoundingMode.UP };
+  const op = { roundingMode: "up" } as const;
 
   assertStrictEquals(BigUint64.fromNumber(0, op), 0n);
   assertStrictEquals(Object.is(BigUint64.fromNumber(-0, op), 0n), true);
@@ -967,7 +967,7 @@ Deno.test("BigUint64.fromNumber() - roundingMode", () => {
     9007199254740991n,
   );
 
-  const op2 = { roundingMode: Integer.RoundingMode.DOWN };
+  const op2 = { roundingMode: "down" } as const;
 
   assertStrictEquals(BigUint64.fromNumber(0, op2), 0n);
   assertStrictEquals(Object.is(BigUint64.fromNumber(-0, op2), 0n), true);
@@ -1032,7 +1032,7 @@ Deno.test("BigUint64.fromNumber() - roundingMode", () => {
 });
 
 Deno.test("BigUint64.fromNumber() - overflowMode", () => {
-  const op = { overflowMode: Integer.OverflowMode.EXCEPTION };
+  const op = { overflowMode: "exception" } as const;
 
   const e1 = "`value` must be within the range of `uint64`.";
   assertThrows(
@@ -1050,7 +1050,7 @@ Deno.test("BigUint64.fromNumber() - overflowMode", () => {
   //   e1,
   // );
 
-  const op2 = { overflowMode: Integer.OverflowMode.TRUNCATE };
+  const op2 = { overflowMode: "truncate" } as const;
 
   assertStrictEquals(BigUint64.fromNumber(-1, op2), 0xFFFFFFFFFFFFFFFFn);
   assertStrictEquals(BigUint64.fromNumber(64, op2), 64n);
@@ -1174,7 +1174,7 @@ Deno.test("BigUint64.fromBigInt()", () => {
 });
 
 Deno.test("BigUint64.fromBigInt() - overflowMode", () => {
-  const op = { overflowMode: Integer.OverflowMode.EXCEPTION };
+  const op = { overflowMode: "exception" } as const;
 
   const e1 = "`value` must be within the range of `uint64`.";
   assertThrows(
@@ -1192,7 +1192,7 @@ Deno.test("BigUint64.fromBigInt() - overflowMode", () => {
     e1,
   );
 
-  const op2 = { overflowMode: Integer.OverflowMode.TRUNCATE };
+  const op2 = { overflowMode: "truncate" } as const;
 
   assertStrictEquals(BigUint64.fromBigInt(-1n, op2), 0xFFFF_FFFF_FFFF_FFFFn);
   assertStrictEquals(BigUint64.fromBigInt(64n, op2), 64n);
