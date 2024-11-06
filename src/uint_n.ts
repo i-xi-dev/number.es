@@ -1,6 +1,5 @@
+import { numeric } from "./_.ts";
 import { Numerics } from "../deps.ts";
-
-type numeric = number | bigint;
 
 export type FromNumberOptions = {
   overflowMode?: Numerics.OverflowMode;
